@@ -1,0 +1,49 @@
+package com.newenv.communityFocus.domain;
+
+public class OperationRecord {
+	private String quYu;//区域
+	private String dianZu ;//店组
+	private Integer fenpaiNum;//已分派数
+	private String jjrName;//经纪人名 
+	private String oper;//操作
+	private String operTime;//操作时间
+	
+	public String getJjrName() {
+		return jjrName;
+	}
+	public void setJjrName(String jjrName) {
+		this.jjrName = jjrName;
+	}
+	public String getOper() {
+		return oper;
+	}
+	public void setOper(String oper) {
+		this.oper = oper;
+	}
+	public String getOperTime() {
+		return operTime;
+	}
+	public void setOperTime(String operTime) {
+		this.operTime = operTime;
+	}
+	
+	public String getDianZu() {
+		return dianZu;
+	}
+	public void setDianZu(String dianZu) {
+		this.dianZu = dianZu;
+	}
+	public Integer getFenpaiNum() {
+		return fenpaiNum;
+	}
+	public void setFenpaiNum(Integer fenpaiNum) {
+		this.fenpaiNum = fenpaiNum;
+	}
+	public String getQuYu() {
+		return quYu;
+	}
+	public void setQuYu(String quYu) {
+		this.quYu = quYu;
+	}
+	
+}

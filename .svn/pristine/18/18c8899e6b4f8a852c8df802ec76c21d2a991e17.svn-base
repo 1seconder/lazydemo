@@ -1,0 +1,92 @@
+.nav.nav-tabs + .tab-content{ margin-bottom: 0px;}
+.btn{ padding: 5px 12px !important;}
+.nav > li > a{padding: 8px 15px;     padding-left: 30px !important;
+padding-right: 30px !important;}
+@media screen and (min-width: 1000px)
+{
+	.table-responsive-1150 {overflow-x: hidden !important;}
+}
+.margin-top5{ margin-top: 5px;}
+.ms-selectable{border:1px solid #e4e4e4;}
+.ms-selectable ul{list-style: none; padding: 0px; margin: 0px;}
+.ms-selectable ul li{border-bottom: 1px #eee solid;   padding: 2px 10px;}
+@media (min-width: 1000px) {
+	.jiantou_xuanze{width: 30px; padding-top:160px;}
+	.jiantou_xuanze1{width: 3px; padding-top:160px;}
+}
+@media (max-width: 1000px) and (min-width: 768px){
+	.jiantou_xuanze{width: 30px; padding-top:160px;}
+	.jiantou_xuanze1{width: 3px; padding-top:160px;}
+}
+@media (max-width: 768px) {
+	.jiantou_xuanze{width: 30px; padding-top:10px; display: none;}
+}
+.text-right {
+    text-align: right !important;
+}
+.text-left {
+    text-align: left !important;
+}
+.heiht37{ height: 32px !important;}
+.xkys-box ul li{ list-style: none; float: right; margin-right: 5px;}
+.xkys-box ul{ list-style: none;}
+tbody > tr:nth-child(odd) > td.color-2{ background-color: #e23a74; color: #fff;}
+tbody > tr:nth-child(odd) > td.color-3{ background-color: #7822a6; color: #fff;}
+.color-box table .color-0{    background-color: #b772cb;    color: #fff;}
+.color-box table .color-1 {    background-color: #72c857;    color: #fff;}
+.color-box table .color-4{    background-color: #4897d8;    color: #fff;}
+.color-box table .color-5 {    background-color: #3ebfb7;    color: #fff;}
+.color-box table .color-6 {    background-color: #eac168;    color: #fff;}
+.color-box table .color-7 {    background-color: #ea8d68;    color: #fff;}
+.color-box table .color-8 {    background-color: #ea6868;    color: #fff;}
+.color-box table .color-2{ background-color: #e23a74; color: #fff;}
+.color-box table .color-3{ background-color: #7822a6; color: #fff;}
+tbody > tr:nth-child(odd) > td.color-0{    background-color: #b772cb;    color: #fff;}
+tbody > tr:nth-child(odd) > td.color-1 {    background-color: #72c857;    color: #fff;}
+tbody > tr:nth-child(odd) > td.color-4{    background-color: #4897d8;    color: #fff;}
+tbody > tr:nth-child(odd) > td.color-5 {    background-color: #3ebfb7;    color: #fff;}
+tbody > tr:nth-child(odd) > td.color-6 {    background-color: #eac168;    color: #fff;}
+tbody > tr:nth-child(odd) > td.color-7 {    background-color: #ea8d68;    color: #fff;}
+tbody > tr:nth-child(odd) > td.color-8 {    background-color: #ea6868;    color: #fff;}
+tbody > tr:nth-child(odd) > td.color-00 {    background-color: #ff0000;    color: #000000;}
+tbody > tr:nth-child(odd) > td.color-01 {    background-color: #ffffff; color: #000000;}
+.kongzhi{width: 10px; height: 10px; margin-right: 3px; margin-top: 4px; border-radius: 2px; background: #b772cb;}
+.zaishou{width: 10px; height: 10px; margin-right: 3px; margin-top: 4px; border-radius: 2px; background: #72c857;}
+.zaizu{width: 10px; height: 10px; margin-right: 3px; margin-top: 4px; border-radius: 2px; background: #e23a74;}
+.zushou{width: 10px; height: 10px; margin-right: 3px; margin-top: 4px; border-radius: 2px; background: #7822a6;}
+.baozu{width: 10px; height: 10px; margin-right: 3px; margin-top: 4px; border-radius: 2px; background: #4897d8;}
+.ruzu{width: 10px; height: 10px; margin-right: 3px; margin-top: 4px; border-radius: 2px; background: #3ebfb7;}
+.yizu{width: 10px; height: 10px; margin-right: 3px; margin-top: 4px; border-radius: 2px; background: #eac168;}
+.yishou{width: 10px; height: 10px; margin-right: 3px; margin-top: 4px; border-radius: 2px; background: #ea8d68;}
+.daoqi{width: 10px; height: 10px; margin-right: 3px; margin-top: 4px; border-radius: 2px; background: #ea6868;}
+.baojing{width: 10px; height: 10px; margin-right: 3px; margin-top: 4px; border-radius: 2px; background: #ff0000;}
+.zhengchang{width: 10px; height: 10px; margin-right: 3px; margin-top: 4px; border-radius: 2px; background: #ffffff;}
+
+.kongzhi{width: 10px; height: 10px; margin-right: 3px; margin-top: 4px; border-radius: 2px; background: #b772cb;}
+.zaishou{width: 10px; height: 10px; margin-right: 3px; margin-top: 4px; border-radius: 2px; background: #72c857;}
+.zaizu{width: 10px; height: 10px; margin-right: 3px; margin-top: 4px; border-radius: 2px; background: #e23a74;}
+.zushou{width: 10px; height: 10px; margin-right: 3px; margin-top: 4px; border-radius: 2px; background: #7822a6;}
+.baozu{width: 10px; height: 10px; margin-right: 3px; margin-top: 4px; border-radius: 2px; background: #4897d8;}
+.ruzu{width: 10px; height: 10px; margin-right: 3px; margin-top: 4px; border-radius: 2px; background: #3ebfb7;}
+.yizu{width: 10px; height: 10px; margin-right: 3px; margin-top: 4px; border-radius: 2px; background: #eac168;}
+.yishou{width: 10px; height: 10px; margin-right: 3px; margin-top: 4px; border-radius: 2px; background: #ea8d68;}
+.daoqi{width: 10px; height: 10px; margin-right: 3px; margin-top: 4px; border-radius: 2px; background: #ea6868;}
+.baojing{width: 10px; height: 10px; margin-right: 3px; margin-top: 4px; border-radius: 2px; background: #ff0000;}
+.zhengchang{width: 10px; height: 10px; margin-right: 3px; margin-top: 4px; border-radius: 2px; background: #ffffff;}
+
+
+.btn-kongzhi{ background-color: #b772cb; color: #ffffff;}
+.btn-zaishou{ background-color: #72c857; color: #ffffff;}
+.btn-zaizu{ background-color: #e23a74; color: #ffffff;}
+.btn-zushou{ background-color: #7822a6; color: #ffffff;}
+.btn-baozu{ background-color: #4897d8; color: #ffffff;}
+.btn-ruzu{ background-color: #3ebfb7; color: #ffffff;}
+.btn-yizu{ background-color: #eac168; color: #ffffff;}
+.btn-yishou{ background-color: #ea8d68; color: #ffffff;}
+.btn-daoqi{ background-color: #ea6868; color: #ffffff;}
+
+.btn-baojing{ background-color: #ff0000; color: #ffffff;}
+.btn-zhengchang{ background-color: #ffffff; color: #ffffff;}
+
+.sidebar-menu{ width:215px;}
+.col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12{ padding-left:5px  !important; padding-right:5px  !important;}

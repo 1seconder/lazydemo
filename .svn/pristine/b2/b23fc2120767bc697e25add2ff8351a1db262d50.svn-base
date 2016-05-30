@@ -1,0 +1,266 @@
+package com.newenv.communityFocus.services;
+
+import com.newenv.communityFocus.base.BaseService;
+import com.newenv.communityFocus.dao.DaoHelper;
+import com.newenv.communityFocus.domain.PostParameter;
+import com.newenv.communityFocus.domain.RequestParameter;
+import com.newenv.communityFocus.domain.ResultFeedback;
+import com.newenv.communityFocus.domain.page.PageInfo;
+
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+@Path("/houseDetailService")
+public class HouseDetailService extends BaseService {
+
+	@Autowired
+	private DaoHelper daoHelper;
+
+	private PageInfo pageInfo;
+
+	public PageInfo getPageInfo() {
+		return pageInfo;
+	}
+
+	public void setPageInfo(PageInfo pageInfo) {
+		this.pageInfo = pageInfo;
+	}
+
+	/**
+	 * 跳转到房屋详情页
+	 *
+	 * @param houseNo
+	 * @return void
+	 */
+	@GET
+	@Produces({ "text/html" })
+	@Path("/queryHouseDetail/{houseNo}")
+	public void getHouseDetails(@PathParam("houseNo") String houseNo) {
+		if (StringUtils.isNotBlank(houseNo)) {
+			List houseList = new ArrayList();
+			Map house = new HashMap();
+			StringBuffer sql = new StringBuffer();
+			sql.append(" SELECT t1.*,t3.CreateDate,");
+			sql.append(" (SELECT qy_name FROM xhj_jcstress WHERE id = t2.StressID) AS qyName,");
+			sql.append(" (SELECT sq_name FROM xhj_jcsq WHERE id = t2.sq_id) AS sqName,");
+			sql.append(" (SELECT lpd_name FROM xhj_lpdong WHERE id = t1.buildingid) AS buildingName,");
+			sql.append(" (SELECT dy_name FROM xhj_lpdanyuan WHERE id = t1.DYID) AS dyName,");
+			sql.append(" (SELECT fullname FROM tbl_user_profile WHERE id = t3.creatorid) AS fullname,");
+			sql.append(
+					" (SELECT department_name FROM tbl_department d WHERE d.id = t3.createdepartmentid) AS department_name,");
+
+			sql.append(
+					" (SELECT NAME FROM xhj_syscs_1 WHERE sid = 11 AND id = t1.leixing) AS useagename, '出售' AS type");
+			sql.append(
+					" FROM xhj_lpfanghao t1 LEFT JOIN xhj_lpxx t2 ON t1.lpid = t2.id LEFT JOIN xhj_housesourceforsaling t3 ON t2.id = t3.HouseSourceID where 1=1 ");
+
+			sql.append(" and t1.id = " + houseNo);
+			sql.append(" union all ");
+			sql.append(" SELECT t1.*,t3.CreateDate,");
+			sql.append(" (SELECT qy_name FROM xhj_jcstress WHERE id = t2.StressID) AS qyName,");
+			sql.append(" (SELECT sq_name FROM xhj_jcsq WHERE id = t2.sq_id) AS sqName,");
+			sql.append(" (SELECT lpd_name FROM xhj_lpdong WHERE id = t1.buildingid) AS buildingName,");
+			sql.append(" (SELECT dy_name FROM xhj_lpdanyuan WHERE id = t1.DYID) AS dyName,");
+			sql.append(" (SELECT fullname FROM tbl_user_profile WHERE id = t3.creatorid) AS fullname,");
+			sql.append(
+					" (SELECT department_name FROM tbl_department d WHERE d.id = t3.createdepartmentid) AS department_name,");
+
+			sql.append(
+					" (SELECT NAME FROM xhj_syscs_1 WHERE sid = 11 AND id = t1.leixing) AS useagename, '出租' AS type");
+			sql.append(
+					" FROM xhj_lpfanghao t1 LEFT JOIN xhj_lpxx t2 ON t1.lpid = t2.id LEFT JOIN XHJ_HouseInfoForRenting t3 ON t2.id = t3.HouseSourceID where 1 = 1 ");
+
+			sql.append(" and t1.id = " + houseNo);
+			System.out.println(sql.toString());
+			houseList = this.daoHelper.getList(sql.toString());
+			for (int i = 0; i < houseList.size(); i++) {
+				house = (Map) houseList.get(i);
+				String fullname = house.get("fullname") == null ? "" : house.get("fullname").toString();
+				if (StringUtils.isNotBlank(fullname)) {
+					break;
+				} else {
+					house.put("type", "");
+				}
+			}
+			super.setRequestAttribute("result", house);
+			super.forwardTo("/pages/jinggeng/houseDetail.jsp");
+		}
+	}
+
+	/**
+	 * 查询业主信息
+	 *
+	 * @param requestParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ "application/json", "application/xml" })
+	@Consumes({ "application/json", "application/xml" })
+	@Path("/queryOwnerInfo")
+	public Response queryOwerInfo(RequestParameter requestParameter) {
+		List ownerList = new ArrayList();
+		Integer ownerId = requestParameter.getCreatorId();
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT *,t1.name AS fullname,(SELECT city_name FROM xhj_jccity WHERE id = t1.cityid) AS cityName "
+				+ "FROM xhj_personinfo t1 LEFT JOIN lpjg_customerinfo t2 ON t1.id = t2.personid LEFT JOIN lpjg_customerrequirement t3 ON t2.id = t3.CustomerID LEFT JOIN xhj_customerrequirementofbuy t4"
+				+ " ON t2.id = t4.CustomerID LEFT JOIN xhj_customerrequirementofrent t5 ON t2.id = t5.CustomerID  where 1=1 ");
+		if (null != ownerId) {
+			sql.append(" and t1.id = " + ownerId);
+		}
+		System.out.println(sql.toString());
+		ownerList = this.daoHelper.getList(sql.toString());
+		return Response.ok().entity(ownerList).build();
+	}
+
+	/**
+	 * 查询跟进记录
+	 *
+	 * @param postParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ "application/json", "application/xml" })
+	@Consumes({ "application/json", "application/xml" })
+	@Path("/queryPreciseRecordForList")
+	public Response queryPreciseRecordForList(PostParameter postParameter) {
+		RequestParameter requestParameter = postParameter.getRequestParameter();
+
+		String sqlCount = "";
+		pageInfo = postParameter.getPageInfo();
+		if (pageInfo == null) {
+			pageInfo = new PageInfo();
+			pageInfo.setPage(1);
+		}
+
+		// 设置行数.
+		pageInfo.setRows(10);
+		Integer fhId = requestParameter.getFhId();
+		StringBuffer sql = new StringBuffer();
+
+		sql.append(" SELECT t1.fhid,t2.fullname,t2.tel,t1.messages,t1.flag,t3.department_name,t1.createdate "
+				+ " FROM lpjg_precise_update_record t1 LEFT JOIN tbl_user_profile t2 ON t1.creatorid = t2.id LEFT JOIN tbl_department t3 ON t1.mdid = t3.id where 1=1 ");
+		if (null != fhId) {
+			sql.append(" and t1.fhid = '" + fhId + "'");
+		}
+		System.out.println(sql.toString());
+		sqlCount = "select count(*) as num from (" + sql.toString() + ") tbl ";
+		System.out.println(sql.toString());
+		pageInfo = super.getPagerjdo(sql.toString(), sqlCount, pageInfo);
+		// 封装返回.
+		ResultFeedback resultFeedback = new ResultFeedback();
+		resultFeedback.setListJson(pageInfo);
+		return Response.ok().entity(resultFeedback).build();
+	}
+
+	/**
+	 * 查询 操作记录
+	 *
+	 * @param postParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ "application/json", "application/xml" })
+	@Consumes({ "application/json", "application/xml" })
+	@Path("/queryOperationRecordForList")
+	public Response queryOperationRecordForList(PostParameter postParameter) {
+		RequestParameter requestParameter = postParameter.getRequestParameter();
+
+		String sqlCount = "";
+		pageInfo = postParameter.getPageInfo();
+		if (pageInfo == null) {
+			pageInfo = new PageInfo();
+			pageInfo.setPage(1);
+		}
+
+		// 设置行数.
+		pageInfo.setRows(10);
+
+		Integer fhId = requestParameter.getFhId();
+		StringBuffer sql = new StringBuffer();
+
+		sql.append(
+				"SELECT t2.fullname,t3.department_name,t2.tel,t1.message,t1.operatedate,t1.fhid FROM lpjg_operation_log  t1 LEFT JOIN "
+						+ "tbl_user_profile t2 ON t1.operatorid = t2.id LEFT JOIN tbl_department t3 ON t2.tbl_department_id = t3.id where 1=1 ");
+		if (null != fhId) {
+			sql.append(" and t1.fhid = '" + fhId + "'");
+		}
+		System.out.println(sql.toString());
+		sqlCount = "select count(*) as num from (" + sql.toString() + ") tbl ";
+		pageInfo = super.getPagerjdo(sql.toString(), sqlCount, pageInfo);
+		// 封装返回.
+		ResultFeedback resultFeedback = new ResultFeedback();
+		resultFeedback.setListJson(pageInfo);
+		return Response.ok().entity(resultFeedback).build();
+	}
+
+	/**
+	 * 查询房屋成交信息
+	 *
+	 * @param postParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ "application/json", "application/xml" })
+	@Consumes({ "application/json", "application/xml" })
+	@Path("/queryContractForList")
+	public Response queryContractForList(PostParameter postParameter) {
+		RequestParameter requestParameter = postParameter.getRequestParameter();
+
+		Integer saleOrRent = requestParameter.getType();
+		String sqlCount = "";
+		pageInfo = postParameter.getPageInfo();
+		if (pageInfo == null) {
+			pageInfo = new PageInfo();
+			pageInfo.setPage(1);
+		}
+
+		// 设置行数.
+		pageInfo.setRows(10);
+		Integer fhId = requestParameter.getFhId();
+		StringBuffer sql = new StringBuffer();
+		if (saleOrRent == 1) {
+			sql.append(" SELECT t2.id AS housesourceid,t4.contractnumber,t4.contractdate,t4.buyername,t4.sellername,"
+					+ "(SELECT tel FROM tbl_user_profile WHERE id = t4.buyerid) AS tel,t4.buyerpaycommissionamount,t1.source"
+					+ " FROM xhj_lpfanghao t1 INNER JOIN xhj_housesource t2 ON t1.id = t2.housenumberid INNER JOIN xhj_houseinfoforrenting t3 "
+					+ " ON t2.id = t3.housesourceid INNER JOIN xhj_contract t4 ON t3.id = t4.housesourceid WHERE 1=1 AND t4.businesstype>1 ");
+			
+			sqlCount = "SELECT COUNT(*) FROM xhj_lpfanghao t1 INNER JOIN xhj_housesource t2 ON t1.id = t2.housenumberid INNER JOIN xhj_houseinfoforrenting t3 "
+					+ " ON t2.id = t3.housesourceid INNER JOIN xhj_contract t4 ON t3.id = t4.housesourceid WHERE 1=1 AND t4.businesstype>1 ";
+		} else {
+			sql.append(" SELECT t2.id AS housesourceid,t4.contractnumber,t4.contractdate,t4.buyername,t4.sellername,"
+					+ "(SELECT tel FROM tbl_user_profile WHERE id = t4.buyerid) AS tel,t4.buyerpaycommissionamount,t1.source "
+					+ " FROM xhj_lpfanghao t1 INNER JOIN xhj_housesource t2 ON t1.id = t2.housenumberid INNER JOIN xhj_housesourceforsaling t3 "
+					+ " ON t2.id = t3.housesourceid INNER JOIN xhj_contract t4 ON t3.id = t4.housesourceid WHERE 1=1 AND t4.businesstype>1 ");
+			
+			sqlCount = "SELECT COUNT(*) FROM xhj_lpfanghao t1 INNER JOIN xhj_housesource t2 ON t1.id = t2.housenumberid INNER JOIN xhj_housesourceforsaling t3 "
+					+ " ON t2.id = t3.housesourceid INNER JOIN xhj_contract t4 ON t3.id = t4.housesourceid WHERE 1=1 AND t4.businesstype>1 ";
+		}
+
+		if (null != fhId) {
+			sql.append(" and t1.fhid = '" + fhId + "'");
+		}
+		System.out.println(sql.toString());
+		
+		System.out.println(sqlCount);
+		pageInfo = super.getPagerjdo(sql.toString(), sqlCount, pageInfo);
+		// 封装返回.
+		ResultFeedback resultFeedback = new ResultFeedback();
+		resultFeedback.setListJson(pageInfo);
+		return Response.ok().entity(resultFeedback).build();
+	}
+}

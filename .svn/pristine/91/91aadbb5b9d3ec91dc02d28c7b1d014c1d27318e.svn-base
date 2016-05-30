@@ -1,0 +1,133 @@
+@charset "utf-8";
+/* CSS Document */
+
+
+.pl15{ padding-left: 15px;}
+.f14{ font-size:14px;}
+.f16{ font-size:16px;}
+.f18{ font-size:18px;}
+
+.plr{ padding: 0 10px;}
+.pl10{ padding: 0 10px 0 0;}
+.mr10{ margin-right: 10px;}
+.mt15{ margin-top:15px;}
+.mlr{ margin: 0 15px;}
+.clear{ clear:both; margin-bottom: 10px;}
+.mlrt10{ margin-bottom: 10px;}
+
+
+
+
+
+
+/* sea-form */
+.sea-form{}
+.sea-form .sea-top{ background: #edfff3; border-bottom: 1px solid #d3f0dd; height: 31px; position: relative; padding:0 10px;}
+.sea-form .sea-top span{ font-weight: bold; line-height: 31px; color: #000;}
+.sea-form .sea-top .sea-soo{ height: 24px; float:right; margin: 3px 52px 2px 0; background: #fff; border: 1px solid #98d690; position: relative; padding-left: 28px;}
+.sea-form .sea-top .sea-soo input{ width: 183px; border: 0px; padding-left: 5px;}
+.sea-form .sea-top .sea-soo em{ width: 28px; height:24px; border-right: 1px solid #dfdfdf; position: absolute; left:0px; top: 0px; background-position: -13px 7px; text-indent: -999999px;}
+.sea-form .sea-top .sea-soo a{ width: 52px; height: 24px; line-height:24px; position: absolute; right: -52px; top: -1px; border-radius: 3px; text-align: center; color: #fff;}
+
+/* fysearch */
+.fysearch ul li{ padding: 7px 13px; line-height: 24px; position: relative; border-bottom: 1px solid #d3f0dd; list-style-type:none;}
+.fysearch .fysearch-left{ width: 75px; padding-left: 11px; position: absolute; left: 11px; top: 9px; color: #5a5a5a;}
+.fysearch .fysearch-left em{ position: absolute;width: 0;height: 0;border-width: 5px;border-style: solid;border-color: #fff #fff #fff #ccc;font-size: 0;line-height: 0;-moz-transition: -moz-transform .2s ease-in;-o-transition: -o-transform .2s ease-in;transition: transform .2s ease-in; bottom:-1px; left:0px; top: 7px;}
+.fysearch .fysearch-right a.active{ color: #15ae67; border: 1px solid #15ae67; height: 22px;}
+.fysearch .fysearch-right a{ float: left; padding: 0 5px;}
+.fysearch .fysearch-right dl dd{ float:left; position: relative;}
+.bb_span{ color: #f00; position: absolute; right:5px; top:0px;}
+.fysearch .fysearch-right{word-break:break-all; padding-left: 88px;}
+.fysearch ul li.fysearch-bottomnone{ border-bottom: none;}
+
+
+
+/* 楼盘字典 */ 
+.zd-nav{ height: 40px; border-bottom: 2px solid #0e7b00;}
+.zd-nav b{ font-size:12px; line-height:40px;}
+.zd-nav .dq{ padding-top: 10px; vertical-align:top; line-height:normal;}
+.zd-nav .dq span{ width: 70px; display:inline-block; background: url(../img/h-xing1.jpg) repeat-x; text-indent: -99999px; margin-top: 1px;}
+.zd-nav .dq span strong{ height: 12px; background:url(../img/h-xing.jpg) repeat-x; display: block;}
+.zd-tex{ margin-top: 1px; border-top: 1px solid #6cd05f;}
+.table-xx td{ height: 40px; font-weight: bold;}
+.zd-tex td span{ color:#f00; font-size:16px;}
+.zd-tex p a{ color: #ff5400;}
+.zd-tex p{ padding-left: 40px; display: block;}
+.table-xx td label{ margin-right: 15px;}
+
+.qwe{display:block;width:100%;height:32px;padding:3px 8px;font-size:13px;line-height:1.53846154;color:#222;vertical-align:middle;background-color:#fff;border:1px solid #ccc;border-radius: 0 4px 4px 0;-webkit-box-shadow:inset 0 1px 1px rgba(0,0,0,.075);box-shadow:inset 0 1px 1px rgba(0,0,0,.075);-webkit-transition:border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;-o-transition:border-color ease-in-out .15s,box-shadow ease-in-out .15s;transition:border-color ease-in-out .15s,box-shadow ease-in-out .15s}
+
+
+/* 楼盘图库 */
+.sc-pic dl{ margin-top: 15px; float:left; margin-right: 15px;}
+.sc-pic dl dd{ padding: 5px; border: 1px solid #e2e2e2;}
+.sc-pic dl dd, .sc-pic dl dt{ width: 120px; text-align: center;}
+
+
+.w_50{position:relative;z-index:2;float:left;width:50px;margin-bottom:0;}
+.radio-inline span{ line-height:24px;}
+
+.bw23{ width: 23%; padding-left: 2%;}
+
+#main{ padding: 50px 15px;}
+
+
+
+.w80{ width: 80px; line-height:32px; padding-right:10px; text-align:right;}
+.w70{ width:70px;}
+.w75{ width:82px;}
+.w100{ width: 100px;}
+.w110{ width:110px;}
+.w60{ width: 60px;}
+.w40{ width: 43px;}
+.w30{ width: 30px;}
+.f00{}
+.w150{ width:150px;}
+.w200{ width:200px;}
+.w-50{ line-height:25px;}
+.fhong{ color: #f00;}
+.mr50{ margin-right: 100px;}
+
+
+
+.d-pre1{ float:left; position: relative;}
+.d-pre{ position: relative;}
+.dpea{ position: absolute; right:15px; top:8px; z-index:5; font-weight: bold;}
+
+.input-group-addon1{padding:5px 12px;font-size:13px;font-weight:400;line-height:1;color:#222;text-align:center;background-color:#e5e5e5;border:1px solid #ccc;border-radius:3px;}
+
+.active-hui{ background:#f5f5f5;}
+
+.shaixuan{ height: 50px; position: relative; padding-top: 10px; border-top: 1px solid #ccc;}
+.shaixuan-left{ width: 75px; padding-left: 11px; position: absolute; left: 30px; top: 11px; line-height: 32px; color: #5a5a5a;}
+.shaixuan-left em{ position: absolute;width: 0;height: 0;border-width: 5px;border-style: solid;border-color: #fff #fff #fff #ccc;font-size: 0;line-height: 0;-moz-transition: -moz-transform .2s ease-in;-o-transition: -o-transform .2s ease-in;transition: transform .2s ease-in; bottom:-1px; left:0px; top: 10px;}
+
+.shaixuan-right{ height: 32px;word-break:break-all; padding-left: 110px;}
+.moren-shai a{ line-height: 32px; padding-right: 10px;}
+.moren-shai{ float:left;}
+
+.tiaojian{ padding: 3px;}
+.tiaojian a{ float:left; padding: 2px 10px; border: 1px solid #ccc; margin-right: 10px;}
+.tiaojian a.dahong{ border: 1px solid #f00;}
+.tiaojian a:hover{ text-decoration:none;}
+
+
+.chen{ border: 1px solid #ff6800;}
+
+
+
+.example
+{
+  position: relative;
+  padding: 20px;
+  margin: 0 0 15px;
+  border-style: solid;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  outline: none;
+  transition:all 0.3s;
+}
+
+.tex-wen p{ font-size: 22px; margin:0px;}
+.tex-wen p span{ padding-left: 10px; font-size:14px}
+.tex-wen p b{ font-size:14px}

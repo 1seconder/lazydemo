@@ -1,0 +1,31 @@
+package com.newenv.communityFocus.security.interceptor;
+
+//public class LoginInterceptor  extends AbstractInterceptor{
+//	
+//	
+//	public String intercept(ActionInvocation invocation) throws Exception {
+//		 HttpServletRequest request = ServletActionContext.getRequest();  
+//	        //HttpSession session = request.getSession(true);  
+//	        //Object user =  session.getAttribute(AppConstants.CURRENT_USER);  
+//	        Object user = WebUtils.getSessionAttribute(request, AppConstants.CURRENT_USER);
+//	        ActionSupport action = (ActionSupport) invocation.getAction();  
+//	          
+//	        //BaseAction action = (BaseAction)invocation.getProxy().getAction();
+//	        
+//	        if (action instanceof LoginAction){  
+//	            return invocation.invoke();  
+//	        }
+//	        
+//	        if (user != null ){
+//	        	Map<String, HRPermission> map= SecurityUserHolder.getCurrentUserLogin().getPermissions();
+//	        	if(CollectionUtils.isEmpty(map) ){//无权限
+//	        		return "index";
+//	        	}else{
+//	        		return invocation.invoke();  
+//	        	}
+//	        }else {  
+//	            return Action.LOGIN;   
+//	        }  
+//	  
+//	    }  
+//}

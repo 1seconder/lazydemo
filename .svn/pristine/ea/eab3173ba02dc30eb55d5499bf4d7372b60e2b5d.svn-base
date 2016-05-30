@@ -1,0 +1,359 @@
+package com.newenv.communityFocus.SellControl.dao;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.nutz.dao.entity.Record;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.newenv.communityFocus.base.BaseService;
+import com.newenv.communityFocus.dao.DaoHelper;
+import com.newenv.communityFocus.domain.ConditionSC;
+import com.newenv.communityFocus.domain.page.PageInfo;
+import com.newenv.communityFocus.security.dao.UserDao;
+/**
+ * @author Administrator
+ *
+ */
+@Component
+public class SellControlDao extends BaseService{
+	
+	@Autowired
+	private DaoHelper daoHelper;
+	@Autowired
+	private UserDao userDao;
+	
+	public List<Record> querySCData(Integer bmid,Integer userid){
+		List<Record> recordList = daoHelper.getRecordList("select * from xhj_lpxx limit 1");
+		
+		//如下四行
+//		Sql sql = Sqls.create(sqlString);
+//		sql.setCallback(Sqls.callback.record());
+//		dao.execute(sql);
+//		return sql.getObject(Map.class);
+//		StringBuilder sql = new StringBuilder();
+//		StringBuilder sqlCount = new StringBuilder();
+//		sql.append("select lp.id,REPLACE(lp.LP_Name,' ',''),REPLACE(lp.address,' ',''),(select name from xhj_syscs_1 where id = lp.yongtu) yongtuname ");
+//		sql.append(",(select count(1) from xhj_lpdong where lpid = lp.id) as dongtotal ");
+//		sql.append(",(select count(1) from xhj_lpfanghao where lpid = lp.id and statuss = 1) as fanghaototal  ");
+//		sql.append(" from xhj_lpxx lp where statuss > 0   ");
+//		sql.append(" order by  checkDate desc,dongtotal desc ");
+//		sqlCount.append("select count(1) from (").append(sql.toString()).append(") ss");
+//		pageInfo = getEntitiesByPaginationWithSql(pageInfo, sql.toString(), sqlCount.toString(), DAOConstants.RELATIONAL);
+		return recordList;
+	}
+	
+	public List<Record> querySCLp(Integer bmid,Integer userid){
+			return daoHelper.getRecordList("SELECT DISTINCT l.id,l.lp_name FROM xhj_lpxx l,lpjg_assignment_loupan lap where l.id=lap.lpid AND lap.mdid= "+bmid+" and l.cityid = 1  and l.statuss = 1");
+	}
+	
+	public List<Record> querySCDong(Integer lpid,Integer userid){
+		StringBuffer sb = new StringBuffer();
+		sb.append(" SELECT dz.id ,dz.lpd_name  ").append(" FROM xhj_lpxx lp,xhj_lpdong dz , xhj_lpdanyuan dy,lpjg_assignment_loupan lap,xhj_lpfanghao fh,lpjg_assignment_room lar ");
+		sb.append(" where lp.id=dz.lpid and dz.id = dy.dzid and dy.id=fh.dyid AND fh.id=lar.fhid and lp.id=lap.lpid AND lap.mdid= 4 ");
+		sb.append(" and lp.cityid = 1  and lp.statuss = 1  and lp.id =").append(lpid).append(" GROUP BY dz.id ");
+		
+//		-- 经纪人
+//		SELECT l.lp_name,l.id FROM xhj_lpxx l,xhj_lpdong d,xhj_lpdanyuan dy,xhj_lpfanghao fh,lpjg_assignment_room lar 
+//		where l.id=d.Lpid AND d.id=dy.dzid and dy.id=fh.DYID AND fh.id=lar.fhid and lar.userid=4 
+		return daoHelper.getRecordList(sb.toString());
+	}
+	
+	public List<Record> querySCDanyuan(Integer dzid,Integer userid){
+		StringBuffer sb = new StringBuffer();
+		sb.append(" SELECT dy.id ,dy.dy_name  ");
+		sb.append(" FROM xhj_lpxx lp,xhj_lpdong dz , xhj_lpdanyuan dy,lpjg_assignment_loupan lap,xhj_lpfanghao fh,lpjg_assignment_room lar  ");
+		sb.append("  where lp.id=dz.lpid and dz.id = dy.dzid and dy.id=fh.dyid AND fh.id=lar.fhid and lp.id=lap.lpid AND lap.mdid= 4  ");
+		sb.append(" and lp.cityid = 1  and lp.statuss = 1  and dz.id =").append(dzid).append("  GROUP BY dz.id,dy.id ");
+		return daoHelper.getRecordList(sb.toString());
+	}
+	
+	/**
+	 * 根据条件查询销控彩色列表
+	 * @param pageInfo
+	 * @param lpid
+	 * @return
+	 */
+	public Map<String,Map<String,List<String>>> querySCTable(ConditionSC condition)
+	{
+		StringBuilder sqlscdanyuan = new StringBuilder();
+		String lpid = condition.getLpid();
+		String dzid = condition.getDzid();
+		String dyid = condition.getDyid();
+		String dianzu = condition.getDianzu();
+		String jingjiren = condition.getJingjiren();
+		String biaoqian = condition.getBiaoqian();
+		String zhuangxiu = condition.getZhuangxiu();
+		String userid = condition.getUserid();
+		String bmid = condition.getBmid();
+		String mdid = condition.getMdid();
+		String cityid = condition.getCityid();
+		String statuss = condition.getStatuss();
+		String panleixing = condition.getPanleixing();
+		
+		sqlscdanyuan.append("	select  lp.id,lpd.id as dzid ,CONCAT(lp.lp_name,'#',lpd.lpd_name,'(',dy.dy_name,')') as title ,dy.id as dyid ,MAX(lf.ceng) maxceng ");
+		sqlscdanyuan.append("	,GROUP_CONCAT(DISTINCT CONCAT(CAST(lf.ceng AS CHAR),'#', CAST(lf.fwzt AS CHAR),'#',lf.fanghao)  ORDER BY LENGTH(lf.fanghao),lf.fanghao desc )as fhcount " );
+		sqlscdanyuan.append("	 from xhj_lpxx lp ,xhj_lpdong lpd,xhj_lpdanyuan  dy,xhj_lpfanghao lf ,lpjg_assignment_room lar  " );
+		sqlscdanyuan.append("	 where lp.id = lpd.lpid and lpd.id = dy.dzid  and lp.statuss = 1 and lf.statuss = 1 and lf.dyid= dy.id AND lf.id=lar.fhid ");
+		sqlscdanyuan.append(" and lp.id = ").append(lpid);
+		
+		if(null !=biaoqian && biaoqian !=""  && biaoqian != "0" && !biaoqian.equals("0"))
+		{
+			//钥匙
+			if(biaoqian.equals("1"))
+			{
+				sqlscdanyuan.append(" and lf.keyid  = ").append(userid);
+			}
+			//房堪
+			if(biaoqian.equals("2"))
+			{
+				sqlscdanyuan.append(" and lf.surveyid  = ").append(userid);
+			}
+			//独家
+			if(biaoqian.equals("3"))
+			{
+				sqlscdanyuan.append(" and lf.delegateid  = ").append(userid);
+			}
+		}
+		//盘
+		if(null !=panleixing && panleixing !="" && panleixing != "0" && !panleixing.equals("0"))
+		{
+			sqlscdanyuan.append(" and lf.isencryption  = '").append(panleixing).append("'");
+		}
+		
+		if(null !=statuss && statuss !="")
+		{
+			sqlscdanyuan.append(" and lf.fwzt  = ").append(statuss);
+		}
+		
+		if(null !=zhuangxiu && zhuangxiu !="" && zhuangxiu != "0" && !zhuangxiu.equals("0"))
+		{
+			sqlscdanyuan.append(" and lf.DecorationStandard  = ").append(zhuangxiu);
+		}
+		
+		if(null !=dzid && dzid !="" && dzid != "0" && !dzid.equals("0"))
+		{
+			sqlscdanyuan.append(" and lpd.id = ").append(dzid);
+		}
+		
+		if(null !=dyid && dyid !="" && dyid != "0" && !dyid.equals("0"))
+		{
+			sqlscdanyuan.append(" and dy.id = ").append(dyid);
+		}
+		
+//		if(null !=dianzu && dianzu !=""&& dianzu != "0" && !dianzu.equals("0"))
+//		{
+//			sqlscdanyuan.append(" and lar.mdid = ").append(dianzu);
+//		}
+		
+		if(null !=bmid && bmid !="" && bmid != "0" && !bmid.equals("0"))
+		{
+			sqlscdanyuan.append(" and lar.bmid = ").append(bmid);
+		}
+		
+		if(null !=mdid && mdid !="" && mdid != "0" && !mdid.equals("0"))
+		{
+			sqlscdanyuan.append(" and lar.mdid = ").append(mdid);
+		}
+		if(null !=jingjiren && jingjiren !="" && jingjiren != "0" && !jingjiren.equals("0"))
+		{
+			sqlscdanyuan.append(" and lar.userid = ").append(jingjiren);
+		}
+		
+		if(null !=cityid && cityid !="" && cityid != "0" && !cityid.equals("0"))
+		{
+			sqlscdanyuan.append(" and lar.cityid = ").append(cityid);
+		}
+		
+		sqlscdanyuan.append(" GROUP BY lf.dyid " );
+		sqlscdanyuan.append("	ORDER BY lpd.lpd_name,dy.dy_name; " );
+		List<Record> objsdanyuan = daoHelper.getRecordList(sqlscdanyuan.toString());
+		
+		Map<String,Map<String,List<String>>> mapsfanghao  = new LinkedHashMap<String,Map<String,List<String>>>();
+		if(null == objsdanyuan || objsdanyuan.size()<=0)
+		{
+			return null;
+		}
+		for ( Record record: objsdanyuan) {
+//				Integer id =  record.getInt("id");
+//				Integer dzid =  record.getInt("dzid");
+			String title = record.getString("title");
+//				Integer dyid = record.getInt("dyid");
+			Integer maxceng = record.getInt("maxceng");
+			String fhcount = record.getString("fhcount");
+			
+			//保存层-房号的数据
+			Map<String,List<String>> mapsceng  = new LinkedHashMap<String,List<String>>();
+
+			if(null ==fhcount || fhcount.length()<=0)
+			{
+				return null;
+			}
+			//当前单元的所有数据
+			String[] fhs = fhcount.split(",");
+			List<String> asList = Arrays.asList(fhs);
+			
+			if(null == fhcount || fhcount.length()<=0)
+			{
+				return null;
+			}
+			for (int i = maxceng; i >= 1; i--) {
+				//当前ceng的所有数据
+				List<String> fhlists = new ArrayList<String>();
+//				List<String> asList2 = new ArrayList<String>();
+				for (int j = 0; j < asList.size(); j++) {
+					String fhzt = asList.get(j);
+					if(fhzt.indexOf("#")<0)
+					{
+						continue;
+					}
+					String[] split = fhzt.split("#",2);
+					Integer ceng = Integer.valueOf(split[0]);
+					String  fanghao = split[1];
+					if(ceng == i)
+					{
+						fhlists.add(fanghao);
+					}
+				}
+				if(null != fhlists && fhlists.size() >0)
+				{
+					mapsceng.put(i+"F", fhlists);
+				}
+			}
+			mapsfanghao.put(title, mapsceng);
+		}
+		return mapsfanghao;
+	}
+	
+	
+	
+	
+	/**
+	 * 根据条件查询销控彩色列表
+	 * @param pageInfo
+	 * @param lpid
+	 * @return
+	 */
+	public 	PageInfo querySCList(PageInfo pageInfo,ConditionSC condition)
+	{
+		StringBuilder sqlscdanyuan = new StringBuilder();
+		StringBuilder sqlCondition = new StringBuilder();
+
+		String lpid = condition.getLpid();
+		String dzid = condition.getDzid();
+		String dyid = condition.getDyid();
+		String dianzu = condition.getDianzu();
+		String jingjiren = condition.getJingjiren();
+		String biaoqian = condition.getBiaoqian();
+		String zhuangxiu = condition.getZhuangxiu();
+		String userid = condition.getUserid();
+		String bmid = condition.getBmid();
+		String mdid = condition.getMdid();
+		String cityid = condition.getCityid();
+		String statuss = condition.getStatuss();
+		String panleixing = condition.getPanleixing();
+		
+		//--         INNER   JOIN xhj_housesourceforsaling hs on )  
+		sqlCondition.append("  where   lp.statuss = 1  and lp.id = ").append(lpid);
+		
+		if(null !=biaoqian && biaoqian !=""  && biaoqian != "0" && !biaoqian.equals("0"))
+		{
+			//钥匙
+			if(biaoqian.equals("1"))
+			{
+				sqlCondition.append(" and lf.keyid  = ").append(userid);
+			}
+			//房堪
+			if(biaoqian.equals("2"))
+			{
+				sqlCondition.append(" and lf.surveyid  = ").append(userid);
+			}
+			//独家
+			if(biaoqian.equals("3"))
+			{
+				sqlCondition.append(" and lf.delegateid  = ").append(userid);
+			}
+		}
+		//盘
+		if(null !=panleixing && panleixing !="" && panleixing != "0" && !panleixing.equals("0"))
+		{
+			sqlCondition.append(" and lf.isencryption  = '").append(panleixing).append("'");
+		}
+		
+		if(null !=statuss && statuss !="")
+		{
+			sqlCondition.append(" and lf.fwzt  = ").append(statuss);
+		}
+		
+		if(null !=zhuangxiu && zhuangxiu !="" && zhuangxiu != "0" && !zhuangxiu.equals("0"))
+		{
+			sqlCondition.append(" and lf.DecorationStandard  = ").append(zhuangxiu);
+		}
+		
+		if(null !=dzid && dzid !="" && dzid != "0" && !dzid.equals("0"))
+		{
+			sqlCondition.append(" and lpd.id = ").append(dzid);
+		}
+		
+		if(null !=dyid && dyid !="" && dyid != "0" && !dyid.equals("0"))
+		{
+			sqlCondition.append(" and dy.id = ").append(dyid);
+		}
+		
+//		if(null !=dianzu && dianzu !=""&& dianzu != "0" && !dianzu.equals("0"))
+//		{
+//			sqlCondition.append(" and lar.bmid = ").append(dianzu);
+//		}
+		
+		if(null !=bmid && bmid !="" && bmid != "0" && !bmid.equals("0"))
+		{
+			sqlCondition.append(" and lar.bmid = ").append(bmid);
+		}
+		
+		if(null !=mdid && mdid !="" && mdid != "0" && !mdid.equals("0"))
+		{
+			sqlCondition.append(" and lar.mdid = ").append(mdid);
+		}
+		if(null !=jingjiren && jingjiren !="" && jingjiren != "0" && !jingjiren.equals("0"))
+		{
+			sqlCondition.append(" and lar.userid = ").append(jingjiren);
+		}
+		
+		if(null !=cityid && cityid !="" && cityid != "0" && !cityid.equals("0"))
+		{
+			sqlCondition.append(" and lar.cityid = ").append(cityid);
+		}
+		sqlscdanyuan.append(" ( select  '售' as zushou,lp.id lpid,lpd.id dzid ,dy.id dyid ,lf.id fhid,lpd.lpd_name,dy.dy_name,lf.fwzt,CONCAT(lp.lp_name,'#',lpd.lpd_name,'(',dy.dy_name,')') as title,IFNULL((select name from xhj_syscs_1 where id = t.usages ) ,'')usages");
+		sqlscdanyuan.append(" ,CONCAT(IFNULL((select name from xhj_syscs_1 where id= lf.chaoxiang),'无朝向'),'/',IFNULL(CAST(lf.shi AS char),'0'),'室/',IFNULL(CAST(lf.ting AS char),'0'),'厅/',IFNULL(CAST(lf.CQMJ AS char),'0'),'平米') as fangwu ,lp.bieming,lf.fanghao,lf.number,lf.ImagePath ");
+		sqlscdanyuan.append(" ,lf.keyid,lf.surveyid,IFNULL(lf.PropertyAddress,'') PropertyAddress,IFNULL(CAST(tup.fullname AS char),'无姓名记录') fullname,IFNULL(tup.tel,'无联系方式') tel,(select department_name FROM tbl_department where id = tup.tbl_department_id) as departmentname,IFNULL(CAST(t.Price AS char),0) Price,IFNULL(CAST(t.refreshDate AS char),'无最新时间') refreshDate");
+		sqlscdanyuan.append("  from xhj_lpxx lp INNER JOIN  xhj_lpdong lpd ON lp.id = lpd.lpid  ");
+		sqlscdanyuan.append(" INNER JOIN xhj_lpdanyuan  dy ON lpd.id = dy.dzid  ");
+		sqlscdanyuan.append(" INNER JOIN xhj_lpfanghao lf ON dy.id=lf.DYID  ");
+		sqlscdanyuan.append(" INNER JOIN lpjg_assignment_room lar ON lf.id=lar.fhid  ");
+		sqlscdanyuan.append("  INNER JOIN tbl_user_profile tup ON tup.id= lar.userid  ");
+		sqlscdanyuan.append(" LEFT JOIN (SELECT h.HouseNumberID,hs.Price,hs.refreshDate,hs.Usages FROM  xhj_housesource h,xhj_housesourceforsaling hs  WHERE h.id=hs.HouseSourceID) t ON lf.id=t.HouseNumberID ");
+		sqlscdanyuan.append(sqlCondition.toString()).append(" ) ");
+		sqlscdanyuan.append(" union all ");
+		sqlscdanyuan.append(" ( select  '租' as zushou,lp.id lpid,lpd.id dzid ,dy.id dyid ,lf.id fhid,lpd.lpd_name,dy.dy_name,lf.fwzt,CONCAT(lp.lp_name,'#',lpd.lpd_name,'(',dy.dy_name,')') as title,IFNULL((select name from xhj_syscs_1 where id = t.usages ) ,'')usages");
+		sqlscdanyuan.append(" ,CONCAT(IFNULL((select name from xhj_syscs_1 where id= lf.chaoxiang),'无朝向'),'/',IFNULL(CAST(lf.shi AS char),'0'),'室/',IFNULL(CAST(lf.ting AS char),'0'),'厅/',IFNULL(CAST(lf.CQMJ AS char),'0'),'平米') as fangwu ,lp.bieming,lf.fanghao,lf.number,lf.ImagePath ");
+		sqlscdanyuan.append(" ,lf.keyid,lf.surveyid,IFNULL(lf.PropertyAddress,'') PropertyAddress,IFNULL(CAST(tup.fullname AS char),'无姓名记录') fullname,IFNULL(tup.tel,'无联系方式') tel,(select department_name FROM tbl_department where id = tup.tbl_department_id) as departmentname,IFNULL(CAST(t.Price AS char),0) Price,IFNULL(CAST(t.refreshDate AS char),'无最新时间') refreshDate");
+		sqlscdanyuan.append("  from xhj_lpxx lp INNER JOIN  xhj_lpdong lpd ON lp.id = lpd.lpid  ");
+		sqlscdanyuan.append(" INNER JOIN xhj_lpdanyuan  dy ON lpd.id = dy.dzid  ");
+		sqlscdanyuan.append(" INNER JOIN xhj_lpfanghao lf ON dy.id=lf.DYID  ");
+		sqlscdanyuan.append(" INNER JOIN lpjg_assignment_room lar ON lf.id=lar.fhid  ");
+		sqlscdanyuan.append("  INNER JOIN tbl_user_profile tup ON tup.id= lar.userid  ");
+		sqlscdanyuan.append(" LEFT JOIN (SELECT h.HouseNumberID,hs.Price,hs.refreshDate,hs.Usages FROM  xhj_housesource h,xhj_houseinfoforrenting hs  WHERE h.id=hs.HouseSourceID) t ON lf.id=t.HouseNumberID ");
+		sqlscdanyuan.append(sqlCondition.toString()).append(" ) ");
+//		sqlCondition.append("	ORDER BY lpd.lpd_name,dy.dy_name " );
+		String sql = "select DISTINCT * from ("+sqlscdanyuan.toString()+" )ss ORDER BY ss.lpd_name,ss.dy_name";
+//		List<Record> objsdanyuan = daoHelper.getRecordList(sql);
+		String sqlCount = "("+sql+") sss";
+		pageInfo = super.getPagerjdo( sql,sql, pageInfo);
+		return pageInfo;
+	}
+}

@@ -1,0 +1,61 @@
+/**
+ *
+ * Apply your custom CSS here
+ *
+*/
+
+body {	
+}
+
+a {
+}
+
+.plr, .mr10{ padding: 0 10px;}
+.w60{ width: 60px; text-align: center;}
+.w200{ width:200px;}
+.w150{ width:150px;}
+.w120{ width:120px;}
+.w100{ width:100px;}
+.w80{ width:80px;}
+.w75{ width: 75px;}
+.w55{ width: 60px;}
+.w300{ width:300px;}
+.ml10{ margin-left: 10px;}
+.w90{width: 98px;}
+.w300{ width:300px;}
+.w30{width: 30px;}
+.ml10{ margin-left: 10px;}
+.mt10{margin-top: 10px;}
+
+.ptop{ padding: 10px 0;}
+.pr10{ padding-right: 10px;}
+
+.dataTables_filter, .pagination{ float:right;}
+
+.line32{ line-height: 32px;}
+.line24{ line-height: 24px;}
+.red{ color: #f00;}
+
+.xuanze a{ padding: 2px 10px;}
+.xuanze span{ margin-right: 20px;}
+.xuanze a.active{ color: #098e09; border: 1px solid #098e09;}
+
+.pright10{padding-right: 10px;}
+.pleft10{padding-left: 10px;}
+
+
+.f18{ font-size: 18px;}
+.f16{ font-size: 16px;}
+.f12{ font-size: 12px;}
+
+.story-comment-content{ border-bottom: 1px solid #f5f5f5;}
+
+.sidebar-none{ width: auto; display: block;}
+.sidebar-none .main-menu{padding-left: 0px; padding-right: 0px; margin-top: 0px; margin-bottom: 0px; list-style: none;}
+.sidebar-none{ background-color: #fff;}
+.sidebar-none .main-menu li.active > a{ color: #000;}
+.sidebar-none .main-menu a{border-bottom: 1px solid #f8f8f8;}
+.sidebar-none .main-menu a:hover { color: #000;}
+.nei_content_103{border-bottom:3px solid #e5e6e7;text-align:center;color:#ccc; padding: 15px 0 8px 0; margin-bottom: 10px;}
+
+.gallery-env .album-images .album-image .name100{width: 100%;}

@@ -1,0 +1,117 @@
+package com.newenv.communityFocus.services;
+
+import com.newenv.communityFocus.base.BaseService;
+import com.newenv.communityFocus.dao.DaoHelper;
+import com.newenv.communityFocus.domain.RequestParameter;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+@Path("/houseDetailService")
+public class HouseDetailService extends BaseService
+{
+
+  @Autowired
+  private DaoHelper daoHelper;
+
+  @GET
+  @Produces({"text/html"})
+  @Path("/queryHouseDetail/{houseNo}")
+  public void getHouseDetails(@PathParam("houseNo") String houseNo)
+  {
+    if (StringUtils.isNotBlank(houseNo)) {
+      List houseList = new ArrayList();
+      Map house = new HashMap();
+      StringBuffer sql = new StringBuffer();
+      sql.append(" SELECT t1.*,t3.CreateDate,");
+      sql.append(" (SELECT qy_name FROM xhj_jcstress WHERE id = t2.StressID) AS qyName,");
+      sql.append(" (SELECT sq_name FROM xhj_jcsq WHERE id = t2.sqid) AS sqName,");
+      sql.append(" (SELECT lpd_name FROM xhj_lpdong WHERE id = t1.buildingid) AS buildingName,");
+      sql.append(" (SELECT dy_name FROM xhj_lpdanyuan WHERE id = t1.DYID) AS dyName,");
+      sql.append(" (SELECT fullname FROM tbl_user_profile WHERE id = t3.creatorid) AS fullname,");
+      sql.append(" (SELECT department_name FROM tbl_department d WHERE d.id = t3.createdepartmentid) AS department_name,");
+
+      sql.append(" (SELECT NAME FROM xhj_syscs_1 WHERE sid = 11 AND id = t3.usages) AS useagename, '出售' AS type");
+      sql.append(" FROM xhj_lpfanghao t1 LEFT JOIN xhj_housesource t2 ON t1.id = t2.HouseNumberID LEFT JOIN xhj_housesourceforsaling t3 ON t2.id = t3.HouseSourceID where 1=1 ");
+
+      sql.append(" and t1.id = " + houseNo);
+      sql.append(" union all ");
+      sql.append(" SELECT t1.*,t3.CreateDate,");
+      sql.append(" (SELECT qy_name FROM xhj_jcstress WHERE id = t2.StressID) AS qyName,");
+      sql.append(" (SELECT sq_name FROM xhj_jcsq WHERE id = t2.sqid) AS sqName,");
+      sql.append(" (SELECT lpd_name FROM xhj_lpdong WHERE id = t1.buildingid) AS buildingName,");
+      sql.append(" (SELECT dy_name FROM xhj_lpdanyuan WHERE id = t1.DYID) AS dyName,");
+      sql.append(" (SELECT fullname FROM tbl_user_profile WHERE id = t3.creatorid) AS fullname,");
+      sql.append(" (SELECT department_name FROM tbl_department d WHERE d.id = t3.createdepartmentid) AS department_name,");
+
+      sql.append(" (SELECT NAME FROM xhj_syscs_1 WHERE sid = 11 AND id = t3.usages) AS useagename, '出租' AS type");
+      sql.append(" FROM xhj_lpfanghao t1 LEFT JOIN xhj_housesource t2 ON t1.id = t2.HouseNumberID LEFT JOIN XHJ_HouseInfoForRenting t3 ON t2.id = t3.HouseSourceID where 1 = 1 ");
+
+      sql.append(" and t1.id = " + houseNo);
+      System.out.println(sql.toString());
+      houseList = this.daoHelper.getList(sql.toString());
+      if (houseList.size() > 0) {
+        house = (Map)houseList.get(0);
+      }
+
+      super.setRequestAttribute("result", house);
+      super.forwardTo("/pages/jinggeng/houseDetail.jsp");
+    }
+  }
+
+  @POST
+  @Produces({"application/json", "application/xml"})
+  @Consumes({"application/json", "application/xml"})
+  @Path("/queryOwnerInfo")
+  public Response queryOwerInfo(RequestParameter requestParameter)
+  {
+    List ownerList = new ArrayList();
+    Integer ownerId = requestParameter.getCreatorId();
+    String sql = "select * from xhj_personinfo where id = " + ownerId;
+    System.out.println(sql);
+    ownerList = this.daoHelper.getList(sql);
+    return Response.ok().entity(ownerList).build();
+  }
+
+  @POST
+  @Produces({"application/json", "application/xml"})
+  @Consumes({"application/json", "application/xml"})
+  @Path("/queryPreciseRecordForList")
+  public Response queryPreciseRecordForList(RequestParameter requestParameter)
+  {
+    List preciseRecordList = new ArrayList();
+    Integer fhId = requestParameter.getFhId();
+    String sql = "select * from lpjg_precise_update_record where fhid = '" + fhId + "'";
+    System.out.println(sql);
+    preciseRecordList = this.daoHelper.getList(sql);
+    return Response.ok().entity(preciseRecordList).build();
+  }
+
+  @POST
+  @Produces({"application/json", "application/xml"})
+  @Consumes({"application/json", "application/xml"})
+  @Path("/queryOperationRecordForList")
+  public Response queryOperationRecordForList(RequestParameter requestParameter)
+  {
+    List operationRecordList = new ArrayList();
+    Integer fhId = requestParameter.getFhId();
+    String sql = "select * from lpjg_assignment_room where fhid = '" + fhId + "'";
+    System.out.println(sql);
+    operationRecordList = this.daoHelper.getList(sql);
+    return Response.ok().entity(operationRecordList).build();
+  }
+}

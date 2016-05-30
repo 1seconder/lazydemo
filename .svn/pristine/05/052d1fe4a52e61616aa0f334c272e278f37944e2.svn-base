@@ -1,0 +1,67 @@
+
+$(function(){
+	getSyscsParamByName2("房屋用途","yongtu1");
+	getSyscsParamByName2("房屋用途","yongtu2");
+	getSyscsParamByName2("房屋用途","yongtu3");
+	getSyscsParamByName2("房屋用途","yongtu4");
+
+//	queryBM("dianzu");
+//	querySCLp();
+});
+
+function condition()
+{
+	
+}
+
+
+function fangyuan(fangyuanType)
+{
+//	var fangyuanType = $("#yongtu1").val();
+	var paramMethod = "";
+	var houseType = 1;
+	if(fangyuanType == 41)		//zhuzai
+	{
+		paramMethod = houseType==1?"toRentResidence":"toSaleResidence";
+//		toRentResidence
+	}else	if(fangyuanType == 42) //xiezilou
+	{
+		paramMethod = houseType==1?"toRentOffice":"toSaleOffice";
+		//toRentOffice
+//		$("#fangyuango").attr("href","javascript:parent.refreshTab('房源详情','"+BMS_URL+"/BMS/pages/house/toSaleOffice.action')");
+		
+	}else	if(fangyuanType == 43)//shangpu
+	{
+		paramMethod = houseType==1?"toRentShop":"toSaleShop";
+		//toRentShop
+//		$("#fangyuango").attr("href","javascript:parent.refreshTab('房源详情','"+BMS_URL+"/BMS/pages/house/toSaleShop.action')");
+		
+	}else	if(fangyuanType == 44)//biesu
+	{
+		paramMethod = houseType==1?"toRentVilla":"toSaleVilla";
+		//toRentVilla
+//		$("#fangyuango").attr("href","javascript:parent.refreshTab('房源详情','"+BMS_URL+"/BMS/pages/house/toSaleVilla.action')");
+		
+	}else	if(fangyuanType == 762)//公寓
+	{
+		$("#fangyuango").attr("href","javascript:alert('暂无公寓,敬请期待！')");
+		
+	}else	if(fangyuanType == 763)//车库
+	{		
+		$("#fangyuango").attr("href","javascript:alert('暂无车库,敬请期待！')");
+	}else	if(fangyuanType == 764)//qita
+	{
+		$("#fangyuango").attr("href","javascript:alert('暂无其他,敬请期待！')");
+	}else	if(fangyuanType == 1399)//高端住宅
+	{
+		paramMethod = houseType==1?"toHighEndRentResidence":"toHighEndSaleResidence";
+		//toHighEndRentResidence
+//		$("#fangyuango").attr("href","javascript:parent.refreshTab('房源详情','/BMS/pages/house/toHighEndSaleResidence.action')");
+	}
+	
+	var url = BMS_URL+paramMethod+".action";
+	$("#fangyuango").attr("href","javascript:parent.refreshTab('房源详情','"+url+"')");
+//	$("#fangyuango").trigger("click");
+//	$("#fangyuango").click();
+}
+	

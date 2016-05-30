@@ -1,0 +1,22 @@
+package com.newenv.communityFocus.jinggeng.dao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.newenv.communityFocus.base.BaseService;
+import com.newenv.communityFocus.dao.DaoHelper;
+import com.newenv.communityFocus.security.dao.UserDao;
+/**
+ * @author chen. helix
+ *@date 2016.03.15
+ *楼盘精耕dao
+ */
+@Component
+public class TraceDao extends BaseService{
+	
+	@Autowired
+	private DaoHelper daoHelper;
+	@Autowired
+	private UserDao userDao;
+	
+}

@@ -1,0 +1,48 @@
+<!-- ---
+layout: default
+title: 视图
+slug: views
+lead: "常用视图."
+base_url: "./"
+--- -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZUI - 开源HTML5跨屏框架</title>
+
+  <link href="css/zui.min.css" rel="stylesheet">
+  <script src="../dist/lib/jquery/jquery.js"></script>
+  <script src="js/zui.js"></script>
+
+</head>
+<body bgcolor="#FFFFFF">
+<div style="width:900px; margin:0 auto; border:1px solid #F00">
+ <table class="table datatables" width="80%">
+  <thead>
+    <tr>
+      <th>th1</th>
+      <th>th2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>1111111111</td><td>222222222222</td></tr>
+    <tr><td>1111111112</td><td>222222222223</td></tr>
+	<tr><td>1111111113</td><td>222222222224</td></tr>
+  </tbody>
+</table>
+</div>
+
+  <script>  
+  $(function(){
+ 	$('.datatables').datatable({
+		checkable: true,
+		 sortable: true,
+		 sortable: true
+		});
+  });
+  </script>
+</body>
+</html>

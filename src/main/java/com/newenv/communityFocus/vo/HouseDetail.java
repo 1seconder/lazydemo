@@ -1,0 +1,456 @@
+package com.newenv.communityFocus.vo;
+
+import java.util.List;
+
+public class HouseDetail {
+	// 显示列表字段
+	private String housetype;// 租或售
+	private String number;// 房源编号
+	private String lpid;// 楼盘ID
+	private String toiletNumber;// 卫
+	private String buildingSize;// 建筑面积
+	private String useage;// 用途
+	private String useageName;// 用途
+	private String rentOrSoleId;// 租房表ID
+	private String houseSourceId;// 房源表ID
+	private String roomNumber;// 室
+	private String hallNumber;// 厅
+	private String lpname;// 楼盘名称
+	private String ceng;// 第几层
+	private String totalFloor;// 总层数
+	private String orientationName;// 朝向名称
+	private String totalPrice;// 总价
+	private String depname;// 部门名称
+	private String fullname;// 经纪人名称
+	private String createDate;// 创建时间
+	private String checkDate;// 审核时间
+	private String price;// 单价
+	private String showCount;// 带看次数
+	private String updateCount;// 跟进次数
+	private String ckeyId;// 钥匙
+	private String csoleId;// 独家
+	private String cfkId;// 房堪
+	private String cdecorate;// 装修类别
+	private String imgpath;// 图片路径
+	private String isEncryption;// 1 加密 A盘 2不加密 B 盘
+	private String decorationStandard;// 装修类型
+	private List<String> imgpaths;// 图片路径
+	private String htype;
+	private String houseSourceStatus;// 状态0无效 1 有效 2定金 3签约 4锁定
+	private String fanghao;// 房号
+	private String belongId; // 归属人id
+	private String departmentId; // 归属部门
+	private String isWarning = "0"; // 是否处于跟进告警状态
+	private String focusType = "0"; // 0 不聚焦 1店组聚焦 2总监区聚焦 3联盟聚焦
+	private String focusDepartmentId = ""; // 聚焦的部门ID
+	private String focusId = "";
+	private String propertyAddress;
+	private String lcfz = "0"; // 楼盘所属关系：1-责任盘,2-维护盘,3-范围盘
+
+	private String phone;
+
+	// 额外信息
+	private String extInfo1;
+	private String extInfo2;
+
+	// 装修标准名称
+	private String decorationStandardName;
+
+	public String getHousetype() {
+		return housetype;
+	}
+
+	public void setHousetype(String housetype) {
+		this.housetype = housetype;
+	}
+
+	public String getNumber() {
+		return number;
+	}
+
+	public void setNumber(String number) {
+		this.number = number;
+	}
+
+	public String getLpid() {
+		return lpid;
+	}
+
+	public void setLpid(String lpid) {
+		this.lpid = lpid;
+	}
+
+	public String getToiletNumber() {
+		return toiletNumber;
+	}
+
+	public void setToiletNumber(String toiletNumber) {
+		this.toiletNumber = toiletNumber;
+	}
+
+	public String getBuildingSize() {
+		return buildingSize;
+	}
+
+	public void setBuildingSize(String buildingSize) {
+		this.buildingSize = buildingSize;
+	}
+
+	public String getUseage() {
+		return useage;
+	}
+
+	public void setUseage(String useage) {
+		this.useage = useage;
+	}
+
+	public String getUseageName() {
+		return useageName;
+	}
+
+	public void setUseageName(String useageName) {
+		this.useageName = useageName;
+	}
+
+	public String getRentOrSoleId() {
+		return rentOrSoleId;
+	}
+
+	public void setRentOrSoleId(String rentOrSoleId) {
+		this.rentOrSoleId = rentOrSoleId;
+	}
+
+	public String getHouseSourceId() {
+		return houseSourceId;
+	}
+
+	public void setHouseSourceId(String houseSourceId) {
+		this.houseSourceId = houseSourceId;
+	}
+
+	public String getRoomNumber() {
+		return roomNumber;
+	}
+
+	public void setRoomNumber(String roomNumber) {
+		this.roomNumber = roomNumber;
+	}
+
+	public String getHallNumber() {
+		return hallNumber;
+	}
+
+	public void setHallNumber(String hallNumber) {
+		this.hallNumber = hallNumber;
+	}
+
+	public String getLpname() {
+		return lpname;
+	}
+
+	public void setLpname(String lpname) {
+		this.lpname = lpname;
+	}
+
+	public String getCeng() {
+		return ceng;
+	}
+
+	public void setCeng(String ceng) {
+		this.ceng = ceng;
+	}
+
+	public String getTotalFloor() {
+		return totalFloor;
+	}
+
+	public void setTotalFloor(String totalFloor) {
+		this.totalFloor = totalFloor;
+	}
+
+	public String getOrientationName() {
+		return orientationName;
+	}
+
+	public void setOrientationName(String orientationName) {
+		this.orientationName = orientationName;
+	}
+
+	public String getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(String totalPrice) {
+		this.totalPrice = totalPrice;
+	}
+
+	public String getDepname() {
+		return depname;
+	}
+
+	public void setDepname(String depname) {
+		this.depname = depname;
+	}
+
+	public String getFullname() {
+		return fullname;
+	}
+
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
+	}
+
+	public String getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(String createDate) {
+		this.createDate = createDate;
+	}
+
+	public String getCheckDate() {
+		return checkDate;
+	}
+
+	public void setCheckDate(String checkDate) {
+		this.checkDate = checkDate;
+	}
+
+	public String getPrice() {
+		return price;
+	}
+
+	public void setPrice(String price) {
+		this.price = price;
+	}
+
+	public String getShowCount() {
+		return showCount;
+	}
+
+	public void setShowCount(String showCount) {
+		this.showCount = showCount;
+	}
+
+	public String getUpdateCount() {
+		return updateCount;
+	}
+
+	public void setUpdateCount(String updateCount) {
+		this.updateCount = updateCount;
+	}
+
+	public String getCkeyId() {
+		return ckeyId;
+	}
+
+	public void setCkeyId(String ckeyId) {
+		this.ckeyId = ckeyId;
+	}
+
+	public String getCsoleId() {
+		return csoleId;
+	}
+
+	public void setCsoleId(String csoleId) {
+		this.csoleId = csoleId;
+	}
+
+	public String getCdecorate() {
+		return cdecorate;
+	}
+
+	public void setCdecorate(String cdecorate) {
+		this.cdecorate = cdecorate;
+	}
+
+	public String getImgpath() {
+		return imgpath;
+	}
+
+	public void setImgpath(String imgpath) {
+		this.imgpath = imgpath;
+	}
+
+	public String getIsEncryption() {
+		return isEncryption;
+	}
+
+	public void setIsEncryption(String isEncryption) {
+		this.isEncryption = isEncryption;
+	}
+
+	public String getCfkId() {
+		return cfkId;
+	}
+
+	public void setCfkId(String cfkId) {
+		this.cfkId = cfkId;
+	}
+
+	public String getDecorationStandard() {
+		return decorationStandard;
+	}
+
+	public void setDecorationStandard(String decorationStandard) {
+		this.decorationStandard = decorationStandard;
+	}
+
+	public List<String> getImgpaths() {
+		return imgpaths;
+	}
+
+	public void setImgpaths(List<String> imgpaths) {
+		this.imgpaths = imgpaths;
+	}
+
+	public String getHtype() {
+		return htype;
+	}
+
+	public void setHtype(String htype) {
+		this.htype = htype;
+	}
+
+	public String getHouseSourceStatus() {
+		return houseSourceStatus;
+	}
+
+	public void setHouseSourceStatus(String houseSourceStatus) {
+		this.houseSourceStatus = houseSourceStatus;
+	}
+
+	public String getFanghao() {
+		return fanghao;
+	}
+
+	public void setFanghao(String fanghao) {
+		this.fanghao = fanghao;
+	}
+
+	public String getBelongId() {
+		return belongId;
+	}
+
+	public void setBelongId(String belongId) {
+		this.belongId = belongId;
+	}
+
+	public String getIsWarning() {
+		return isWarning;
+	}
+
+	public void setIsWarning(String isWarning) {
+		this.isWarning = isWarning;
+	}
+
+	public String getFocusType() {
+		return focusType;
+	}
+
+	public void setFocusType(String focusType) {
+		this.focusType = focusType;
+	}
+
+	public String getFocusDepartmentId() {
+		return focusDepartmentId;
+	}
+
+	public void setFocusDepartmentId(String focusDepartmentId) {
+		this.focusDepartmentId = focusDepartmentId;
+	}
+
+	public String getFocusId() {
+		return focusId;
+	}
+
+	public void setFocusId(String focusId) {
+		this.focusId = focusId;
+	}
+
+	public String getLcfz() {
+		return lcfz;
+	}
+
+	public void setLcfz(String lcfz) {
+		this.lcfz = lcfz;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getExtInfo1() {
+		return extInfo1;
+	}
+
+	public void setExtInfo1(String extInfo1) {
+		this.extInfo1 = extInfo1;
+	}
+
+	public String getExtInfo2() {
+		return extInfo2;
+	}
+
+	public void setExtInfo2(String extInfo2) {
+		this.extInfo2 = extInfo2;
+	}
+
+
+	public String toJSON() {
+		return new StringBuffer("{\"houseSourceId\":\"").append(this.houseSourceId).append("\",")
+				.append("\"housetype\":\"").append(this.housetype).append("\",").append("\"saleOrRentId\":\"")
+				.append(this.rentOrSoleId).append("\",").append("\"isEncryption\":\"").append(this.isEncryption)
+				.append("\",").append("\"number\":\"").append(this.number).append("\",").append("\"lpname\":\"")
+				.append(this.lpname).append("\",").append("\"imgpath\":\"").append(this.imgpath).append("\",")
+				.append("\"useageName\":\"").append(this.useageName).append("\",").append("\"ceng\":\"")
+				.append(this.ceng).append("\",").append("\"totalFloor\":\"").append(this.totalFloor).append("\",")
+				.append("\"orientationName\":\"").append(this.orientationName).append("\",").append("\"roomNumber\":\"")
+				.append(this.roomNumber).append("\",").append("\"hallNumber\":\"").append(this.hallNumber).append("\",")
+				.append("\"buildingSize\":\"").append(this.buildingSize).append("\",").append("\"depname\":\"")
+				.append(this.depname).append("\",").append("\"fullname\":\"").append(this.fullname).append("\",")
+				.append("\"createDate\":\"").append(this.createDate).append("\",").append("\"checkDate\":\"")
+				.append(this.checkDate).append("\",").append("\"decorationStandard\":\"")
+				.append(this.decorationStandard == null ? "" : this.decorationStandard).append("\",")
+				.append("\"csoleId\":\"").append(this.csoleId == null ? "" : this.csoleId).append("\",")
+				.append("\"ckeyId\":\"").append(this.ckeyId == null ? "" : this.ckeyId).append("\",")
+				.append("\"totalPrice\":\"").append(this.totalPrice).append("\",").append("\"price\":\"")
+				.append(this.price).append("\",").append("\"showCount\":\"").append(this.showCount).append("\",")
+				.append("\"updateCount\":\"").append(this.updateCount).append("\",").append("\"houseSourceStatus\":\"")
+				.append(this.houseSourceStatus).append("\",").append("\"isWarning\":\"").append(this.isWarning)
+				.append("\",").append("\"focusType\":\"").append(this.focusType).append("\",")
+				.append("\"focusDepartmentId\":\"").append(this.focusDepartmentId).append("\",")
+				.append("\"focusId\":\"").append(this.focusId).append("\",").append("\"phone\":\"").append(this.phone)
+				.append("\",").append("\"lcfz\":\"").append(this.lcfz).append("\",").append("\"extInfo1\":\"")
+				.append(this.extInfo1).append("\",").append("\"extInfo2\":\"").append(this.extInfo2).append("\"")
+				.append("}").toString();
+	}
+
+	public String getDepartmentId() {
+		return departmentId;
+	}
+
+	public void setDepartmentId(String departmentId) {
+		this.departmentId = departmentId;
+	}
+
+	public String getPropertyAddress() {
+		return propertyAddress;
+	}
+
+	public void setPropertyAddress(String propertyAddress) {
+		this.propertyAddress = propertyAddress;
+	}
+
+	public String getDecorationStandardName() {
+		return decorationStandardName;
+	}
+
+	public void setDecorationStandardName(String decorationStandardName) {
+		this.decorationStandardName = decorationStandardName;
+	}
+}

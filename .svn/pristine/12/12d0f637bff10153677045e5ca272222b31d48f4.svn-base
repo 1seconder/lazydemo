@@ -1,0 +1,84 @@
+package com.newenv.communityFocus.domain;
+
+/**
+ *
+ */
+public class SqAssignStatistic {
+	
+	public int m_JjrSum ; //总经纪人数
+	public String m_notAssignJjrSum ; //未被指派的
+	public String m_notAssignJjr ; //未被指派的
+	
+	public int m_FjSum ; //总房间数
+	public long m_notAssignLpSum ;
+	public long m_notAssignLdSum ;
+	public long m_notAssignFjSum ; ///未被指派的房间数
+	public long m_notAssignDySum ;
+	public String m_notAssignFj ;
+	private String m_operTime;//操作时间
+	
+	
+	public int getM_JjrSum() {
+		return m_JjrSum;
+	}
+	public void setM_JjrSum(int m_JjrSum) {
+		this.m_JjrSum = m_JjrSum;
+	}
+	public String getM_notAssignJjrSum() {
+		return m_notAssignJjrSum;
+	}
+	public void setM_notAssignJjrSum(String m_notAssignJjrSum) {
+		this.m_notAssignJjrSum = m_notAssignJjrSum;
+	}
+	public String getM_notAssignJjr() {
+		return m_notAssignJjr;
+	}
+	public void setM_notAssignJjr(String m_notAssignJjr) {
+		this.m_notAssignJjr = m_notAssignJjr;
+	}
+	public int getM_FjSum() {
+		return m_FjSum;
+	}
+	public void setM_FjSum(int m_FjSum) {
+		this.m_FjSum = m_FjSum;
+	}
+	public long getM_notAssignLpSum() {
+		return m_notAssignLpSum;
+	}
+	public void setM_notAssignLpSum(long m_notAssignLpSum) {
+		this.m_notAssignLpSum = m_notAssignLpSum;
+	}
+	public long getM_notAssignLdSum() {
+		return m_notAssignLdSum;
+	}
+	public void setM_notAssignLdSum(long m_notAssignLdSum) {
+		this.m_notAssignLdSum = m_notAssignLdSum;
+	}
+	public long getM_notAssignFjSum() {
+		return m_notAssignFjSum;
+	}
+	public void setM_notAssignFjSum(long m_notAssignFjSum) {
+		this.m_notAssignFjSum = m_notAssignFjSum;
+	}
+	public long getM_notAssignDySum() {
+		return m_notAssignDySum;
+	}
+	public void setM_notAssignDySum(long m_notAssignDySum) {
+		this.m_notAssignDySum = m_notAssignDySum;
+	}
+	public String getM_notAssignFj() {
+		return m_notAssignFj;
+	}
+	public void setM_notAssignFj(String m_notAssignFj) {
+		this.m_notAssignFj = m_notAssignFj;
+	}
+	public String getM_operTime() {
+		return m_operTime;
+	}
+	public void setM_operTime(String m_operTime) {
+		this.m_operTime = m_operTime;
+	}
+	
+	
+	
+}

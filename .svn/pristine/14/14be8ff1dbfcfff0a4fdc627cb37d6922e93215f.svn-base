@@ -1,0 +1,69 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page isELIgnored="false"%>
+<%-- <%@page import="com.newenv.lpzd.security.service.SecurityUserHolder,com.newenv.lpzd.security.domain.UserLogin"%> --%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path;
+// UserLogin userLogin = SecurityUserHolder.getCurrentUserLogin();
+%>
+			<div class="sidebar-menu toggle-others fixed">
+				<div class="sidebar-menu-inner">
+					<header class="logo-env">
+						logo
+						<div class="logo">
+							<a href="index.html" class="logo-expanded">
+								<img src="<%=basePath%>/assets/images/logo@2x.png" width="80" alt="">
+							</a>
+							<a href="index.html" class="logo-collapsed">
+								<img src="<%=basePath%>/assets/images/logo-collapsed@2x.png" width="40" alt="">
+							</a>
+						</div>
+<!-- 						This will toggle the mobile menu and will be visible only on mobile devices -->
+						<div class="mobile-menu-toggle visible-xs">
+							<a href="#" data-toggle="user-info-menu">
+								<i class="fa-bell-o"></i>
+								<span class="badge badge-success">7</span>
+							</a>
+							<a href="#" data-toggle="mobile-menu">
+								<i class="fa-bars"></i>
+							</a>
+						</div>
+					</header>
+					<ul id="main-menu" class="main-menu">
+<!-- 						add class "multiple-expanded" to allow multiple submenus to open -->
+<!-- 						class "auto-inherit-active-class" will automatically add "active" class for parent elements who are marked already with class "active" -->
+						<li>
+							<a href="../首页.html">
+								<i class="el-home"></i>
+								<span class="title">首页</span>
+							</a>
+						</li>
+						<li class="active opened">
+							<a href="#">
+								<i class="linecons-cog"></i>
+								<span class="title">分派</span>
+							</a>
+							<ul>
+								<li class="active opened">
+									<a href="http://localhost:8080/communityFocus/services/assignService/fenpai/1">
+										<span class="title">分派（组队盘，人对户）</span>
+									</a>
+								</li>
+								<li>
+									<a href="http://localhost:8080/communityFocus/services/assignService/fenpai/2">
+										<span class="title">分派（主营盘）</span>
+									</a>
+								</li>
+								<li>
+									<a href="http://localhost:8080/communityFocus/services/assignResponsiblePersonService/queryCustomByPage">
+										<span class="title">分派（责任盘）</span>
+									</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+	<script type="text/javascript">
+
+	</script>

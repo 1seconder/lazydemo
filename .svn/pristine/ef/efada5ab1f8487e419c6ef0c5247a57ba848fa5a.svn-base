@@ -1,0 +1,661 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
+<%
+	String path = request.getContextPath(); 
+	String basePath = "http://192.168.3.102:8084/communityFocus";
+%>
+	<div class="panel" id="jc_yezujinli" style="display: none;">
+												<div class="panel-default">
+													<div class="row">
+														<div class="panel  panel-gray dujia_sc_hearder">
+															<div class="panel-heading  padd_hearde">
+																基本信息
+															</div>
+															<div class="panel-body">
+																<div class="row col-lg-12 col-md-12 col-xs-12 col-sm-12">
+																	<div class="col-md-6 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon red">业主姓名：</span>
+																				<input type="text" class="form-control" />
+																				<span class="input-group-addon" style="padding: 0;"></span>
+																				<select class="form-control" style="width: 100px;">
+																					<option>请选择</option>
+																					<option>男士</option>
+																					<option>女士</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-6 col-sm-12">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon red">联系电话：</span>
+																				<input type="text" class="form-control" />
+																				<span class="input-group-addon" style="padding: 0;"></span>
+																				<select class="form-control" style="width: 80px;">
+																					<option>请选择</option>
+															                        <option>本人</option>
+															                        <option>父母</option>
+															                        <option>授权委托人</option>
+															                        <option>配偶</option>
+															                        <option>亲戚</option>
+															                        <option>朋友</option>
+																				</select>
+																				<span class="input-group-addon"><i class="fa-plus"></i></span>
+																				<span class="input-group-addon"><i class="fa-plus"></i></span>
+																			</div>
+																			<p class="help-block red">系统查询到该联系方式下有3位经纪人维护查询</p>
+																		</div>
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon red">联系电话：</span>
+																				<input type="text" class="form-control" />
+																				<span class="input-group-addon" style="padding: 0;"></span>
+																				<select class="form-control" style="width: 80px;">
+																					<option>请选择</option>
+															                        <option>本人</option>
+															                        <option>父母</option>
+															                        <option>授权委托人</option>
+															                        <option>配偶</option>
+															                        <option>亲戚</option>
+															                        <option>朋友</option>
+																				</select>
+																				<span class="input-group-addon"><i class="fa-plus"></i></span>
+																				<span class="input-group-addon"><i class="fa-plus"></i></span>
+																			</div>
+																			<p class="help-block red">系统查询到该联系方式下有3位经纪人维护查询</p>
+																		</div>
+																	</div>
+																	<!--<div class="col-md-6 col-sm-12">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<input type="text" class="form-control" />
+																				<span class="input-group-addon" style="padding: 0;"></span>
+																				<select class="form-control" style="width: 80px;">
+																					<option>请选择</option>
+															                        <option>本人</option>
+															                        <option>父母</option>
+															                        <option>授权委托人</option>
+															                        <option>配偶</option>
+															                        <option>亲戚</option>
+															                        <option>朋友</option>
+																				</select>
+																				<span class="input-group-addon"><i class="fa-plus"></i></span>
+																				<span class="input-group-addon"><i class="fa-remove"></i></span>
+																			</div>
+																			<p class="help-block red">系统查询到该联系方式下有3位经纪人维护查询</p>
+																		</div>
+																	</div>-->
+																	<div class="col-md-6 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon red">居住地址：</span>
+																				<input class="form-control" type="text">
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-6 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon red">房产地址：</span>
+																				<input class="form-control" type="text">
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon red">客户等级：</span>
+																				<select class="form-control">
+																					<option>栋座</option>
+																					<option>栋座</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon red">用途：</span>
+																				<select class="form-control">
+																					<option>栋座</option>
+																					<option>栋座</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">装修情况：</span>
+																				<select class="form-control">
+																					<option>栋座</option>
+																					<option>栋座</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-12 col-sm-12">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon red">户型：</span>
+																				<select class="form-control">
+																					<option>1室</option>
+																				</select>
+																				<span class="input-group-addon">-</span>
+																				<select class="form-control">
+																					<option>1厅</option>
+																				</select>
+																				<span class="input-group-addon">-</span>
+																				<select class="form-control">
+																					<option>1厨</option>
+																				</select>
+																				<span class="input-group-addon">-</span>
+																				<select class="form-control">
+																					<option>1卫</option>
+																				</select>
+																				<span class="input-group-addon">-</span>
+																				<select class="form-control">
+																					<option>1阳台</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-6 col-sm-12">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon red">预算（元）：</span>
+																				<input type="text" class="form-control">
+																				<span class="input-group-addon">-</span>
+																				<input type="text" class="form-control">
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-6 col-sm-12">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon red">面积：</span>
+																				<input type="text" class="form-control">
+																				<span class="input-group-addon">-</span>
+																				<input type="text" class="form-control">
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-6 col-sm-12">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon red">楼层：</span>
+																				<input type="text" class="form-control">
+																				<span class="input-group-addon">-</span>
+																				<input type="text" class="form-control">
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-6 col-sm-12">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon red">楼龄：</span>
+																				<input type="text" class="form-control">
+																				<span class="input-group-addon">-</span>
+																				<input type="text" class="form-control">
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon red">租期（月）：</span>
+																				<input type="text" class="form-control" />
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">类型：</span>
+																				<select class="form-control">
+																					<option>栋座</option>
+																					<option>栋座</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-6 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon red">需求委托：</span>
+																				<select class="form-control">
+																					<option>出租</option>
+																				</select>
+																				<span class="input-group-addon">-</span>
+																				<select class="form-control">
+																					<option>普租</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-6 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon red">委托来源：</span>
+																				<select class="form-control">
+																					<option>店面开发</option>
+																				</select>
+																				<span class="input-group-addon">-</span>
+																				<select class="form-control">
+																					<option>精耕</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-2 col-sm-3 pull-right">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">付：</span>
+																				<input type="text" class="form-control" />
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-2 col-sm-3 pull-right">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">押：</span>
+																				<input type="text" class="form-control" />
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6 pull-right">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">付款方式：</span>
+																				<select class="form-control">
+																					<option>栋座</option>
+																					<option>栋座</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="clearfix"></div>
+																</div>
+															</div>
+														</div>
+													</div>
+													<div class="clearfix"></div>
+												</div>
+												<div class="panel-default">
+													<div class="row">
+														<div class="panel  panel-gray dujia_sc_hearder">
+															<div class="panel-heading  padd_hearde">
+																其他信息
+															</div>
+															<div class="panel-body">
+																<div class="row col-lg-12 col-md-12 col-xs-12 col-sm-12">
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">QQ：</span>
+																				<input type="text" class="form-control" />
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">微信：</span>
+																				<input type="text" class="form-control" />
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">电子信箱：</span>
+																				<input type="text" class="form-control" />
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">工作单位：</span>
+																				<input type="text" class="form-control" />
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">教育程度：</span>
+																				<select class="form-control">
+																					<option>栋座</option>
+																					<option>栋座</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">出生日期：</span>
+																				<input type="text" class="form-control form_date" />
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">消费观念：</span>
+																				<select class="form-control">
+																					<option>栋座</option>
+																					<option>栋座</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">单位地址：</span>
+																				<input type="text" class="form-control" />
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">身份证：</span>
+																				<input type="text" class="form-control" />
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">现家庭地址：</span>
+																				<input type="text" class="form-control" />
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">国籍：</span>
+																				<select class="form-control">
+																					<option>栋座</option>
+																					<option>栋座</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">工作性质：</span>
+																				<select class="form-control">
+																					<option>栋座</option>
+																					<option>栋座</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">现有房产套数：</span>
+																				<input type="text" class="form-control" />
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-4">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">居住人口：</span>
+																				<input type="text" class="form-control" />
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-4">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">紧迫感：</span>
+																				<select class="form-control">
+																					<option>栋座</option>
+																					<option>栋座</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-4">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">入住时间：</span>
+																				<input type="text" class="form-control form-input form_date" />
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-4">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">车位：</span>
+																				<select class="form-control">
+																					<option>栋座</option>
+																					<option>栋座</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-4">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">是否集团客户：</span>
+																				<select class="form-control">
+																					<option>栋座</option>
+																					<option>栋座</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-4">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">期限：</span>
+																				<select class="form-control">
+																					<option>栋座</option>
+																					<option>栋座</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-12 col-sm-12">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">备注：</span>
+																				<textarea class="form-control"></textarea>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-12 col-sm-12">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="">小区熟悉程度：</span>
+																				<p class="">
+																					<label class="radio-inline">
+																						<input type="radio" name="radio-2" checked="">
+																						熟悉商圈小区
+																					</label>
+																					<label class="radio-inline">
+																						<input type="radio" name="radio-2">
+																						多次看房，熟悉商圈小区
+																					</label>
+																					<label class="radio-inline">
+																						<input type="radio" name="radio-2">
+																						不熟悉商圈小区
+																					</label>
+																				</p>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-12 col-sm-12">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="">周边配套需求：</span>
+																				<p class="">
+																					<label >
+																						<input type="checkbox" style="padding-left: 0px;" name="radio-2" checked="">
+																						医院
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						公园
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						超市
+																					</label>
+																					<label>
+																						<input type="checkbox" name="radio-2">
+																						地铁
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						银行
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						学校
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						商业街
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						其他
+																					</label>
+																				</p>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-12 col-sm-12">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="">家具：</span>
+																				<p class="">
+																					<label >
+																						<input type="checkbox" style="padding-left: 0px;" name="radio-2" checked="">
+																						全选
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						床
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						衣柜
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						书桌
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						餐桌
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						椅子
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						床垫
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						茶几
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						其他
+																					</label>
+																				</p>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-12 col-sm-12">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="">家电：</span>
+																				<p class="">
+																					<label >
+																						<input type="checkbox" style="padding-left: 0px;" name="radio-2" checked="">
+																						全选
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						冰箱
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						洗衣机
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						电磁炉
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						消毒柜
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						电脑
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						空调
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						DVD
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						电视机
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						微波炉
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						热水器
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						饮水机
+																					</label>
+																					<label>
+																						<input type="checkbox" name="radio-2">
+																						电话
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						音响
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																					         其他
+																					</label>
+																				</p>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="clearfix"></div>
+																</div>
+															</div>
+														</div>
+													</div>
+													<div class="clearfix"></div>
+												</div>
+											</div>

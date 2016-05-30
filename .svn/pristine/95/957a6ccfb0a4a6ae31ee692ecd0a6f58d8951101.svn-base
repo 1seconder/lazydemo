@@ -1,0 +1,132 @@
+
+$(function(){
+	getSyscsParamByName2("房屋用途","yongtu1");
+//	getSyscsParamByName2("房屋用途","yongtu2");
+//	getSyscsParamByName2("房屋用途","yongtu3");
+//	getSyscsParamByName2("房屋用途","yongtu4");
+
+//	queryBM("dianzu");
+//	querySCLp();
+});
+
+function condition()
+{
+	
+}
+
+function isExist(method)
+{
+	var fanghao = "";
+	var url = basepath + "/services/traceServices/"+isWeiTuoFangyuan+"/"+fanghao
+	$.ajax({ 
+		url:url ,
+		dataType: "json", 
+		type: "GET",
+//			async : false,
+		data : {"name" : name},
+		success: function(data){
+			if(null != data && data.length>0)
+			{
+				//$("#" + buildDIV).html(cHtml);
+			}
+	    }
+});
+
+}
+
+
+function fangyuan(fangyuanType)
+{
+	if(houseType==0)
+	{
+		alert("请选择租售类型.");
+		return;
+	}
+	
+	if(fangyuanType==0)
+	{
+		alert("请继续选择房屋用途.");
+		$("#fangyuango2").attr("src","");
+		$("#fangyuango2").css("display","none");
+		$("#weituofanyuan").hide();
+		return;
+	}
+	$("#weituofanyuan").show();
+	$("#fangyuango2").attr("src","");
+//	var fangyuanType = $("#yongtu1").val();
+	var paramMethod = "";
+	var url ="";
+	var js = "";
+	houseType=$("#fangyuanxuqiu").val();
+	if(fangyuanType == 41)		//zhuzai
+	{
+		paramMethod = houseType==2?"toRentResidence":"toSaleResidence";
+		menuName =houseType==2?"住宅租房":"住宅售房";
+	}else	if(fangyuanType == 42) //xiezilou
+	{
+		paramMethod = houseType==2?"toRentOffice":"toSaleOffice";
+		menuName =houseType==2?"写字楼租":"写字楼售";
+	}else	if(fangyuanType == 43)//shangpu
+	{
+		paramMethod = houseType==2?"toRentShop":"toSaleShop";
+		menuName =houseType==2?"商铺租":"商铺售";
+	}else	if(fangyuanType == 44)//biesu
+	{
+		paramMethod = houseType==2?"toRentVilla":"toSaleVilla";
+		menuName =houseType==2?"别墅租":"别墅售";
+	}else	if(fangyuanType == 1399)//高端住宅
+	{
+		paramMethod = houseType==2?"toHighEndRentResidence":"toHighEndSaleResidence";
+		menuName =houseType==2?"高端住宅租":"高端住宅售";
+	}
+	
+	
+	if(fangyuanType == 762)//公寓
+	{
+		
+		alert('暂无公寓,敬请期待！');
+		return;
+		//url = js;
+	}else	if(fangyuanType == 763)//车库
+	{		
+		alert('暂无车库,敬请期待！');
+		return;
+		//url = js;
+	}else	if(fangyuanType == 764)//qita
+	{
+		alert('暂无其他,敬请期待！');
+		return;
+		//url = js;
+	}
+	
+	if(paramMethod!="")
+	{
+		url = BMS_URL+paramMethod+".action?form=1";
+		//js = "parent.refreshTab('"+menuName+"','"+url+"')";
+		$("#fangyuango2").attr("src",url);
+		$("#fangyuango2").parent().css("display","block");
+		
+		$("#fangyuango").click(function(){
+			$("#fangyuango2").css("display","block");
+			
+//		var iframes = document.getElementById('fangyuango2').contentWindow.postMessage("content from a.html", "http://192.168.1.207:8888");
+//		alert(iframes);
+//		var gle =  iframes.document.getElementById("gle");
+//		alert(gle);
+		});
+	}
+//	commonHouse(js);
+}
+
+
+function commonHouse(js)
+{
+	$("#fangyuango2").attr("src","javascript:"+js);
+
+	$("#fangyuango").click(function(){
+		$("#fangyuango2").css("display","block");
+	});
+//	$("#fangyuango").trigger("click");
+//	$("#fangyuango").click();
+}
+	

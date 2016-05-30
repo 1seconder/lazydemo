@@ -1,0 +1,3598 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="description" content="Xenon Boostrap Admin Panel" />
+		<meta name="author" content="" />
+		<title>销控管理</title>
+		<link rel="stylesheet" href="../../assets/css/fonts/linecons/css/linecons.css">
+		<link rel="stylesheet" href="../../assets/css/fonts/fontawesome/css/font-awesome.min.css">
+		<link rel="stylesheet" href="../../assets/css/fonts/elusive/css/elusive.css">
+		<link rel="stylesheet" href="../../assets/css/bootstrap.css">
+		<link rel="stylesheet" href="../../assets/css/xenon-core.css">
+		<link rel="stylesheet" href="../../assets/css/xenon-forms.css">
+		<link rel="stylesheet" href="../../assets/css/xenon-components.css">
+		<link rel="stylesheet" href="../../assets/css/xenon-skins.css">
+		<link rel="stylesheet" href="../../assets/css/custom.css">
+		<link rel="stylesheet" href="../../assets/css/jingen.css">
+		<script src="../../assets/js/jquery-1.11.1.min.js"></script>
+		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+			<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif]-->
+		<style>
+		@media screen and (max-width: 1950px)
+			{
+				.table-responsive {
+				    width: 100%;
+				    margin-bottom: 13.5px;
+				    overflow-y: hidden;
+				    overflow-x: auto;
+				    -ms-overflow-style: -ms-autohiding-scrollbar;
+				    border: 1px solid #eeeeee;
+				    -webkit-overflow-scrolling: touch;
+				}
+				.table-responsive > .table > thead > tr > th, .table-responsive > .table > tbody > tr > th, .table-responsive > .table > tfoot > tr > th, .table-responsive > .table > thead > tr > td, .table-responsive > .table > tbody > tr > td, .table-responsive > .table > tfoot > tr > td {
+				    white-space: nowrap;
+				}
+			}
+			.tabs-vertical-env .nav.tabs-vertical {
+			    min-width: 95px;
+			    width: 50px;
+			}
+			.nav > li a{
+			    height: auto !important;
+			   
+			}
+			.tabs-vertical-env .nav.tabs-vertical li > a{ word-wrap: break-word !important;white-space:inherit;}
+			.nav > li > a {
+			    padding-left: 5px !important;
+			    padding-right: 5px !important;
+			}
+			.tabs-vertical-env .tab-content{ padding: 15px 30px;}
+			.height800{max-height: 800px;  overflow-y: auto;}
+
+		</style>
+	</head>
+
+	<body class="page-body">
+		<div class="page-container">
+			<!-- add class "sidebar-collapsed" to close sidebar by default, "chat-visible" to make chat appear always -->
+
+			<!-- Add "fixed" class to make the sidebar fixed always to the browser viewport. -->
+			<!-- Adding class "toggle-others" will keep only one menu item open at a time. -->
+			<!-- Adding class "collapsed" collapse sidebar root elements and show only icons. -->
+			<div class="sidebar-menu toggle-others fixed">
+				<div class="sidebar-menu-inner">
+					<header class="logo-env">
+						<!-- logo -->
+						<div class="logo">
+							<a href="index.html" class="logo-expanded">
+								<img src="../../assets/images/logo@2x.png" width="80" alt="">
+							</a>
+
+							<a href="index.html" class="logo-collapsed">
+								<img src="../../assets/images/logo-collapsed@2x.png" width="40" alt="">
+							</a>
+						</div>
+						<!-- This will toggle the mobile menu and will be visible only on mobile devices -->
+						<div class="mobile-menu-toggle visible-xs">
+							<a href="#" data-toggle="user-info-menu">
+								<i class="fa-bell-o"></i>
+								<span class="badge badge-success">7</span>
+							</a>
+							<a href="#" data-toggle="mobile-menu">
+								<i class="fa-bars"></i>
+							</a>
+						</div>
+					</header>
+					<ul id="main-menu" class="main-menu">
+						<!-- add class "multiple-expanded" to allow multiple submenus to open -->
+						<!-- class "auto-inherit-active-class" will automatically add "active" class for parent elements who are marked already with class "active" -->
+						<li>
+							<a href="index.html">
+								<i class="linecons-cog"></i>
+								<span class="title">首页</span>
+							</a>
+						</li>
+						<li class="active">
+							<a href="../业主精耕/批量精耕.html">
+								<i class="linecons-desktop"></i>
+								<span class="title">精耕</span>
+							</a>
+						</li>
+						<li class="">
+							<a href="#">
+								<i class="linecons-desktop"></i>
+								<span class="title">分派</span>
+							</a>
+							<ul>
+								<li>
+									<a href="../分派/fenpai_zuduipan.html">
+										<span class="title">分派（组队盘，人对户）</span>
+									</a>
+								</li>
+								<li>
+									<a href="../分派/fenpai_zuyinpan.html">
+										<span class="title">分派（主营盘）</span>
+									</a>
+								</li>
+								<li>
+									<a href="../分派/fenpai_zerenpan.html">
+										<span class="title">分派（责任盘）</span>
+									</a>
+								</li>
+							</ul>
+						</li>
+						<li>
+							<a href="../销控管理/xiaokongguanli.html">
+								<i class="linecons-desktop"></i>
+								<span class="title">销控管理</span>
+							</a>
+						</li>
+						<li>
+							<a href="../业主精耕/精耕审核.html">
+								<i class="linecons-desktop"></i>
+								<span class="title">精耕审核</span>
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="main-content">
+				<!-- User Info, Notifications and Menu Bar -->
+				<nav class="navbar user-info-navbar" role="navigation">
+					<!-- Left links for user info navbar -->
+					<ul class="user-info-menu left-links list-inline list-unstyled">
+						<li class="hidden-sm hidden-xs">
+							<a href="#" data-toggle="sidebar">
+								<i class="fa-bars"></i>
+							</a>
+						</li>
+						<li class="dropdown hover-line">
+							<a href="#" data-toggle="dropdown">
+								<i class="fa-envelope-o"></i>
+								<span class="badge badge-green">15</span>
+							</a>
+							<ul class="dropdown-menu messages">
+								<li>
+									<ul class="dropdown-menu-list list-unstyled ps-scrollbar">
+										<li class="active">
+											<!-- "active" class means message is unread -->
+											<a href="#">
+												<span class="line">
+													<strong>邮件名称</strong>
+													<span class="light small">- 发送人名字</span>
+												</span>
+												<span class="line desc small">
+													邮件内容
+												</span>
+											</a>
+										</li>
+
+										<li class="active">
+											<!-- "active" class means message is unread -->
+											<a href="#">
+												<span class="line">
+													<strong>邮件名称</strong>
+													<span class="light small">- 发送人名字</span>
+												</span>
+												<span class="line desc small">
+													邮件内容
+												</span>
+											</a>
+										</li>
+
+										<li class="active">
+											<!-- "active" class means message is unread -->
+											<a href="#">
+												<span class="line">
+												<strong>邮件名称</strong>
+												<span class="light small">- 发送人名字</span>
+												</span>
+												<span class="line desc small">
+													邮件内容
+												</span>
+											</a>
+										</li>
+
+										<li class="active">
+											<!-- "active" class means message is unread -->
+											<a href="#">
+												<span class="line">
+												<strong>邮件名称</strong>
+												<span class="light small">- 发送人名字</span>
+												</span>
+												<span class="line desc small">
+													邮件内容
+												</span>
+											</a>
+										</li>
+
+									</ul>
+
+								</li>
+
+								<li class="external">
+									<a href="blank-sidebar.html">
+										<span>查看更多邮件</span>
+										<i class="fa-link-ext"></i>
+									</a>
+								</li>
+							</ul>
+						</li>
+
+						<li class="dropdown hover-line">
+							<a href="#" data-toggle="dropdown">
+								<i class="fa-bell-o"></i>
+								<span class="badge badge-purple">7</span>
+							</a>
+
+							<ul class="dropdown-menu notifications">
+								<li class="top">
+									<p class="small">
+										<a href="#" class="pull-right">标记为已读</a> 你有 <strong>3个</strong> 新的通知.
+									</p>
+								</li>
+
+								<li>
+									<ul class="dropdown-menu-list list-unstyled ps-scrollbar">
+										<li class="active notification-success">
+											<a href="#">
+												<i class="fa-user"></i>
+												<span class="line">
+										<strong>新用户注册</strong>
+									</span>
+												<span class="line small time">
+										30秒前
+									</span>
+											</a>
+										</li>
+									</ul>
+								</li>
+
+								<li class="external">
+									<a href="#">
+										<span>查看所有通知</span>
+										<i class="fa-link-ext"></i>
+									</a>
+								</li>
+							</ul>
+						</li>
+
+					</ul>
+
+					<!-- Right links for user info navbar -->
+					<ul class="user-info-menu right-links list-inline list-unstyled">
+
+						<li class="dropdown user-profile">
+							<a href="#" data-toggle="dropdown">
+								<i class="fa-reorder"></i>
+								<span>
+										职位切换&nbsp;&nbsp;<i class="fa-angle-down"></i>
+								</span>
+							</a>
+							<ul class="dropdown-menu user-profile-menu list-unstyled">
+								<li>
+									<a href="#edit-profile">
+										<i class="fa-edit"></i> 职位切换
+									</a>
+								</li>
+								<li>
+									<a href="#settings">
+										<i class="fa-wrench"></i> 职位切换
+									</a>
+								</li>
+								<li>
+									<a href="#profile">
+										<i class="fa-user"></i> 职位切换
+									</a>
+								</li>
+								<li>
+									<a href="#help">
+										<i class="fa-info"></i> 职位切换
+									</a>
+								</li>
+								<li class="last">
+									<a href="extra-lockscreen.html">
+										<i class="fa-lock"></i> 职位切换
+									</a>
+								</li>
+							</ul>
+						</li>
+
+						<li class="dropdown user-profile">
+							<a href="#" data-toggle="dropdown">
+								<img src="../../assets/images/user-4.png" alt="user-image" class="img-circle img-inline userpic-32" width="28" />
+								<span>
+								名字&nbsp;&nbsp;部门&nbsp;&nbsp;<i class="fa-angle-down"></i>
+							</span>
+							</a>
+							<ul class="dropdown-menu user-profile-menu list-unstyled">
+								<li>
+									<a href="#edit-profile">
+										<i class="fa-edit"></i> New Post
+									</a>
+								</li>
+								<li>
+									<a href="#settings">
+										<i class="fa-wrench"></i> 设置
+									</a>
+								</li>
+								<li>
+									<a href="#profile">
+										<i class="fa-user"></i> Profile
+									</a>
+								</li>
+								<li>
+									<a href="#help">
+										<i class="fa-info"></i> 帮助
+									</a>
+								</li>
+								<li class="last">
+									<a href="extra-lockscreen.html">
+										<i class="fa-lock"></i> 注销
+									</a>
+								</li>
+							</ul>
+						</li>
+
+						<li>
+							<a href="#" data-toggle="chat">
+								<i class="fa-comments-o"></i>
+							</a>
+						</li>
+
+					</ul>
+
+				</nav>
+
+				<div class="page-title">
+
+					<div class="breadcrumb-env pull-left">
+						<ol class="breadcrumb bc-1">
+							<li>
+								<a href="#"><i class="fa-home"></i>首页</a>
+							</li>
+							<li class="active">
+								<a href="小区列表.html">批量精耕</a>
+							</li>
+						</ol>
+					</div>
+				</div>
+				<div class="panel row">
+					<div class="pull-left" style=" font-size: 24px; padding-left: 25px;">
+						待处理精耕异常总共<span class="red">10</span>户
+					</div>
+					<div class="col-lg-6 pull-right text-right">
+						<button class="btn btn-gray"	style="padding: 3px 12px !important;  margin-top: 3px; margin-bottom: 5px;">上一个</button>
+						<button class="btn btn-success" style="padding: 3px 12px !important;  margin-top: 3px; margin-bottom: 5px;">下一个</button>
+						<button class="btn btn-success" style="padding: 3px 12px !important;  margin-top: 3px; margin-bottom: 5px;">跳过</button>
+					</div>
+				</div>
+				
+				<div class="panel ">
+						<div class="col-md-12" style="padding-bottom: 20px;">
+							<div class="panel-body" style="padding-top:0px;">
+								<div class="col-sm-4 col-md-4 col-lg-2" style="padding-left: 0px;">
+									<div class="input-group input-group-sm input-group-minimal">
+										<span class="input-group-addon">
+											楼盘：
+										</span>
+										<select class="form-control s2example">
+											<option>楼盘名称</option>
+											<option>楼盘名称</option>
+											<option>楼盘名称</option>
+											<option>楼盘名称</option>
+											<option>楼盘名称</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-sm-4 col-md-4 col-lg-2">
+									<div class="input-group input-group-sm input-group-minimal">
+										<span class="input-group-addon">
+											栋：
+										</span>
+										<select class="form-control s2example">
+											<option>楼盘名称</option>
+											<option>楼盘名称</option>
+											<option>楼盘名称</option>
+											<option>楼盘名称</option>
+											<option>楼盘名称</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-sm-4 col-md-4 col-lg-2">
+									<div class="input-group input-group-sm input-group-minimal">
+										<span class="input-group-addon">
+											单元：
+										</span>
+										<select class="form-control s2example">
+											<option>楼盘名称</option>
+											<option>楼盘名称</option>
+											<option>楼盘名称</option>
+											<option>楼盘名称</option>
+											<option>楼盘名称</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-sm-4 col-md-4 col-lg-2">
+									<div class="input-group input-group-sm input-group-minimal">
+										<span class="input-group-addon">
+											序号：
+										</span>
+										<select class="form-control s2example">
+											<option>楼盘名称</option>
+											<option>楼盘名称</option>
+											<option>楼盘名称</option>
+											<option>楼盘名称</option>
+											<option>楼盘名称</option>
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+					<div class="col-md-12 ">
+								<div class="tabs-vertical-env tabs-vertical-bordered"><!-- add class "right-aligned" for the right aligned tabs -->
+									<ul class="nav tabs-vertical">
+										<li class="active"><a href="#v4-home" data-toggle="tab">接触期（1）</a></li>
+										<li><a href="#v4-profile" data-toggle="tab">委托期（1）</a></li>
+										<li><a href="#v4-messages" data-toggle="tab">了解需求</a></li>
+										<li><a href="#v4-settings" data-toggle="tab">楼盘004</a></li>
+									</ul>
+									<div class="tab-content">
+										<div class="tab-pane active" id="v4-home">
+											<div class="row text-right" style="padding-bottom: 20px;">
+												<div class="col-sm-4 col-md-4 col-lg-3 pull-left">
+													<div class="input-group input-group-sm input-group-minimal">
+														<span class="input-group-addon">
+															精耕内容：
+														</span>
+														<select class="form-control" onchange="jiecujingen(this)">
+															<option value="0">基本信息</option>
+															<option value="1">商圈经理业主信息维护</option>
+															<option value="2">经纪人业主信息维护</option>
+															<option value="3">电话跟进</option>
+															<option value="4">竞争对手跟进</option>
+														</select>
+													</div>
+												</div>
+											</div>
+											<!--精耕模块--基本信息-->
+											<div class="panel" id="jc_jibenxinxi">
+												<div class="panel-heading">
+													<h3 class="panel-title">基本信息</h3>
+												</div>
+												<div class="panel-body">
+													<div class="col-md-12 col-sm-12">
+														<div class="form-group">
+															<div class="input-group input-group-minimal">
+																<span class="input-group-addon red">房屋名称：</span>
+																<select class="form-control">
+																	<option>小区名</option>
+																</select>
+																<span class="input-group-addon">-</span>
+																<select class="form-control">
+																	<option>栋</option>
+																</select>
+																<span class="input-group-addon">-</span>
+																<select class="form-control">
+																	<option>单元</option>
+																</select>
+																<span class="input-group-addon">-</span>
+																<select class="form-control">
+																	<option>房号</option>
+																</select>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-12 col-sm-12">
+														<div class="form-group">
+															<div class="input-group input-group-minimal">
+																<span class="input-group-addon red">户型：</span>
+																<select class="form-control">
+																	<option>1室</option>
+																</select>
+																<span class="input-group-addon">-</span>
+																<select class="form-control">
+																	<option>1厅</option>
+																</select>
+																<span class="input-group-addon">-</span>
+																<select class="form-control">
+																	<option>1厨</option>
+																</select>
+																<span class="input-group-addon">-</span>
+																<select class="form-control">
+																	<option>1卫</option>
+																</select>
+																<span class="input-group-addon">-</span>
+																<select class="form-control">
+																	<option>1阳台</option>
+																</select>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-12 col-sm-12">
+														<div class="form-group">
+															<div class="input-group input-group-minimal">
+																<span class="input-group-addon red">区域范围：</span>
+																<select class="form-control">
+																	<option>地点</option>
+																</select>
+																<span class="input-group-addon">-</span>
+																<select class="form-control">
+																	<option>区域</option>
+																</select>
+																<span class="input-group-addon">-</span>
+																<select class="form-control">
+																	<option>商圈</option>
+																</select>
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-6 col-md-4 col-lg-3">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon">
+																	用途：
+																</span>
+																<input class="form-control" type="text">
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-6 col-md-4 col-lg-3">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon">
+																	朝向：
+																</span>
+																<input class="form-control" type="text">
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-6 col-md-4 col-lg-3">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon">
+																	市场地址：
+																</span>
+																<input class="form-control" type="text">
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-6 col-md-4 col-lg-3">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon">
+																	国土性质：
+																</span>
+																<input class="form-control" type="text">
+															</div>	
+														</div>
+													</div>
+													<div class="col-sm-6 col-md-4 col-lg-3">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon">
+																	权属性质：
+																</span>
+																<input class="form-control" type="text">
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-6 col-md-4 col-lg-3">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon">
+																	产权编码：
+																</span>
+																<input class="form-control" type="text">
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-6 col-md-4 col-lg-3">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon">
+																	产权面积：
+																</span>
+																<input class="form-control" type="text">
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-6 col-md-4 col-lg-3">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon">
+																	使用面积：
+																</span>
+																<input class="form-control" type="text">
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-6 col-md-4 col-lg-3">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon">
+																	产权年限：
+																</span>
+																<input class="form-control form_date" type="text">
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-6 col-md-4 col-lg-3">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon">
+																	备案号：
+																</span>
+																<input class="form-control form_date" type="text">
+															</div>
+														</div>
+													</div>
+												
+													<div class="clearfix"></div>
+												</div>
+												<button class="btn btn-secondary btn-icon btn-icon-standalone" style="padding: 0px !important; margin-top: 10px;">
+													<i class="fa-print"></i>
+													<span>保存</span>
+												</button>
+											</div>
+											<!--商圈经理业主信息维护-->
+											<div class="panel" id="jc_shanquanjinli" style="display: none;">
+												<div class="panel-heading">
+													<h3 class="panel-title">业主信息维护</h3>
+												</div>
+												<div class="panel-body">
+													<div class="form-group">
+														<div class="panel">
+															<div class="table-responsive">
+																<table class="table table-bordered table-striped">
+																	<thead>
+																		<tr>
+																			<th class="text-center">编号</th>
+																			<th class="text-center">业主</th>
+																			<th class="text-center">联系电话</th>
+																			<th class="text-center">微信</th>
+																			<th class="text-center">QQ</th>
+																			<th class="text-center">电子信箱</th>
+																			<th class="text-center">精耕人</th>
+																			<th class="text-center">最后维护时间</th>
+																			<th class="text-center">操作</th>
+																		</tr>
+																	</thead>
+																	<tbody>
+																		<tr>
+																			<td class="col-lg-1">
+																				1
+																			</td>
+																			<td class="middle-align text-center">
+																				李龙
+																			</td>
+																			<td class="middle-align text-center">
+																				13421531565
+																			</td>
+																			<td class="middle-align text-center">
+																				13421531565
+																			</td>
+																			<td class="middle-align text-center">
+																				13421531565
+																			</td>
+																			<td class="middle-align text-center">
+																				13421531565
+																			</td>
+																			<td class="middle-align text-center">
+																				13421531565
+																			</td>
+																			<td class="middle-align text-center">
+																				分派/修改
+																			</td>
+																			<td class="middle-align text-center">
+																				详情
+																			</td>
+																		</tr>
+																		<tr>
+																			<td class="col-lg-1">
+																				1
+																			</td>
+																			<td class="middle-align text-center">
+																				李龙
+																			</td>
+																			<td class="middle-align text-center">
+																				13421531565
+																			</td>
+																			<td class="middle-align text-center">
+																				13421531565
+																			</td>
+																			<td class="middle-align text-center">
+																				13421531565
+																			</td>
+																			<td class="middle-align text-center">
+																				13421531565
+																			</td>
+																			<td class="middle-align text-center">
+																				13421531565
+																			</td>
+																			<td class="middle-align text-center">
+																				分派/修改
+																			</td>
+																			<td class="middle-align text-center">
+																				详情
+																			</td>
+																		</tr>
+																		<tr>
+																			<td class="col-lg-1">
+																				1
+																			</td>
+																			<td class="middle-align text-center">
+																				李龙
+																			</td>
+																			<td class="middle-align text-center">
+																				13421531565
+																			</td>
+																			<td class="middle-align text-center">
+																				13421531565
+																			</td>
+																			<td class="middle-align text-center">
+																				13421531565
+																			</td>
+																			<td class="middle-align text-center">
+																				13421531565
+																			</td>
+																			<td class="middle-align text-center">
+																				13421531565
+																			</td>
+																			<td class="middle-align text-center">
+																				分派/修改
+																			</td>
+																			<td class="middle-align text-center">
+																				详情
+																			</td>
+																		</tr>
+																		<tr>
+																			<td class="col-lg-1">
+																				1
+																			</td>
+																			<td class="middle-align text-center">
+																				李龙
+																			</td>
+																			<td class="middle-align text-center">
+																				13421531565
+																			</td>
+																			<td class="middle-align text-center">
+																				13421531565
+																			</td>
+																			<td class="middle-align text-center">
+																				13421531565
+																			</td>
+																			<td class="middle-align text-center">
+																				13421531565
+																			</td>
+																			<td class="middle-align text-center">
+																				13421531565
+																			</td>
+																			<td class="middle-align text-center">
+																				分派/修改
+																			</td>
+																			<td class="middle-align text-center">
+																				详情
+																			</td>
+																		</tr>
+																		<tr>
+																			<td class="col-lg-1">
+																				1
+																			</td>
+																			<td class="middle-align text-center">
+																				李龙
+																			</td>
+																			<td class="middle-align text-center">
+																				13421531565
+																			</td>
+																			<td class="middle-align text-center">
+																				13421531565
+																			</td>
+																			<td class="middle-align text-center">
+																				13421531565
+																			</td>
+																			<td class="middle-align text-center">
+																				13421531565
+																			</td>
+																			<td class="middle-align text-center">
+																				13421531565
+																			</td>
+																			<td class="middle-align text-center">
+																				分派/修改
+																			</td>
+																			<td class="middle-align text-center">
+																				详情
+																			</td>
+																		</tr>
+																	</tbody>
+																</table>
+															</div>
+															<div class="pagination pull-right">
+																放翻页
+															</div>
+														</div>
+														<button class="btn btn-secondary btn-icon btn-icon-standalone" style="padding: 0px !important; margin-top: 10px;">
+																<i class="fa-print"></i>
+																<span>确认</span>
+															</button>
+													</div>
+												</div>
+											</div>
+											<!--经纪人业主信息维护-->
+											<div class="panel" id="jc_yezujinli" style="display: none;">
+												<div class="panel-default">
+													<div class="row">
+														<div class="panel  panel-gray dujia_sc_hearder">
+															<div class="panel-heading  padd_hearde">
+																基本信息
+															</div>
+															<div class="panel-body">
+																<div class="row col-lg-12 col-md-12 col-xs-12 col-sm-12">
+																	<div class="col-md-6 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon red">业主姓名：</span>
+																				<input type="text" class="form-control" />
+																				<span class="input-group-addon" style="padding: 0;"></span>
+																				<select class="form-control" style="width: 100px;">
+																					<option>请选择</option>
+																					<option>男士</option>
+																					<option>女士</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-6 col-sm-12">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon red">联系电话：</span>
+																				<input type="text" class="form-control" />
+																				<span class="input-group-addon" style="padding: 0;"></span>
+																				<select class="form-control" style="width: 80px;">
+																					<option>请选择</option>
+															                        <option>本人</option>
+															                        <option>父母</option>
+															                        <option>授权委托人</option>
+															                        <option>配偶</option>
+															                        <option>亲戚</option>
+															                        <option>朋友</option>
+																				</select>
+																				<span class="input-group-addon"><i class="fa-plus"></i></span>
+																				<span class="input-group-addon"><i class="fa-plus"></i></span>
+																			</div>
+																			<p class="help-block red">系统查询到该联系方式下有3位经纪人维护查询</p>
+																		</div>
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon red">联系电话：</span>
+																				<input type="text" class="form-control" />
+																				<span class="input-group-addon" style="padding: 0;"></span>
+																				<select class="form-control" style="width: 80px;">
+																					<option>请选择</option>
+															                        <option>本人</option>
+															                        <option>父母</option>
+															                        <option>授权委托人</option>
+															                        <option>配偶</option>
+															                        <option>亲戚</option>
+															                        <option>朋友</option>
+																				</select>
+																				<span class="input-group-addon"><i class="fa-plus"></i></span>
+																				<span class="input-group-addon"><i class="fa-plus"></i></span>
+																			</div>
+																			<p class="help-block red">系统查询到该联系方式下有3位经纪人维护查询</p>
+																		</div>
+																	</div>
+																	<!--<div class="col-md-6 col-sm-12">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<input type="text" class="form-control" />
+																				<span class="input-group-addon" style="padding: 0;"></span>
+																				<select class="form-control" style="width: 80px;">
+																					<option>请选择</option>
+															                        <option>本人</option>
+															                        <option>父母</option>
+															                        <option>授权委托人</option>
+															                        <option>配偶</option>
+															                        <option>亲戚</option>
+															                        <option>朋友</option>
+																				</select>
+																				<span class="input-group-addon"><i class="fa-plus"></i></span>
+																				<span class="input-group-addon"><i class="fa-remove"></i></span>
+																			</div>
+																			<p class="help-block red">系统查询到该联系方式下有3位经纪人维护查询</p>
+																		</div>
+																	</div>-->
+																	<div class="col-md-6 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon red">居住地址：</span>
+																				<input class="form-control" type="text">
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-6 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon red">房产地址：</span>
+																				<input class="form-control" type="text">
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon red">客户等级：</span>
+																				<select class="form-control">
+																					<option>栋座</option>
+																					<option>栋座</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon red">用途：</span>
+																				<select class="form-control">
+																					<option>栋座</option>
+																					<option>栋座</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">装修情况：</span>
+																				<select class="form-control">
+																					<option>栋座</option>
+																					<option>栋座</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-12 col-sm-12">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon red">户型：</span>
+																				<select class="form-control">
+																					<option>1室</option>
+																				</select>
+																				<span class="input-group-addon">-</span>
+																				<select class="form-control">
+																					<option>1厅</option>
+																				</select>
+																				<span class="input-group-addon">-</span>
+																				<select class="form-control">
+																					<option>1厨</option>
+																				</select>
+																				<span class="input-group-addon">-</span>
+																				<select class="form-control">
+																					<option>1卫</option>
+																				</select>
+																				<span class="input-group-addon">-</span>
+																				<select class="form-control">
+																					<option>1阳台</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-6 col-sm-12">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon red">预算（元）：</span>
+																				<input type="text" class="form-control">
+																				<span class="input-group-addon">-</span>
+																				<input type="text" class="form-control">
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-6 col-sm-12">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon red">面积：</span>
+																				<input type="text" class="form-control">
+																				<span class="input-group-addon">-</span>
+																				<input type="text" class="form-control">
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-6 col-sm-12">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon red">楼层：</span>
+																				<input type="text" class="form-control">
+																				<span class="input-group-addon">-</span>
+																				<input type="text" class="form-control">
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-6 col-sm-12">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon red">楼龄：</span>
+																				<input type="text" class="form-control">
+																				<span class="input-group-addon">-</span>
+																				<input type="text" class="form-control">
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon red">租期（月）：</span>
+																				<input type="text" class="form-control" />
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">类型：</span>
+																				<select class="form-control">
+																					<option>栋座</option>
+																					<option>栋座</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-6 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon red">需求委托：</span>
+																				<select class="form-control">
+																					<option>出租</option>
+																				</select>
+																				<span class="input-group-addon">-</span>
+																				<select class="form-control">
+																					<option>普租</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-6 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon red">委托来源：</span>
+																				<select class="form-control">
+																					<option>店面开发</option>
+																				</select>
+																				<span class="input-group-addon">-</span>
+																				<select class="form-control">
+																					<option>精耕</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-2 col-sm-3 pull-right">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">付：</span>
+																				<input type="text" class="form-control" />
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-2 col-sm-3 pull-right">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">押：</span>
+																				<input type="text" class="form-control" />
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6 pull-right">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">付款方式：</span>
+																				<select class="form-control">
+																					<option>栋座</option>
+																					<option>栋座</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="clearfix"></div>
+																</div>
+															</div>
+														</div>
+													</div>
+													<div class="clearfix"></div>
+												</div>
+												<div class="panel-default">
+													<div class="row">
+														<div class="panel  panel-gray dujia_sc_hearder">
+															<div class="panel-heading  padd_hearde">
+																其他信息
+															</div>
+															<div class="panel-body">
+																<div class="row col-lg-12 col-md-12 col-xs-12 col-sm-12">
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">QQ：</span>
+																				<input type="text" class="form-control" />
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">微信：</span>
+																				<input type="text" class="form-control" />
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">电子信箱：</span>
+																				<input type="text" class="form-control" />
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">工作单位：</span>
+																				<input type="text" class="form-control" />
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">教育程度：</span>
+																				<select class="form-control">
+																					<option>栋座</option>
+																					<option>栋座</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">出生日期：</span>
+																				<input type="text" class="form-control form_date" />
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">消费观念：</span>
+																				<select class="form-control">
+																					<option>栋座</option>
+																					<option>栋座</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">单位地址：</span>
+																				<input type="text" class="form-control" />
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">身份证：</span>
+																				<input type="text" class="form-control" />
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">现家庭地址：</span>
+																				<input type="text" class="form-control" />
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">国籍：</span>
+																				<select class="form-control">
+																					<option>栋座</option>
+																					<option>栋座</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">工作性质：</span>
+																				<select class="form-control">
+																					<option>栋座</option>
+																					<option>栋座</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-6">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">现有房产套数：</span>
+																				<input type="text" class="form-control" />
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-4">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">居住人口：</span>
+																				<input type="text" class="form-control" />
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-4">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">紧迫感：</span>
+																				<select class="form-control">
+																					<option>栋座</option>
+																					<option>栋座</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-4">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">入住时间：</span>
+																				<input type="text" class="form-control form-input form_date" />
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-4">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">车位：</span>
+																				<select class="form-control">
+																					<option>栋座</option>
+																					<option>栋座</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-4">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">是否集团客户：</span>
+																				<select class="form-control">
+																					<option>栋座</option>
+																					<option>栋座</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-sm-4">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">期限：</span>
+																				<select class="form-control">
+																					<option>栋座</option>
+																					<option>栋座</option>
+																				</select>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-12 col-sm-12">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="input-group-addon">备注：</span>
+																				<textarea class="form-control"></textarea>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-12 col-sm-12">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="">小区熟悉程度：</span>
+																				<p class="">
+																					<label class="radio-inline">
+																						<input type="radio" name="radio-2" checked="">
+																						熟悉商圈小区
+																					</label>
+																					<label class="radio-inline">
+																						<input type="radio" name="radio-2">
+																						多次看房，熟悉商圈小区
+																					</label>
+																					<label class="radio-inline">
+																						<input type="radio" name="radio-2">
+																						不熟悉商圈小区
+																					</label>
+																				</p>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-12 col-sm-12">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="">周边配套需求：</span>
+																				<p class="">
+																					<label >
+																						<input type="checkbox" style="padding-left: 0px;" name="radio-2" checked="">
+																						医院
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						公园
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						超市
+																					</label>
+																					<label>
+																						<input type="checkbox" name="radio-2">
+																						地铁
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						银行
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						学校
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						商业街
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						其他
+																					</label>
+																				</p>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-12 col-sm-12">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="">家具：</span>
+																				<p class="">
+																					<label >
+																						<input type="checkbox" style="padding-left: 0px;" name="radio-2" checked="">
+																						全选
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						床
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						衣柜
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						书桌
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						餐桌
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						椅子
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						床垫
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						茶几
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						其他
+																					</label>
+																				</p>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-12 col-sm-12">
+																		<div class="form-group">
+																			<div class="input-group input-group-minimal">
+																				<span class="">家电：</span>
+																				<p class="">
+																					<label >
+																						<input type="checkbox" style="padding-left: 0px;" name="radio-2" checked="">
+																						全选
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						冰箱
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						洗衣机
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						电磁炉
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						消毒柜
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						电脑
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						空调
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						DVD
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						电视机
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						微波炉
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						热水器
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						饮水机
+																					</label>
+																					<label>
+																						<input type="checkbox" name="radio-2">
+																						电话
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																						音响
+																					</label>
+																					<label >
+																						<input type="checkbox" name="radio-2">
+																					         其他
+																					</label>
+																				</p>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="clearfix"></div>
+																</div>
+															</div>
+														</div>
+													</div>
+													<div class="clearfix"></div>
+												</div>
+											</div>
+											<!--电话跟进-->
+											<div class="panel" id="jc_dianhuagenjin" style="display: none;">
+												<div class="panel-heading">
+													<h3 class="panel-title">电话跟进</h3>
+												</div>
+												<div class="panel-body">
+													<div class="form-group">
+														<div class="row">
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			关系：
+																		</span>
+																		<select class="form-control s2example">
+																			<option>妈妈</option>
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			电话号码：
+																		</span>
+																		<input class="form-control" type="text">
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			跟进内容：
+																		</span>
+																		<select class="form-control">
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-md-12 col-sm-12">
+																<div class="form-group">
+																	<div class="input-group input-group-minimal">
+																		<span class="input-group-addon">备注：</span>
+																		<textarea class="form-control"></textarea>
+																	</div>
+																</div>
+															</div>
+														</div>
+														<button class="btn btn-secondary btn-icon btn-icon-standalone" style="padding: 0px !important; margin-top: 10px;">
+															<i class="fa-print"></i>
+															<span>确认</span>
+														</button>
+													</div>
+												</div>
+										
+											</div>
+											<!--竞争对手跟进-->
+											<div class="panel" id="jc_duishougenjin" style="display: none;">
+												<div class="panel-heading">
+													<h3 class="panel-title">改房间在系统中处于进行XX状态，但您可以按您精耕后的状态做下列操作</h3>
+												</div>
+												<div class="panel-body">
+													<div class="form-group">
+														<div class="row">
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			需求：
+																		</span>
+																		<select class="form-control s2example">
+																			<option>已租</option>
+																			<option>已售</option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			价格：
+																		</span>
+																		<input type="text" class="form-control">
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-6 col-md-6 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			租期：
+																		</span>
+																		<input class="form-input form_date col-lg-12 col-md-6 col-sm-6" placeholder="">
+																		<span class="input-group-addon">
+																			-
+																		</span>
+																		<input class="form-input form_date col-lg-12 col-md-6 col-sm-6" placeholder="">
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			竞争公司：
+																		</span>
+																		<select class="form-control">
+																			<option>公司</option>
+																			<option>已售</option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-md-12 col-sm-12">
+																<div class="form-group">
+																	<div class="input-group input-group-minimal">
+																		<span class="input-group-addon">备注：</span>
+																		<textarea class="form-control"></textarea>
+																	</div>
+																</div>
+															</div>
+														</div>
+														<button class="btn btn-secondary btn-icon btn-icon-standalone" style="padding: 0px !important; margin-top: 10px;">
+															<i class="fa-print"></i>
+															<span>确认</span>
+														</button>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="tab-pane" id="v4-profile">
+											<div class="row text-right" style="padding-bottom: 20px;">
+												<div class="col-sm-4 col-md-4 col-lg-3 pull-left">
+													<div class="input-group input-group-sm input-group-minimal">
+														<span class="input-group-addon">
+															精耕内容：
+														</span>
+														<select class="form-control" onchange="xzjgneiron(this)">
+															<option value="0">房源</option>
+															<option value="1">钥匙</option>
+															<option value="2">房堪</option>
+															<option value="3">独家限时</option>
+														</select>
+													</div>
+												</div>
+											</div>
+											<!--委托房源-->
+											<div class="panel" id="weituofanyuan">
+												<div class="panel-heading">
+													<h3 class="panel-title">房间还未在系统进行房源委托，您可以进行委托【点击开始委托】，抢占先机。</h3>
+												</div>
+												<div class="panel-body">
+													<div class="form-group">
+														<div class="row">
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			需求：
+																		</span>
+																		<select class="form-control s2example">
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			用途：
+																		</span>
+																		<select class="form-control">
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<button class="btn btn-secondary btn-icon btn-icon-standalone" style="padding: 0px !important;">
+																<i class="fa-print"></i>
+																<span>下一步</span>
+															</button>
+														</div>
+														
+													</div>
+												</div>
+												<div class="col-md-12">
+													<div class="panel  panel-gray dujia_sc_hearder">
+														<div class="panel-heading padd_hearde">
+															<h4 class="panel-title">房屋信息</h4>
+														</div>
+														<div class="panel-body">
+															<div class="col-md-12 col-sm-12">
+																<div class="form-group">
+																	<div class="input-group col-lg-10 pull-left input-group-minimal">
+																		<span class="input-group-addon red">房屋名称：</span>
+																		<select class="form-control s2example">
+																			<option>1室</option>
+																		</select>
+																		<span class="input-group-addon padd00"></span>
+																		<select class="form-control">
+																			<option>厅</option>
+																		</select>
+																		<span class="input-group-addon padd00"></span>
+																		<select class="form-control">
+																			<option>厅</option>
+																		</select>
+																		<span class="input-group-addon padd00"></span>
+																		<select class="form-control">
+																			<option>厅</option>
+																		</select>
+																		<span class="input-group-addon padd00"></span>
+																		<select class="form-control">
+																			<option>厅</option>
+																		</select>
+																	</div>
+																	<button type="button" class="btn btn-success">地址申请</button>																
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon red">
+																			城市
+																		</span>
+																		<input class="form-control" type="text">
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon red">
+																			城区
+																		</span>
+																		<input class="form-control" type="text">
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon red">
+																			商圈
+																		</span>
+																		<input class="form-control" type="text">
+																	</div>
+																</div>
+															</div>
+															<div class="col-md-12 col-sm-12">
+																<div class="form-group">
+																	<div class="input-group input-group-minimal">
+																		<span class="input-group-addon red">户型：</span>
+																		<select class="form-control">
+																			<option>1室</option>
+																		</select>
+																		<span class="input-group-addon">-</span>
+																		<select class="form-control">
+																			<option>1厅</option>
+																		</select>
+																		<span class="input-group-addon">-</span>
+																		<select class="form-control">
+																			<option>1厨</option>
+																		</select>
+																		<span class="input-group-addon">-</span>
+																		<select class="form-control">
+																			<option>1卫</option>
+																		</select>
+																		<span class="input-group-addon">-</span>
+																		<select class="form-control">
+																			<option>1阳台</option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon red">
+																			类型
+																		</span>
+																		<select class="form-control s2example">
+																			<option>板楼结构</option>
+																			<option>板楼结构</option>
+																			<option>板楼结构</option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon red">
+																			建筑年代
+																		</span>
+																		<select class="form-control s2example">
+																			<option>板楼结构</option>
+																			<option>板楼结构</option>
+																			<option>板楼结构</option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon red">
+																			用途
+																		</span>
+																		<select class="form-control s2example">
+																			<option>板楼结构</option>
+																			<option>板楼结构</option>
+																			<option>板楼结构</option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon red">
+																			朝向
+																		</span>
+																		<select class="form-control s2example">
+																			<option>板楼结构</option>
+																			<option>板楼结构</option>
+																			<option>板楼结构</option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-md-4  col-sm-6 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-minimal">
+																		<span class="input-group-addon red">楼层：</span>
+																		<input type="text" class="form-control">
+																		<span class="input-group-addon">-</span>
+																		<input type="text" class="form-control">
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon red">
+																			产权面积
+																		</span>
+																		<input type="text" class="form-control heiht37">
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			使用面积
+																		</span>
+																		<input type="text" class="form-control">
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			权属性质
+																		</span>
+																		<select class="form-control s2example">
+																			<option>板楼结构</option>
+																			<option>板楼结构</option>
+																			<option>板楼结构</option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			国土性质
+																		</span>
+																		<select class="form-control s2example">
+																			<option>板楼结构</option>
+																			<option>板楼结构</option>
+																			<option>板楼结构</option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon red">
+																			产权年限
+																		</span>
+																		<select class="form-control s2example">
+																			<option>板楼结构</option>
+																			<option>板楼结构</option>
+																			<option>板楼结构</option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			备案号
+																		</span>
+																		<input class="form-control heiht37" type="text">
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			产权编码
+																		</span>
+																		<input class="form-control heiht37" type="text">
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-6 col-md-6 col-lg-6">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			 配套设施
+																		</span>
+																		<span class="cbr-inline input-group-addon">
+																			<input type="checkbox" class="cbr">
+																			暖气
+																		</span>
+																		<span class="cbr-inline input-group-addon">
+																			<input type="checkbox" class="cbr">
+																			杂物间
+																		</span>
+																		<span class="cbr-inline input-group-addon">
+																			<input type="checkbox" class="cbr">
+																			车位
+																		</span>
+																		<span class="cbr-inline input-group-addon">
+																			<input type="checkbox" class="cbr">
+																			车库
+																		</span>
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			市场地址
+																		</span>
+																		<input class="form-control heiht37" type="text">
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			产权地址
+																		</span>
+																		<input class="form-control heiht37" type="text">
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon red">
+																			归属门店
+																		</span>
+																		<select class="form-control s2example">
+																			<option>板楼结构</option>
+																			<option>板楼结构</option>
+																			<option>板楼结构</option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon red">
+																			归属人
+																		</span>
+																		<select class="form-control s2example">
+																			<option>板楼结构</option>
+																			<option>板楼结构</option>
+																			<option>板楼结构</option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-6 col-md-6 col-lg-6">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			 房源类型
+																		</span>
+																		<span class="cbr-inline input-group-addon">
+																			<input type="radio" name="panyuan" class="cbr">
+																			A盘
+																		</span>
+																		<span class="cbr-inline input-group-addon">
+																			<input type="radio" name="panyuan" class="cbr">
+																			B盘
+																		</span>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="col-md-12">
+													<div class="panel  panel-gray dujia_sc_hearder">
+														<div class="panel-heading padd_hearde">
+															<h4 class="panel-title">业主信息</h4>
+														</div>
+														<div class="panel-body">
+															<div class="col-md-6 col-sm-12">
+																<div class="form-group">
+																	<div class="input-group col-lg-10 pull-left input-group-minimal">
+																		<span class="input-group-addon red">业主姓名：</span>
+																		
+																		<input class="form-control" type="text">
+																		<span class="input-group-addon padd00"></span>
+																		<select class="form-control" style="width: 80px;">
+																			<option>厅</option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-md-6 col-sm-12">
+																	<div class="form-group">
+																		<div class="input-group input-group-minimal">
+																			<span class="input-group-addon red">联系电话：</span>
+																			<input type="text" class="form-control">
+																			<span class="input-group-addon" style="padding: 0;"></span>
+																			<select class="form-control" style="width: 80px;">
+																				<option>请选择</option>
+														                        <option>本人</option>
+														                        <option>父母</option>
+														                        <option>授权委托人</option>
+														                        <option>配偶</option>
+														                        <option>亲戚</option>
+														                        <option>朋友</option>
+																			</select>
+																			<span class="input-group-addon"><i class="fa-plus"></i></span>
+																			<span class="input-group-addon"><i class="fa-plus"></i></span>
+																		</div>
+																		<p class="help-block red">系统查询到该联系方式下有3位经纪人维护<a href="#">查询</a></p>
+																	</div>
+																</div>
+															<div class="col-sm-6 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			QQ
+																		</span>
+																		<input class="form-control" type="text">
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-6 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			电子信箱
+																		</span>
+																		<input class="form-control" type="text">
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			微信
+																		</span>
+																		<input class="form-control" type="text">
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="col-md-12">
+													<div class="panel  panel-gray dujia_sc_hearder">
+														<div class="panel-heading padd_hearde">
+															<h4 class="panel-title">委托信息</h4>
+														</div>
+														<div class="panel-body">
+															<div class="col-sm-6 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon red">
+																			委托类型
+																		</span>
+																		<input class="form-control" type="text">
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-6 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon red">
+																			总价
+																		</span>
+																		<input class="form-control" type="text">
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-6 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			星级房源
+																		</span>
+																		<select class="form-control">
+																			<option></option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-6 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			房屋现状
+																		</span>
+																		<select class="form-control">
+																			<option></option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-6 col-md-6 col-lg-6">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			委托来源
+																		</span>
+																		<select class="form-control">
+																			<option></option>
+																		</select>
+																		<span class="input-group-addon">-</span>
+																		<select class="form-control">
+																			<option></option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-6 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			可看房时间
+																		</span>
+																		<select class="form-control">
+																			<option></option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-6 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			可入住时间
+																		</span>
+																		<input type="text" class="form_date form-control">
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-6 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			委托期限
+																		</span>
+																		<input type="text" class="form-control">
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-6 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			税费
+																		</span>
+																		<select class="form-control">
+																			<option></option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-6 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			个税
+																		</span>
+																		<select class="form-control">
+																			<option></option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-6 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			付税类型
+																		</span>
+																		<select class="form-control">
+																			<option></option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-6 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			业主付税
+																		</span>
+																		<select class="form-control">
+																			<option></option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-6 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			抵押
+																		</span>
+																		<select class="form-control">
+																			<option></option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-6 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			满五年
+																		</span>
+																		<select class="form-control">
+																			<option></option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-6 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			业主付佣
+																		</span>
+																		<select class="form-control">
+																			<option></option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-6 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			付佣比例
+																		</span>
+																		<select class="form-control">
+																			<option></option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-6 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			委托日期
+																		</span>
+																		<input type="text" class="form_date form-control">
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			出售原因
+																		</span>
+																		<input class="form-control" type="text">
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											<!--委托期钥匙-->
+											<div class="panel" id="weituoyaoshi" style="display: none;">
+												<div class="panel-heading">
+													<h3 class="panel-title">该房间还未在系统进行房源委托，您可以进行委托【点击开始委托】，抢占先机。</h3></br>
+													<h3 class="panel-title">否者提示 该房间已在系统委托，您可以按先进行钥匙委托，抢占先机。</h3></br>
+													<h3 class="panel-title">否者提示 该房间已委托钥匙。</h3>
+												</div>
+												<div class="panel-body">
+													<div class="form-group">
+														<div class="row">
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			需求：
+																		</span>
+																		<select class="form-control s2example">
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			用途：
+																		</span>
+																		<select class="form-control">
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<button class="btn btn-secondary btn-icon btn-icon-standalone" style="padding: 0px !important;">
+																<i class="fa-print"></i>
+																<span>下一步</span>
+															</button>
+														</div>
+														
+													</div>
+												</div>
+												<div class="panel-heading">
+													<h3 class="panel-title">钥匙等级</h3>
+												</div>
+												<div class="panel-body">
+													<div class="form-group">
+														<div class="row">
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon red">
+																			房源编号：
+																		</span>
+																		<input class="form-control" type="text">
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon red">
+																			协议编号：
+																		</span>
+																		<input class="form-control" type="text">
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon red">
+																			钥匙套数：
+																		</span>
+																		<input class="form-control" type="text">
+																	</div>
+																</div>
+															</div>
+															<div class="col-md-4 col-sm-4 col-lg-3" style="height: 35px;">
+																<div class="form-group">
+																	<div class="input-group input-group-minimal">
+																		<p class="pull-left">
+																			<label class="radio-inline">
+																				<input type="radio" name="radio-2" checked="">
+																				门禁
+																			</label>
+																		</p>
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon red">
+																			钥匙把数：
+																		</span>
+																		<input class="form-control" type="text">
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon red">
+																			所属店面：
+																		</span>
+																		<input class="form-control" type="text">
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon red">
+																			所属人：
+																		</span>
+																		<select class="form-control">
+																			<option></option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon red">
+																			签约时间：
+																		</span>
+																		<input class="form-control form_date" type="text">
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon red">
+																			当前状态：
+																		</span>
+																		<select class="form-control">
+																			<option></option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			钥匙箱号：
+																		</span>
+																		<input class="form-control form_date" type="text">
+																	</div>
+																</div>
+															</div>
+															<div class="col-md-12 col-sm-12">
+																<div class="form-group">
+																	<div class="input-group input-group-minimal">
+																		<span class="input-group-addon">备注：</span>
+																		<textarea class="form-control"></textarea>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												<button class="btn btn-secondary btn-icon btn-icon-standalone" style="padding: 0px !important; margin-top: 10px;">
+													<i class="fa-print"></i>
+													<span>确认</span>
+												</button>
+											</div>
+											<!--委托期房堪-->
+											<div class="panel" id="weituoqifankan" style="display: none;">
+												<div class="panel-heading">
+													<h3 class="panel-title">房间还未在系统进行房源委托，您可以进行委托【点击开始委托】，抢占先机。</h3>
+												</div>
+												<div class="panel-body">
+													<div class="form-group">
+														<div class="row">
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			需求：
+																		</span>
+																		<select class="form-control s2example">
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			用途：
+																		</span>
+																		<select class="form-control">
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<button class="btn btn-secondary btn-icon btn-icon-standalone" style="padding: 0px !important;">
+																<i class="fa-print"></i>
+																<span>下一步</span>
+															</button>
+														</div>
+														
+													</div>
+												</div>
+												<div class="form-group row">
+													<label class="col-sm-2 control-label" for="field-3"><span class="red">图片类型</span></label>
+													<div class="col-sm-8">
+														<select class="form-control">
+															<option>环境图</option>
+															<option>户型图</option>
+															<option>交通图</option>
+														</select>
+													</div>
+												</div>
+												<div class="form-group row">
+													<label class="col-sm-2 control-label" for="field-3"><span class="red">图片名称</span></label>
+													<div class="col-sm-8">
+														<input type="text" class="form-control"  placeholder="">
+													</div>
+												</div>
+												<div class="form-group row">
+													<label class="col-sm-2 control-label" for="field-3">上传图片</label>
+													<div class="col-sm-5">
+														<input type="file" class="form-control">
+													</div>
+													<span class="help-block">(请上传大小在800*640、5M以内的jpg、png、gif格式图片)</span>
+												</div>
+												<div class="form-group row">
+													<label class="col-sm-2 control-label" for="field-3">全部图片</label>
+													<div class="col-sm-8">
+	
+														<div class="panel-heading">
+															<ul class="nav nav-tabs">
+																<li class="active">
+																	<a href="#tab-1" data-toggle="tab">户型图（3）</a>
+																</li>
+																<li>
+																	<a href="#tab-2" data-toggle="tab">室内图（3）</a>
+																</li>
+																<li>
+																	<a href="#tab-3" data-toggle="tab">证件资料（2）</a>
+																</li>																
+															</ul>
+														</div>
+	
+														<div class="tab-content">
+	
+															<div class="tab-pane active" id="tab-1">
+																<div class="panel-body">
+																	<div class="col-lg-6 col-xs-12 form-group">
+																		<a href="#"><img src="http://img.xhjfw.com/image/20150414/14164623c775eb30dd5727.jpg" class="img-thumbnail"></a>
+																	</div>
+																	<div class="col-lg-6 col-xs-12 form-group">
+																		<a href="#"><img src="http://img.xhjfw.com/image/20150414/14164623c775eb30dd5727.jpg" class="img-thumbnail"></a>
+																	</div>
+																	<div class="col-lg-6 col-xs-12 form-group">
+																		<a href="#"><img src="http://img.xhjfw.com/image/20150414/14164623c775eb30dd5727.jpg" class="img-thumbnail"></a>
+																	</div>
+																	<div class="col-lg-6 col-xs-12 form-group">
+																		<a href="#"><img src="http://img.xhjfw.com/image/20150414/14164623c775eb30dd5727.jpg" class="img-thumbnail"></a>
+																	</div>
+																</div>
+	
+															</div>
+	
+															<div class="tab-pane" id="tab-2">
+																<div class="panel-body">
+																	<div class="col-lg-6 col-xs-12 form-group">
+																		<a href="#"><img src="http://img.xhjfw.com/image/20150414/14164623c775eb30dd5727.jpg" class="img-thumbnail"></a>
+																	</div>
+																	<div class="col-lg-6 col-xs-12 form-group">
+																		<a href="#"><img src="http://img.xhjfw.com/image/20150414/14164623c775eb30dd5727.jpg" class="img-thumbnail"></a>
+																	</div>
+																	<div class="col-lg-6 col-xs-12 form-group">
+																		<a href="#"><img src="http://img.xhjfw.com/image/20150414/14164623c775eb30dd5727.jpg" class="img-thumbnail"></a>
+																	</div>
+																	<div class="col-lg-6 col-xs-12 form-group">
+																		<a href="#"><img src="http://img.xhjfw.com/image/20150414/14164623c775eb30dd5727.jpg" class="img-thumbnail"></a>
+																	</div>
+																</div>
+	
+															</div>
+															<div class="tab-pane" id="tab-3">
+																<div class="panel-body">
+																	<div class="col-lg-6 col-xs-12 form-group">
+																		<a href="#"><img src="http://img.xhjfw.com/image/20150414/14164623c775eb30dd5727.jpg" class="img-thumbnail"></a>
+																	</div>
+																	<div class="col-lg-6 col-xs-12 form-group">
+																		<a href="#"><img src="http://img.xhjfw.com/image/20150414/14164623c775eb30dd5727.jpg" class="img-thumbnail"></a>
+																	</div>
+																	<div class="col-lg-6 col-xs-12 form-group">
+																		<a href="#"><img src="http://img.xhjfw.com/image/20150414/14164623c775eb30dd5727.jpg" class="img-thumbnail"></a>
+																	</div>
+																	<div class="col-lg-6 col-xs-12 form-group">
+																		<a href="#"><img src="http://img.xhjfw.com/image/20150414/14164623c775eb30dd5727.jpg" class="img-thumbnail"></a>
+																	</div>
+																</div>
+	
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="row form-group">
+													<div class="col-md-3 col-sm-3">
+														<div class="form-group">
+															<div class="input-group input-group-minimal">
+																<span class="input-group-addon">客户登记：</span>
+																<input class="form-control" disabled>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-3 col-sm-3">
+														<div class="form-group">
+															<div class="input-group input-group-minimal">
+																<span class="input-group-addon">客户登记：</span>
+																<input class="form-control" disabled>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-3 col-sm-3">
+														<div class="form-group">
+															<div class="input-group input-group-minimal">
+																<span class="input-group-addon">创建时间：</span>
+																<input class="form-control" disabled>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											<!--委托期独家-->
+											<div class="panel" id="weituodujia" style="display: none;">
+												<div class="panel-heading">
+													<h3 class="panel-title">房间还未在系统进行房源委托，您可以进行委托【点击开始委托】，抢占先机。</h3>
+												</div>
+												<div class="panel-body">
+													<div class="form-group">
+														<div class="row">
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			需求：
+																		</span>
+																		<select class="form-control s2example">
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<div class="col-sm-4 col-md-4 col-lg-3">
+																<div class="form-group">
+																	<div class="input-group input-group-sm input-group-minimal">
+																		<span class="input-group-addon">
+																			用途：
+																		</span>
+																		<select class="form-control">
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																			<option>精耕人</option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+															<button class="btn btn-secondary btn-icon btn-icon-standalone" style="padding: 0px !important;">
+																<i class="fa-print"></i>
+																<span>下一步</span>
+															</button>
+														</div>
+														
+													</div>
+												</div>
+												<div class="panel">
+													<div class="panel-heading">
+														<h3 class="panel-title">独家限时卖委托</h3>
+													</div>
+													<div class="panel-body">
+														<div class="form-group">
+															<div class="row">
+																<div class="col-sm-4 col-md-4 col-lg-3">
+																	<div class="form-group">
+																		<div class="input-group input-group-sm input-group-minimal">
+																			<span class="input-group-addon">
+																				委托编号：
+																			</span>
+																			<input type="text" class="form-control">
+																			<button type="button" class="btn btn-secondary btn-single postionauto">填充</button>
+																		</div>
+																	</div>
+																</div>
+																<div class="col-sm-4 col-md-4 col-lg-3">
+																	<div class="form-group">
+																		<div class="input-group input-group-sm input-group-minimal">
+																			<span class="input-group-addon">
+																				委托类型：
+																			</span>
+																			<select class="form-control">
+																				<option>精耕人</option>
+																				<option>精耕人</option>
+																				<option>精耕人</option>
+																				<option>精耕人</option>
+																				<option>精耕人</option>
+																			</select>
+																		</div>
+																	</div>
+																</div>
+																<div class="col-sm-4 col-md-4 col-lg-3">
+																	<div class="form-group">
+																		<div class="input-group input-group-sm input-group-minimal">
+																			<span class="input-group-addon">
+																				楼盘名称：
+																			</span>
+																			<input type="text" class="form-control">
+																		</div>
+																	</div>
+																</div>
+																<div class="col-sm-4 col-md-4 col-lg-3">
+																	<div class="form-group">
+																		<div class="input-group input-group-sm input-group-minimal">
+																			<span class="input-group-addon">
+																				楼盘名称：
+																			</span>
+																			<input type="text" class="form-control">
+																		</div>
+																	</div>
+																</div>
+																<div class="col-sm-4 col-md-4 col-lg-3">
+																	<div class="form-group">
+																		<div class="input-group input-group-sm input-group-minimal">
+																			<span class="input-group-addon">
+																				协议开始时间：
+																			</span>
+																			<input type="text" class="form-control form_date">
+																		</div>
+																	</div>
+																</div>
+																<div class="col-sm-4 col-md-4 col-lg-3">
+																	<div class="form-group">
+																		<div class="input-group input-group-sm input-group-minimal">
+																			<span class="input-group-addon">
+																				协议到期时间：
+																			</span>
+																			<input type="text" class="form-control form_date">
+																		</div>
+																	</div>
+																</div>
+																<div class="col-sm-4 col-md-4 col-lg-3">
+																	<div class="form-group">
+																		<div class="input-group input-group-sm input-group-minimal">
+																			<span class="input-group-addon">
+																				协议签订时间：
+																			</span>
+																			<input type="text" class="form-control form_date">
+																		</div>
+																	</div>
+																</div>
+																<div class="col-sm-4 col-md-4 col-lg-3">
+																	<div class="form-group">
+																		<div class="input-group input-group-sm input-group-minimal">
+																			<span class="input-group-addon">
+																				协议签订时间：
+																			</span>
+																			<input type="text" class="form-control form_date">
+																		</div>
+																	</div>
+																</div>
+																<div class="col-sm-4 col-md-4 col-lg-3">
+																	<div class="form-group">
+																		<div class="input-group input-group-sm input-group-minimal">
+																			<span class="input-group-addon">
+																				限时代卖部门：
+																			</span>
+																			<select class="form-control s2example">
+																				<option>精耕人</option>
+																				<option>精耕人</option>
+																				<option>精耕人</option>
+																				<option>精耕人</option>
+																				<option>精耕人</option>
+																			</select>
+																		</div>
+																	</div>
+																</div>
+																<div class="col-sm-4 col-md-4 col-lg-3">
+																	<div class="form-group">
+																		<div class="input-group input-group-sm input-group-minimal">
+																			<span class="input-group-addon">
+																				限时代卖人：
+																			</span>
+																			<select class="form-control s2example">
+																				<option>精耕人</option>
+																				<option>精耕人</option>
+																				<option>精耕人</option>
+																				<option>精耕人</option>
+																				<option>精耕人</option>
+																			</select>
+																		</div>
+																	</div>
+																</div>
+																<div class="col-sm-4 col-md-4 col-lg-3">
+																	<div class="form-group">
+																		<div class="input-group input-group-sm input-group-minimal">
+																			<span class="input-group-addon">
+																				限时代卖人电话：
+																			</span>
+																			<input class="form-control" type="text">
+																		</div>
+																	</div>
+																</div>
+																<div class="col-sm-4 col-md-4 col-lg-3">
+																	<div class="form-group">
+																		<div class="input-group input-group-sm input-group-minimal">
+																			<span class="input-group-addon">
+																				委托面积：
+																			</span>
+																			<input class="form-control" type="text">
+																		</div>
+																	</div>
+																</div>
+																<div class="col-sm-4 col-md-4 col-lg-3">
+																	<div class="form-group">
+																		<div class="input-group input-group-sm input-group-minimal">
+																			<span class="input-group-addon">
+																				委托价格：
+																			</span>
+																			<input class="form-control heiht37" type="text">
+																		</div>
+																	</div>
+																</div>
+																<div class="col-sm-4 col-md-4 col-lg-3">
+																	<div class="form-group">
+																		<div class="input-group input-group-sm input-group-minimal">
+																			<span class="input-group-addon">
+																				保证金金额：
+																			</span>
+																			<input class="form-control heiht37" type="text">
+																		</div>
+																	</div>
+																</div>
+																<div class="col-sm-12 col-md-12 col-lg-12">
+																	（温馨提示：以实际为准，不要填错，如填错会被驳回处理）
+																</div>
+																<div class="clearfix"></div>
+																<div class="col-lg-12">
+																	<label class="control-label" style="padding:5px 6px;">上传类型：</label>
+																	<div class="row">
+																		<div class="col-sm-4 col-md-4 col-lg-3">
+																			<div class="form-group">
+																				<div class="input-group input-group-sm input-group-minimal">
+																					<span class="cbr-inline input-group-addon">
+																						<input type="checkbox" class="cbr">
+																						产权证地址
+																					</span>
+																					<input class="form-control" type="text">
+																				</div>
+																			</div>
+																		</div>
+																		<div class="col-sm-4 col-md-4 col-lg-3">
+																			<div class="form-group">
+																				<div class="input-group input-group-sm input-group-minimal">
+																					<span class="cbr-inline input-group-addon">
+																						<input type="checkbox" class="cbr">
+																						国土证地址
+																					</span>
+																					<input class="form-control" type="text">
+																				</div>
+																			</div>
+																		</div>
+																		<div class="col-sm-4 col-md-4 col-lg-3">
+																			<div class="form-group">
+																				<div class="input-group input-group-sm input-group-minimal">
+																					<span class="cbr-inline input-group-addon">
+																						<input type="checkbox" class="cbr">
+																						商品买卖合同地址
+																					</span>
+																					<input class="form-control" type="text">
+																				</div>
+																			</div>
+																		</div>
+																		<div class="col-sm-4 col-md-4 col-lg-3">
+																			<div class="form-group">
+																				<div class="input-group input-group-sm input-group-minimal">
+																					<span class="cbr-inline input-group-addon">
+																						<input type="checkbox" class="cbr">
+																						商品买卖合同及地址
+																					</span>
+																					<input class="form-control" type="text">
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+																<div class="col-sm-4 col-md-4 col-lg-3">
+																	<div class="form-group">
+																		<div class="input-group input-group-sm input-group-minimal">
+																			<span class="input-group-addon">
+																				更换上传：
+																			</span>
+																			<select class="form-control  padd78">
+																				<option>限时委托代理销售协议</option>
+																				<option>限时委托代理销售协议</option>
+																			</select>
+																			<button type="button" class="btn btn-secondary btn-single postionauto">图片上传</button>
+																		</div>
+																	</div>
+																</div>
+																<div class="col-md-12">
+																	<div class="panel  panel-gray dujia_sc_hearder">
+																		<div class="panel-heading padd_hearde">
+																			<h3 class="panel-title">限时委托代理销售协议（请上传原件）</h3>
+																		</div>
+																		<div class="panel-body">
+																			<div class="col-sm-6 col-md-4 col-lg-3">
+																				图片
+																			</div>
+																			<div class="col-sm-6 col-md-4 col-lg-3">
+																				图片
+																			</div>
+																			<div class="col-sm-6 col-md-4 col-lg-3">
+																				图片
+																			</div>
+																		</div>
+																	</div>
+																</div>
+																<div class="col-md-12">
+																	<div class="panel  panel-gray dujia_sc_hearder">
+																		<div class="panel-heading padd_hearde">
+																			<h4 class="panel-title">附件（请上传身份证,产权证或者国土证）（必须上传）</h4>
+																		</div>
+																		<div class="panel-body">
+																			<div class="col-sm-6 col-md-4 col-lg-3">
+																				图片
+																			</div>
+																			<div class="col-sm-6 col-md-4 col-lg-3">
+																				图片
+																			</div>
+																			<div class="col-sm-6 col-md-4 col-lg-3">
+																				图片
+																			</div>
+																		</div>
+																	</div>
+																</div>
+																<div class="col-md-12 col-sm-12">
+																	<div class="form-group">
+																		<div class="input-group input-group-minimal">
+																			<span class="input-group-addon">备注：</span>
+																			<textarea class="form-control"></textarea>
+																		</div>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+													<button class="btn btn-secondary btn-icon btn-icon-standalone" style="padding: 0px !important; margin-top: 10px;">
+														<i class="fa-print"></i>
+														<span>保存</span>
+													</button>
+												</div>
+											</div>
+										</div>
+										<div class="tab-pane" id="v4-messages">
+											<div class="row text-right" style="padding-bottom: 20px;">
+												<div class="col-sm-4 col-md-4 col-lg-3 pull-left">
+													<div class="input-group input-group-sm input-group-minimal">
+														<span class="input-group-addon">
+															精耕内容：
+														</span>
+														<select class="form-control s2example">
+															<option>楼盘名称</option>
+															<option>楼盘名称</option>
+															<option>楼盘名称</option>
+															<option>楼盘名称</option>
+															<option>楼盘名称</option>
+														</select>
+													</div>
+												</div>
+											</div>
+											<div class="panel-heading">
+												<h3 class="panel-title">有效，请按下列步骤进行拖出合同。</h3>
+												<h3 class="panel-title">无效/已租/预定/违约，不能进行业务操作。</h3>
+											</div>
+											<div class="panel  panel-gray dujia_sc_hearder">
+												<div class="panel-heading padd_hearde">
+													<h3 class="panel-title">合同信息</h3>
+												</div>
+												<div class="panel-body">
+													<div class="col-sm-6 col-md-4 col-lg-3">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon">
+																	财务类型
+																</span>
+																<select class="form-control">
+																	<option></option>
+																</select>
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-6 col-md-4 col-lg-3">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon red">
+																	合同签约
+																</span>
+																<input class="form-control" type="text">
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-6 col-md-4 col-lg-3">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon red">
+																	业务类型
+																</span>
+																<select class="form-control">
+																	<option></option>
+																</select>
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-6 col-md-4 col-lg-3">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon">
+																	合同类型
+																</span>
+																<select class="form-control">
+																	<option></option>
+																</select>
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-6 col-md-4 col-lg-3">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon red">
+																	签单日期
+																</span>
+																<input class="form-control form_date" type="text">
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="panel  panel-gray dujia_sc_hearder">
+												<div class="panel-heading padd_hearde">
+													<h3 class="panel-title">租赁方信息</h3>
+												</div>
+												<div class="panel-body">
+													<div class="col-sm-6 col-md-6 col-lg-4">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon red">
+																	委托编号：
+																</span>
+																<input type="text" class="form-control">
+																<button type="button" class="btn btn-secondary btn-single postionauto">填充</button>
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-6 col-md-4 col-lg-3">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon red">
+																	身份证号码
+																</span>
+																<input type="text" class="form-control">
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-6 col-md-4 col-lg-3">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon">
+																	联系地址
+																</span>
+																<input type="text" class="form-control">
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-12 col-md-6 col-lg-6">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon red">
+																	委托来源
+																</span>
+																<input class="form-control" type="text">
+																<span class="input-group-addon">-</span>
+																<select class="form-control">
+																	<option>请选择</option>
+																</select>
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-12 col-md-6 col-lg-6">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon red">
+																	联系电话
+																</span>
+																<input class="form-control" type="text">
+																<span class="input-group-addon">-</span>
+																<select class="form-control">
+																	<option>请选择</option>
+																</select>
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-6 col-md-4 col-lg-3">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon">
+																	户口所在地
+																</span>
+																<input type="text" class="form-control">
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-12 col-md-12 col-lg-12">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon">
+																	备注
+																</span>
+																<textarea class="form-control" type="text"></textarea>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="panel  panel-gray dujia_sc_hearder">
+												<div class="panel-heading padd_hearde">
+													<h3 class="panel-title">房源信息</h3>
+												</div>
+												<div class="panel-body">
+													<div class="col-sm-6 col-md-6 col-lg-4">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon red">
+																	委托编号：
+																</span>
+																<input type="text" class="form-control">
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-12 col-md-12 col-lg-12">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon red">
+																	房屋地址
+																</span>
+																<input class="form-control" type="text">
+																<span class="input-group-addon">-</span>
+																<input class="form-control" type="text">
+																<span class="input-group-addon">-</span>
+																<input class="form-control" type="text">
+																<span class="input-group-addon">-</span>
+																<input class="form-control" type="text">
+																<span class="input-group-addon">-</span>
+																<input class="form-control" type="text">
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-12 col-md-12 col-lg-12">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon red">
+																	户型
+																</span>
+																<select class="form-control">
+																	<option>请选择</option>
+																</select>
+																<span class="input-group-addon">-</span>
+																<select class="form-control">
+																	<option>请选择</option>
+																</select>
+																<span class="input-group-addon">-</span>
+																<select class="form-control">
+																	<option>请选择</option>
+																</select>
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-6 col-md-4 col-lg-3">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon red">
+																	产权面积
+																</span>
+																<input type="text" class="form-control">
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-6 col-md-4 col-lg-3">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon red">
+																	房屋是否抵押
+																</span>
+																<select class="form-control">
+																	<option>请选择</option>
+																</select>
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-6 col-md-4 col-lg-3">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon red">
+																	房屋权属
+																</span>
+																<select class="form-control">
+																	<option>请选择</option>
+																</select>
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-6 col-md-4 col-lg-3">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon">
+																	产权人
+																</span>
+																<input type="text" class="form-control">
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-6 col-md-4 col-lg-3">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon red">
+																	产权人与出租人关系
+																</span>
+																<select class="form-control">
+																	<option>请选择</option>
+																</select>
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-6 col-md-4 col-lg-3">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon red">
+																	产权证明（1）
+																</span>
+																<select class="form-control">
+																	<option>请选择</option>
+																</select>
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-6 col-md-4 col-lg-3">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon red">
+																	产权编号
+																</span>
+																<input type="text" class="form-control">
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-6 col-md-4 col-lg-3">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon ">
+																	产权地址
+																</span>
+																<input type="text" class="form-control">
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-6 col-md-4 col-lg-3">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon red">
+																	产权证明（1）
+																</span>
+																<select class="form-control">
+																	<option>请选择</option>
+																</select>
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-6 col-md-4 col-lg-3">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon red">
+																	产权编号
+																</span>
+																<input type="text" class="form-control">
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-6 col-md-4 col-lg-3">
+														<div class="form-group">
+															<div class="input-group input-group-sm input-group-minimal">
+																<span class="input-group-addon">
+																	产权地址
+																</span>
+																<input type="text" class="form-control">
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="tab-pane" id="v4-settings">
+											<div class="row text-right" style="padding-bottom: 20px;">
+												<div class="col-sm-4 col-md-4 col-lg-3 pull-right">
+													<div class="input-group input-group-sm input-group-minimal">
+														<span class="input-group-addon">
+															栋座：
+														</span>
+														<select class="form-control s2example">
+															<option>楼盘名称</option>
+															<option>楼盘名称</option>
+															<option>楼盘名称</option>
+															<option>楼盘名称</option>
+															<option>楼盘名称</option>
+														</select>
+													</div>
+												</div>
+												<div class="col-sm-4 col-md-4 col-lg-3 pull-right">
+													<div class="input-group input-group-sm input-group-minimal">
+														<span class="input-group-addon">
+															单元：
+														</span>
+														<select class="form-control s2example">
+															<option>楼盘名称</option>
+															<option>楼盘名称</option>
+															<option>楼盘名称</option>
+															<option>楼盘名称</option>
+															<option>楼盘名称</option>
+														</select>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									
+								</div>	
+							
+							</div>
+					<div style="clear: both;"></div>
+				</div>
+				<!-- Main Footer -->
+			</div>
+
+		</div>
+
+		<div class="go-up" style="position: fixed;right: 15px; bottom: 10px; z-index: 9999; background: #f7aa47;padding: 10px;filter:alpha(opacity=50);moz-opacity:0.5;opacity:0.5;">
+			<a href="#" rel="go-top">
+				<i class="fa-arrow-up" style="font-size: 3em;"></i>
+			</a>
+		</div>
+	</body>
+
+</html>
+
+<!-- Bottom Scripts -->
+<script src="../../assets/js/bootstrap.min.js"></script>
+<script src="../../assets/js/TweenMax.min.js"></script>
+<script src="../../assets/js/resizeable.js"></script>
+<script src="../../assets/js/joinable.js"></script>
+<script src="../../assets/js/xenon-api.js"></script>
+<script src="../../assets/js/xenon-toggles.js"></script>
+<script src="../../assets/js/moment.min.js"></script>
+
+<!-- Imported scripts on this page -->
+<link rel="stylesheet" href="../../assets/js/daterangepicker/daterangepicker-bs3.css">
+<link rel="stylesheet" href="../../assets/js/select2/select2.css">
+<link rel="stylesheet" href="../../assets/js/select2/select2-bootstrap.css">
+<link rel="stylesheet" href="../../assets/js/multiselect/css/multi-select.css">
+<script src="../../assets/js/rwd-table/js/rwd-table.js"></script>
+<script src="../../assets/js/daterangepicker/daterangepicker.js"></script>
+<script src="../../assets/js/datepicker/bootstrap-datepicker.js"></script>
+<script src="../../assets/js/timepicker/bootstrap-timepicker.min.js"></script>
+<script src="../../assets/js/colorpicker/bootstrap-colorpicker.min.js"></script>
+<script src="../../assets/js/select2/select2.min.js"></script>
+<script src="../../assets/js/xenon-custom.js"></script>
+
+<link rel="stylesheet" href="../../assets/js/datepicker/bootstrap-datetimepicker.min.css">
+<!-- Imported scripts on this page  xiala-->
+<script type="text/javascript" src="../../assets/js/datepicker/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+<script type="text/javascript" src="../../assets/js/datepicker/bootstrap-datetimepicker.zh-CN.js"></script>
+<script src="../../assets/js/xenon-custom.js"></script>
+
+<script type="text/javascript">
+	$('.form_date').datetimepicker({
+		//$('.form_date').datetimepicker({ “form_datetime” 时分秒
+		language: 'zh-CN',
+		weekStart: 1,
+		todayBtn: 1,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 2,
+		minView: 2,
+		forceParse: 0
+	});
+	$(".form_datetime").datetimepicker({
+		format: 'yyyy-mm-dd:hh:ii',
+		language: 'zh-CN',
+	});
+	function xzjgneiron(obj){
+		if($(obj).val()==0)
+		{
+			$("#weituofanyuan").show();
+			$("#weituoyaoshi").hide();
+			$("#weituoqifankan").hide();
+			$("#weituodujia").hide();
+		}
+		else if($(obj).val()==1)
+		{
+			$("#weituofanyuan").hide();
+			$("#weituoyaoshi").show();
+			$("#weituoqifankan").hide();
+			$("#weituodujia").hide();
+		}
+		else if($(obj).val()==2)
+		{
+			$("#weituofanyuan").hide();
+			$("#weituoyaoshi").hide();
+			$("#weituoqifankan").show();
+			$("#weituodujia").hide();
+		}
+		else if($(obj).val()==3)
+		{
+			$("#weituofanyuan").hide();
+			$("#weituoyaoshi").hide();
+			$("#weituoqifankan").hide();
+			$("#weituodujia").show();
+		}
+	}
+	function jiecujingen(obj){
+		if($(obj).val()==0)
+		{
+			$("#jc_jibenxinxi").show();
+			$("#jc_shanquanjinli").hide();
+			$("#jc_yezujinli").hide();
+			$("#jc_dianhuagenjin").hide();
+			$("#jc_duishougenjin").hide();
+		}
+		else if($(obj).val()==1)
+		{
+			$("#jc_jibenxinxi").hide();
+			$("#jc_shanquanjinli").show();
+			$("#jc_yezujinli").hide();
+			$("#jc_dianhuagenjin").hide();
+			$("#jc_duishougenjin").hide();
+		}
+		else if($(obj).val()==2)
+		{
+			$("#jc_jibenxinxi").hide();
+			$("#jc_shanquanjinli").hide();
+			$("#jc_yezujinli").show();
+			$("#jc_dianhuagenjin").hide();
+			$("#jc_duishougenjin").hide();
+		}
+		else if($(obj).val()==3)
+		{
+			$("#jc_jibenxinxi").hide();
+			$("#jc_shanquanjinli").hide();
+			$("#jc_yezujinli").hide();
+			$("#jc_dianhuagenjin").show();
+			$("#jc_duishougenjin").hide();
+		}
+		else if($(obj).val()==4)
+		{
+			$("#jc_jibenxinxi").hide();
+			$("#jc_shanquanjinli").hide();
+			$("#jc_yezujinli").hide();
+			$("#jc_dianhuagenjin").hide();
+			$("#jc_duishougenjin").show();
+		}
+	}
+</script>
+<script type="text/javascript">
+	jQuery(document).ready(function($) {
+		$(".s2example").select2({
+			placeholder: '请输入搜索条件...',
+			allowClear: true
+		}).on('select2-open', function() {
+			// Adding Custom Scrollbar
+			$(this).data('select2').results.addClass('overflow-hidden').perfectScrollbar();
+		});
+	});
+</script>
+<script type="text/javascript">
+	// Sample Javascript code for this page
+	jQuery(document).ready(function($) {
+		// Edit Modal
+		$('.gallery-env a[data-action="edit"]').on('click', function(ev) {
+			ev.preventDefault();
+			$("#gallery-image-modal").modal('show');
+		});
+		// Delete Modal
+		$('.gallery-env a[data-action="trash"]').on('click', function(ev) {
+			ev.preventDefault();
+			$("#gallery-image-delete-modal").modal('show');
+		});
+		// Sortable
+		$('.gallery-env a[data-action="sort"]').on('click', function(ev) {
+			ev.preventDefault();
+			var is_sortable = $(".album-images").sortable('instance');
+			if (!is_sortable) {
+				$(".gallery-env .album-images").sortable({
+					items: '> div'
+				});
+				$(".album-sorting-info").stop().slideDown(300);
+			} else {
+				$(".album-images").sortable('destroy');
+				$(".album-sorting-info").stop().slideUp(300);
+			}
+		});
+	});
+</script>
+<div class="modal fade" id="Fenpai" data-backdrop="static">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+				<h4 class="modal-title">分派</h4>
+			</div>
+			<div class="modal-body">
+				<div class="table-responsive">
+					<table class="table">
+						<tbody class="middle-align">
+							<tr>
+								<td colspan="2">楼盘名称：爵世名邸 </td>
+							</tr>
+							<tr>
+								<td colspan="2" class="red">确定分派0条房源？</td>
+							</tr>
+							<tr>
+								<td width="130">选择接收店组： </td>
+								<td>
+									<select class="form-control s2example">
+										<option>请选择接收店组</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td width="130">选择接收经纪人： </td>
+								<td>
+									<select class="form-control s2example">
+										<option>请选择接受经纪人</option>
+									</select>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-info">保存</button>
+				<button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,128 @@
+package com.newenv.communityFocus.services;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
+
+import org.nutz.dao.entity.Record;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.newenv.communityFocus.base.BaseService;
+import com.newenv.communityFocus.dao.DaoHelper;
+@Component
+@Path("/syscsServices")
+public class SyscsServices  extends BaseService {
+	
+	@Autowired
+	private DaoHelper daoHelper;
+	/**
+	 * 根据名字查询系统参数
+	 * @param name
+	 * @return
+	 */
+	@GET
+	@Produces("application/json"+ ";charset=UTF-8")
+	@Consumes("application/json")
+	@Path("/syscs/name/{name}")
+	public Response getSyscsParamByName(@PathParam("name") String name)
+	{
+		 	String sql ="SELECT id,name FROM xhj_syscs_1 where sid = (select  sid from xhj_syscs where name = '"+name+"')";
+	 		List<Record> rl = daoHelper.getRecordList(sql.toString());
+	 		return Response.ok().entity(rl).build();
+	}
+	/**
+	 * 根据id查询系统参数
+	 * @param id
+	 * @return
+	 */
+	@GET
+	@Produces("application/json"+ ";charset=UTF-8")
+	@Consumes("application/json")
+	@Path("/syscs/id/{id}")
+	public Response getSyscsParamById(@PathParam("id") Integer id)
+	{
+		 String sql ="SELECT * FROM xhj_syscs_1 where sid =  " + id;
+			List<Record> rl = daoHelper.getRecordList(sql.toString());
+	 		return Response.ok().entity(rl).build();
+	}
+	
+	
+	/**
+	 * 根据搜索条件模糊匹配查询部门
+	 * */
+	@GET
+	@Produces("application/json"+ ";charset=UTF-8")
+	@Consumes("application/json")
+	@Path("/queryBM/city/{cityId}/user/{userid}")
+	public Response queryBM(@PathParam("cityId") String cityId,@PathParam("userid") String userid)
+	{
+		String cityId1 = String.valueOf(this.getRequest().getParameter("city"));
+		System.out.println(cityId1);
+		String sql1 = "select title_name,tbl_organization_id from tbl_title  where id = (select tbl_title from tbl_user_profile where id = "+userid+")";
+		List<Record> rl1 = daoHelper.getRecordList(sql1.toString());
+		String string =  "";
+		Integer organizationid = 0;
+		List<Record> rl = new ArrayList<Record>();
+		if(null !=rl1 && rl1.size()>0)
+		{
+			Record record = rl1.get(0);
+			string = record.getString("title_name");
+			organizationid = record.getInt("tbl_organization_id");
+
+			String sql ="";
+			if(organizationid==85)
+			{
+				sql = "SELECT dept1_id as id,dept1_name as department_name  from view_alldepartment where dept2_id = (select tbl_department_id from tbl_user_profile where id ="+userid+" )";
+				
+			}else if(organizationid == 88)
+			{
+				sql = "SELECT id,department_name from tbl_department where id = (select tbl_department_id from tbl_user_profile where id ="+userid+" )";
+			}
+			rl = daoHelper.getRecordList(sql);
+		}
+//		String sql = "select td.id,td.department_name from tbl_department td,tbl_user_profile tup where tup.tbl_department_id = td.id and  td.tbl_organization_id = 88  and td.flag=1 and td.cityId="+cityId+" and tup.id="+userid;
+	 	return Response.ok().entity(rl).build();
+	}
+	
+	/**
+	 * 根据搜索条件模糊匹配查询部门
+	 * */
+	@GET
+	@Produces("application/json"+ ";charset=UTF-8")
+	@Consumes("application/json")
+	@Path("/queryBM/city/{cityId}")
+	public Response queryBM(@PathParam("cityId") String cityId)
+	{
+		String cityId1 = String.valueOf(this.getRequest().getParameter("city"));
+		System.out.println(cityId1);
+		String sql = "select id,department_name from tbl_department  where tbl_organization_id = 88  and flag=1 and cityId=" +cityId;
+		List<Record> rl = daoHelper.getRecordList(sql.toString());
+	 	return Response.ok().entity(rl).build();
+	}
+	
+	
+	/**
+	 * 根据搜索条件模糊匹配查询部门jingjiren
+	 * */
+	@GET
+	@Produces("application/json"+ ";charset=UTF-8")
+	@Consumes("application/json")
+	@Path("/queryBMJJ/departmentId/{departmentId}")
+	public Response queryBMJJ(@PathParam("departmentId") String departmentId)
+	{
+		String sql = "select up.id,up.fullname from tbl_user_profile up, tbl_user_login ul ,tbl_position p, tbl_department d "
+				+" where up.id=ul.tbl_user_profile_id and p.tbl_user_id=ul.id and p.tbl_department_id=d.id and d.id="+departmentId;
+		List<String[]>  lists = new ArrayList<String[]>();
+		List<Record> rl = daoHelper.getRecordList(sql.toString());
+	 	return Response.ok().entity(rl).build();
+	}
+	
+}

@@ -1,0 +1,766 @@
+//js获取项目根路径，如： http://localhost:8083/uimcardprj
+function getRootPath(){
+    //获取当前网址，如： http://localhost:8083/uimcardprj/share/meun.jsp
+    var curWwwPath=window.document.location.href;
+    //获取主机地址之后的目录，如： uimcardprj/share/meun.jsp
+    var pathName=window.document.location.pathname;
+    var pos=curWwwPath.indexOf(pathName);
+    //获取主机地址，如： http://localhost:8083
+    var localhostPaht=curWwwPath.substring(0,pos);
+    //获取带"/"的项目名，如：/uimcardprj
+    var projectName=pathName.substring(0,pathName.substr(1).indexOf('/')+1);
+    return(localhostPaht+projectName);
+}
+function queryShangQuanForList(stressId){
+	$("#shangQuanSelect").empty();
+	$("#shangQuanSelect-1").empty();
+	$("#shangQuanSelect-2").empty();
+	$("#shangQuanSelect-3").empty();
+	var url = getRootPath()+"/services/assignResponsiblePersonService/queryShangQuanForList";
+	var requestParameter = new Object();
+	if(stressId == ""){
+		stressId = $("#stressSelect option:selected").val();
+	}
+	requestParameter.stressId = stressId;
+	var dataJson = JSON.stringify(requestParameter);
+	var result = $.ajax({
+		url : url,
+		data : dataJson,
+		type : "POST",
+		dataType : "json",
+		contentType : "application/json;charset=UTF-8",
+		async : false
+	})
+	var dataResult = $.parseJSON(result.responseText);
+	var pre ="<option value='hhh'>请选择商圈</option>"
+	var html = "";
+	for(var i=0;i<dataResult.length;i++){
+		var data = dataResult[i];
+		html += "<option value='"+data.id+"'>"+data.sq_name+"</option>"
+	}
+	$("#shangQuanSelect").append(html);
+	$("#shangQuanSelect-1").append(pre+html);
+	$("#shangQuanSelect-2").append(html);
+	$("#shangQuanSelect-3").append(html);
+	$('#shangQuanSelect-1').select2().select2('val', $('#shangQuanSelect-1 option:eq(0)').val());
+	$('#buildingSelect-2').select2().select2('val', $('#buildingSelect-2 option:eq(0)').val());
+	$('#buildingSelect-2').empty();
+}
+
+function queryAllQuYuForList(){
+	$("#quYuSelect").empty();
+	$("#stressSelect").empty();
+	$("#quYuSelect-1").empty();
+	$("#quYuSelect-2").empty();
+	var url = getRootPath()+"/services/assignResponsiblePersonService/queryQuYuForList?cityId=1";
+	var result = $.ajax({
+		url : url,
+		type : "GET",
+		dataType : "json",
+		contentType : "application/json;charset=UTF-8",
+		async : false
+	})
+	var dataResult = result.responseJSON.result;
+	var html = "<option value='hhh'>请选择区域</option>";
+	for(var i=0;i<dataResult.length;i++){
+		var data = dataResult[i];
+		html += "<option value='"+data.id+"'>"+data.qy_name+"</option>"
+	}
+	$("#quYuSelect").append(html);
+	$("#stressSelect").append(html);
+	$("#quYuSelect-1").append(html);
+	$("#quYuSelect-2").append(html);
+}
+
+function queryBuildingForList(shangQuan){
+	$("#building-ul").empty();
+	$("#building-ul-1").empty();
+	$("#buildingSelect-1").empty();
+	$("#buildingSelect-2").empty();
+	var sqId = $("#"+shangQuan+" option:selected").val();
+	var url = getRootPath()+"/services/assignResponsiblePersonService/queryBuildingForList";
+	var requestParameter = new Object();
+	requestParameter.sqId = sqId;
+	var dataJson = JSON.stringify(requestParameter);
+	var result = $.ajax({
+		url : url,
+		data : dataJson,
+		type : "POST",
+		dataType : "json",
+		contentType : "application/json;charset=UTF-8",
+		async : false
+	})
+	var dataResult = $.parseJSON(result.responseText);
+	var pre ="<option value='hhh'>请选择楼盘</option>"
+	var html = "";
+	if(shangQuan == "shangQuanSelect"){
+		$("#buildingNumTips").text("共搜索到"+dataResult.length+"个楼盘");
+		for(var i=0;i<dataResult.length;i++){
+			var data = dataResult[i];
+			html += "<li class='ms-elem-selectable' id='"+data.id+"' onclick='selectBuilding(\""+data.id+"\",\""+data.lp_name+"\",\"building-ul\")'><span>"+data.lp_name+"</span></li>"
+		}
+		$("#building-ul").append(html);
+	}else if(shangQuan == "shangQuanSelect-3"){
+		$("#buildingNumTips-1").text("共搜索到"+dataResult.length+"个楼盘");
+			for(var i=0;i<dataResult.length;i++){
+				var data = dataResult[i];
+				html += "<li class='ms-elem-selectable' id='"+data.id+"' onclick='selectBuilding(\""+data.id+"\",\""+data.lp_name+"\",\"building-ul-1\")'><span>"+data.lp_name+"</span></li>"
+			}
+			$("#building-ul-1").append(html);
+	}else{
+		for(var i=0;i<dataResult.length;i++){
+			var data = dataResult[i];
+			html += "<option value='"+data.id+"'>"+data.lp_name+"</option>"
+		}
+		$("#buildingSelect-1").append(html);
+		$("#buildingSelect-2").append(pre+html);
+		$('#buildingSelect-2').select2().select2('val', $('#buildingSelect-2 option:eq(0)').val());
+	}
+	
+}
+
+function selectBuilding(buildingId,buildingName,buildingCss){
+	var html = "";
+	var obj = "";
+	var selectObj = "";
+	if(buildingCss == 'building-ul'){
+		obj = "select-building-ul";
+		selectObj = obj;
+	}else if(buildingCss == 'building-ul-1'){
+		obj = "select-building-ul-1";
+		selectObj = obj;
+	}else if(buildingCss == 'select-building-ul'){
+		obj = "building-ul";
+		selectObj = buildingCss;
+	}else if(buildingCss == 'select-building-ul-1'){
+		obj = "building-ul-1";
+		selectObj = buildingCss;
+	}
+	
+	html += "<li class='ms-elem-selectable' id='"+buildingId+"' onclick='selectBuilding(\""+buildingId+"\",\""+buildingName+"\",\""+obj+"\")'><span>"+buildingName+"</span></li>";
+	$("#"+obj).append(html);
+	$("#"+buildingCss+" li[id="+buildingId+"]").remove();
+	var selectBuildingNum = $("#"+selectObj+" li").length;
+	if($("#selectBuildingNum").length >0){
+		$("#selectBuildingNum").text("确定分派"+selectBuildingNum+"个楼盘给责任人");
+	}
+	if($("#selectBuildingNum-1").length >0){
+		$("#selectBuildingNum-1").text("确定分派"+selectBuildingNum+"个楼盘给责任人");
+	}
+}
+
+function closeClear(){
+	$("#building-ul").empty();
+	$("#building-ul-1").empty();
+	$("#shangQuanSelect").empty();
+	$("#shangQuanSelect-2").empty();
+	$("#shangQuanSelect-3").empty();
+	$("#select-building-ul").empty();
+	$("#select-building-ul-1").empty();
+	$("#buildingSelect-1").empty();
+	$("#citySelect").empty();
+	$("#citySelect-1").empty();
+	$("#citySelect-2").empty();
+	$("#viceManagerSelect").empty();
+	$("#quYuSelect").empty();
+	$("#shangQuanSelect").append("<option value='hhh' selected='selected'>请选择商圈</option>");
+	$("#shangQuanSelect-2").append("<option value='hhh'>请选择商圈</option>");
+	$("#shangQuanSelect-3").append("<option value='hhh'>请选择商圈</option>");
+	$("#buildingSelect-1").append("<option value='hhh'>请选择楼盘</option>");
+	$("#selectBuildingNum").text("确定分派0个楼盘给责任人");
+	$("#buildingNumTips").text("共搜索到0个楼盘");
+	$("#selectBuildingNum-1").text("确定分派0个楼盘给责任人");
+	$("#buildingNumTips-1").text("共搜索到0个楼盘");
+	$("#viceManagerSelect-3").val("");
+	$("#viceManagerSelect-2").val("");
+	$("#viceManagerSelect").val("");
+}
+
+
+function queryCityForList(selectId){
+	var requestParameter = new Object();
+	requestParameter.cityId = "1";
+	var jsonData = JSON.stringify(requestParameter);
+	var url = getRootPath()+"/services/assignResponsiblePersonService/queryCityForList";
+	var result = $.ajax({
+		url : url,
+		type : "POST",
+		dataType : "json",
+		data : jsonData,
+		contentType : "application/json;charset=UTF-8",
+		async : false
+	})
+	var dataResult = $.parseJSON(result.responseText);
+	var html = "";
+	var cityId = "";
+	var cityName = "";
+	for(var i=0;i<dataResult.length;i++){
+		var data = dataResult[i];
+		cityId = data.id;
+		cityName = data.city_name;
+	}
+	$("#"+selectId).text(cityName);
+	$("#"+selectId).attr("value",cityId);
+}
+
+function queryLevelPersonForList(selectId,city){
+	$("#"+selectId).empty();
+	var requestParameter = new Object();
+	requestParameter.cityId = $("#"+city).attr("value");
+	var dataJson = JSON.stringify(requestParameter);
+	var url = getRootPath()+"/services/assignResponsiblePersonService/queryLevelPersonForList";
+	var result = $.ajax({
+		url : url,
+		data : dataJson,
+		type : "POST",
+		dataType : "json",
+		contentType : "application/json;charset=UTF-8",
+		async : false
+	})
+	var dataResult = $.parseJSON(result.responseText);
+	var html = "";
+	for(var i=0;i<dataResult.length;i++){
+		var data = dataResult[i];
+		html += "<option value='"+data.tbl_user_profile_id+"'>"+data.fullname+"</option>"
+	}
+	$("#"+selectId).append(html);
+}
+
+function openModal(){
+	closeClear();
+	queryCityForList("citySelect");
+	queryResponsibleByName("viceManagerSelect");
+	queryAllQuYuForList();
+	$("#quYuSelect").select2({
+		placeholder: '请输入搜索条件...',
+		allowClear: true
+	}).on('select2-open', function() {
+		$(this).data('select2').results.addClass('overflow-hidden').perfectScrollbar();
+	}).on("change",function(e){
+		var quYuId = $("#quYuSelect option:selected").val();
+		queryShangQuanForList(quYuId);
+		queryBuildingForList("shangQuanSelect");
+	});
+	jQuery('#modal-1').modal('show', {backdrop: 'fade'});
+}
+
+function openModal1(){
+	closeClear();
+	queryCityForList("citySelect-1");
+	queryResponsibleByName("viceManagerSelect-2");
+	queryAllQuYuForList();
+	$("#quYuSelect-1").select2({
+		placeholder: '请输入搜索条件...',
+		allowClear: true
+	}).on('select2-open', function() {
+		$(this).data('select2').results.addClass('overflow-hidden').perfectScrollbar();
+	}).on("change",function(e){
+		var quYuId = $("#quYuSelect-1 option:selected").val();
+		queryShangQuanForList(quYuId);
+		queryBuildingForList("shangQuanSelect-2");
+	});	
+	jQuery('#modal-2').modal('show', {backdrop: 'fade'});
+}
+
+function assignResponsiblePerson(){
+	var buildingIdStr = "";
+	var selectBuilding = $("#select-building-ul li");
+	if($("#viceManagerSelect").val() == ""){
+		alert("请选择责任人");
+		return;
+	}
+	if(selectBuilding.length == 0){
+		alert("请选择楼盘");
+		return;
+	}else{
+		for(var i=0;i<selectBuilding.length;i++){
+			var obj = selectBuilding[i];
+			buildingIdStr += $(obj).attr("id");
+			if(i != selectBuilding.length-1){
+				buildingIdStr += ",";
+			}
+		}
+	}
+	var responsiblePersonIdStr = $("#viceManagerSelect").val();
+	var requestParameter = new Object();
+	requestParameter.cityId = $("#citySelect").attr("value");
+	requestParameter.buildingIdStr = buildingIdStr;
+	requestParameter.responsiblePersonIdStr = responsiblePersonIdStr;
+	requestParameter.creatorId = "1";
+	
+	var url = getRootPath()+"/services/assignResponsiblePersonService/assignResponsiblePerson";
+	var dataJson = JSON.stringify(requestParameter);
+	var result = $.ajax({
+		url : url,
+		data : dataJson,
+		type : "POST",
+		dataType : "json",
+		contentType : "application/json;charset=UTF-8",
+		async : false
+	})
+	
+	var resultData = $.parseJSON(result.responseText);
+	if(resultData == 1){
+		$("#modal-1").modal("hide");
+		alert("分派成功");
+		queryResponsiblePersonForList(1,0);
+	}else{
+		alert("分派失败");
+	}
+}
+
+function queryResponsiblePersonForList(pageIndex,flag){
+	$("#responsiblePersonList").empty();
+	var postParameter = new Object();
+	var pageInfo = new Object();
+	pageInfo.page = pageIndex;
+	var requestParameter = new Object();
+	requestParameter.keyWord = "";
+	requestParameter.userName = $.trim($("#viceManagerSelect_1").val());
+	requestParameter.cityId = "1";
+	if($("#alreadyAssigned").is(":checked")){
+		requestParameter.keyWord = "1";
+	}
+	postParameter.pageInfo = pageInfo;
+	postParameter.requestParameter = requestParameter;
+	
+	var url = getRootPath()+"/services/assignResponsiblePersonService/queryCustomByPage";
+	var dataJson = JSON.stringify(postParameter);
+	var result = $.ajax({
+		url : url,
+		data : dataJson,
+		type : "POST",
+		dataType : "json",
+		contentType : "application/json;charset=UTF-8",
+		async : false
+	})
+	
+	var resultData = result.responseJSON.listJson.gridModel;
+ 	var index = result.responseJSON.listJson.page;
+ 	var html ="";
+ 	for(var i=0;i<resultData.length;i++){
+ 		var obj = resultData[i];
+ 		html += '<tr><td class="col-lg-1">'+((index-1)*10+i+1)+
+ 	 	'</td><td class="middle-align text-center">'+obj.fullname+'('+obj.department_name+')'+
+ 	 	'</td><td class="middle-align text-center">'+obj.assignnum+'/'+obj.sum+
+ 	 	'</td><td class="middle-align text-center">'+
+ 	 	'<a href="javascript:updateAssgin(\''+obj.tbl_user_profile_id+'\',\''+obj.fullname+'\',\''+obj.cityid+'\',\''+obj.city_name+'\')">分派/修改</a>'+
+ 	 	'</td><td class="middle-align text-center">'+obj.createdate+
+ 	 	'</td></tr>';
+ 	}
+ 	$("#responsiblePersonList").append(html);
+
+	page("responsiblePersonListPag",result.responseJSON.listJson.page,result.responseJSON.listJson.total,null,pageIndex,flag);
+	queryHeadMessage();
+}
+
+function queryBuildingForListByPage(pageIndex,flag){
+	if(flag == 1){
+		queryAllQuYuForList();
+		 $("#stressSelect").select2({
+			placeholder: '请输入搜索条件...',
+			allowClear: true
+		}).on('select2-open', function() {
+			$(this).data('select2').results.addClass('overflow-hidden').perfectScrollbar();
+		}); 
+	}
+	var stressId = $("#stressSelect option:selected").val();
+	var sqId = $("#shangQuanSelect-1 option:selected").val();
+	var buildingIdStr = $("#buildingSelect-2 option:selected").val();
+	$("#queryBuildingForList").empty();
+	var postParameter = new Object();
+	var pageInfo = new Object();
+	pageInfo.page = pageIndex;
+	var requestParameter = new Object();
+	if(typeof(stressId) != "undefined" && stressId != "hhh"){
+		requestParameter.stressId = stressId;
+	}
+	if(typeof(sqId) != "undefined" && sqId != "hhh"){
+		requestParameter.sqId = sqId;
+	}
+	if(typeof(buildingIdStr) != "undefined" && buildingIdStr != "hhh"){
+		requestParameter.buildingIdStr = buildingIdStr;
+	}
+	requestParameter.cityId = "1";
+	postParameter.pageInfo = pageInfo;
+	postParameter.requestParameter = requestParameter;
+	
+	var url = getRootPath()+"/services/assignResponsiblePersonService/queryBuildingForListByPage";
+	var dataJson = JSON.stringify(postParameter);
+	var result = $.ajax({
+		url : url,
+		data : dataJson,
+		type : "POST",
+		dataType : "json",
+		contentType : "application/json;charset=UTF-8",
+		async : false
+	})
+	
+	var resultData = result.responseJSON.listJson.gridModel;
+ 	var index = result.responseJSON.listJson.page;
+ 	var html ="";
+ 	for(var i=0;i<resultData.length;i++){
+ 		var obj = resultData[i];
+ 		html += '<tr><td class="col-lg-1">'+((index-1)*10+i+1)+
+ 		'</td><td class="middle-align text-center">'+obj.qy_name+
+ 		'</td><td class="middle-align text-center">'+obj.sq_name+
+ 		'</td><td class="middle-align text-center">'+obj.lp_name+
+ 		'</td><td class="middle-align text-center">'+obj.fullname+
+ 		'</td><td class="middle-align text-center">'+'<a href="javascript:updateAssgin1(\''+obj.qy_name+'\',\''+obj.sq_name+'\',\''+obj.lp_name+'\',\''+obj.lpid+'\')">分派/修改</a>'+
+ 		'</td><td class="middle-align text-center">'+obj.createdate+
+ 	    '</tr>';
+ 	}
+ 	$("#queryBuildingForList").append(html);
+	page("queryBuildingForListPag",result.responseJSON.listJson.page,result.responseJSON.listJson.total,null,pageIndex,flag);
+	queryHeadMessage();
+}
+
+function queryOperationRecordByPage(pageIndex,flag){
+	$("#operationRecordList").empty();
+	var postParameter = new Object();
+	var pageInfo = new Object();
+	pageInfo.page = pageIndex;
+	var requestParameter = new Object();
+	postParameter.pageInfo = pageInfo;
+	postParameter.requestParameter = requestParameter;
+	
+	var url = getRootPath()+"/services/assignResponsiblePersonService/queryOperationRecordByPage";
+	var dataJson = JSON.stringify(postParameter);
+	var result = $.ajax({
+		url : url,
+		data : dataJson,
+		type : "POST",
+		dataType : "json",
+		contentType : "application/json;charset=UTF-8",
+		async : false
+	})
+	
+	var resultData = result.responseJSON.listJson.gridModel;
+ 	var index = result.responseJSON.listJson.page;
+ 	var html ="";
+ 	for(var i=0;i<resultData.length;i++){
+ 		var obj = resultData[i];
+ 		html += '<tr><td class="col-lg-1">'+((index-1)*10+i+1)+
+ 	 	'</td><td class="middle-align text-center">'+obj.fullname+
+ 	 	'</td><td class="middle-align text-center">'+obj.department_name+
+ 	 	'</td><td class="middle-align text-center">'+obj.tel;
+ 		if(obj.lpnamestr == null){
+ 			html += '</td><td class="middle-align text-center" style="width:50%">'+obj.fullname+'取消责任人'+obj.username+"名下的楼盘"+
+ 	 	 	'<td class="middle-align text-center">'+obj.createdate+'</td></tr>';
+ 		}else{
+ 			html+= '</td><td class="middle-align text-center" style="width:50%">'+obj.fullname+'将'+obj.username+"分配给楼盘"+obj.lpnamestr+"作为责任人"+
+ 	 	 	'<td class="middle-align text-center">'+obj.createdate+'</td></tr>';
+ 		}
+ 	}
+ 	$("#operationRecordList").append(html);
+	page("operationRecordListPage",result.responseJSON.listJson.page,result.responseJSON.listJson.total,null,pageIndex,flag);
+	queryHeadMessage();
+}
+
+
+var historyPageIndex;
+function bindPageEvent(func){
+	var links = $("#macPageWidget li").find("a");
+	$.each(links, function(i, link1){
+		var link = $(link1);
+		var pageNum = link.attr("pageNum");
+		link.click(function(){
+			jumpPage(pageNum,func);
+		});
+	});
+}
+
+function jumpPage(pageNum,func){
+    if(func == "responsiblePersonListPag"){
+		queryResponsiblePersonForList(pageNum,0);
+	}else if(func == "queryBuildingForListPag"){
+		queryBuildingForListByPage(pageNum,0);
+	}else if(func == "operationRecordListPage"){
+		queryOperationRecordByPage(pageNum,0)
+	}
+}
+
+function assignResponsiblePerson1(){
+	var buildingIdStr = "";
+	var selectBuilding = $("#buildingSelect-1 option:selected").val();
+	if($("#viceManagerSelect-2").val() == ""){
+		alert("请选择责任人");
+		return;
+	}
+	if(typeof(selectBuilding) == "undefined" || selectBuilding == "hhh"){
+		alert("请选择楼盘");
+		return;
+	}else{
+		buildingIdStr = selectBuilding;
+	}
+	var responsiblePersonIdStr = $("#viceManagerSelect-2").val();
+	var requestParameter = new Object();
+	requestParameter.cityId = $("#citySelect-1").attr("value");
+	requestParameter.buildingIdStr = buildingIdStr;
+	requestParameter.responsiblePersonIdStr = responsiblePersonIdStr;
+	requestParameter.creatorId = "1";
+	
+	var url = getRootPath()+"/services/assignResponsiblePersonService/assignResponsiblePerson";
+	var dataJson = JSON.stringify(requestParameter);
+	var result = $.ajax({
+		url : url,
+		data : dataJson,
+		type : "POST",
+		dataType : "json",
+		contentType : "application/json;charset=UTF-8",
+		async : false
+	})
+	
+	var resultData = $.parseJSON(result.responseText);
+	if(resultData == 1){
+		$("#modal-2").modal("hide");
+		alert("分派成功");
+		queryBuildingForListByPage(1,0);
+	}else{
+		alert("分派失败");
+	}
+}
+
+function queryCustomByName(){
+	$("#viceManagerSelect_1").select2({
+		minimumInputLength: 1,
+		placeholder: '请输入小区名称搜索',
+		ajax: {
+			url: getRootPath()+"/services/assignResponsiblePersonService/queryViceManagerForList",
+			type: "GET",
+			dataType: 'json',
+			quietMillis: 100,
+			data: function(term, page) {
+				return {
+					"keyWord": term,
+					"cityId": "1"
+				};
+			},
+			results: function(data, page ) {
+				return { results: data.result }
+			}
+		},
+		formatResult: function(obj) { 
+			return "<div class='select2-user-result'>" + obj.fullname+"("+obj.department_name+ ")</div>";
+		},
+		formatSelection: function(obj) {
+			return obj.fullname+"("+obj.department_name+ ")";
+			$("#viceManagerSelect_1").val(obj.id);
+		}
+	}).on("change",function(e){
+		
+	});
+	
+}
+
+function queryResponsibleByName(select){
+	$("#"+select).select2({
+		minimumInputLength: 1,
+		placeholder: '请输入小区名称搜索',
+		ajax: {
+			url: getRootPath()+"/services/assignResponsiblePersonService/queryLevelPersonByName",
+			type: "GET",
+			dataType: 'json',
+			quietMillis: 100,
+			data: function(term, page) {
+				return {
+					"keyWord": term,
+					"cityId": "1"
+				};
+			},
+			results: function(data, page ) {
+				return { results: data.result }
+			}
+		},
+		formatResult: function(obj) { 
+			return "<div class='select2-user-result'>" + obj.fullname+"</div>";
+		},
+		formatSelection: function(obj) {
+			return obj.fullname;
+			$("#"+select).val(obj.id);
+		}
+	}).on("change",function(e){
+		
+	});
+	
+}
+
+function updateAssgin(pId,pName,cityId,cityName){
+	closeClear();
+	queryAllQuYuForList();
+	$("#quYuSelect-2").select2({
+		placeholder: '请输入搜索条件...',
+		allowClear: true
+	}).on('select2-open', function() {
+		$(this).data('select2').results.addClass('overflow-hidden').perfectScrollbar();
+	}).on("change",function(e){
+		var quYuId = $("#quYuSelect-2 option:selected").val();
+		queryShangQuanForList(quYuId);
+		queryBuildingForList("shangQuanSelect-3");
+	});	
+	$("#pName").text(pName);
+	$("#cityName").text(cityName);
+	queryPersonalAssign(pId);
+	$("#cityId").val(cityId);
+	$("#pId").val(pId);
+	jQuery('#modal-3').modal('show', {backdrop: 'fade'});
+}
+
+function updateAssgin1(qyName,sqName,lpName,lpId){
+	closeClear();
+	queryCityForList("citySelect-2");
+	queryResponsibleByName("viceManagerSelect-3");
+	$("#qyName").text(qyName);
+	$("#sqName").text(sqName);
+	$("#lpName").text(lpName);
+	$("#lpId").val(lpId);
+	jQuery('#modal-4').modal('show', {backdrop: 'fade'});
+}
+
+function queryPersonalAssign(pId){
+	var requestParameter = new Object();
+	requestParameter.responsiblePersonIdStr = pId;
+	var url = getRootPath()+"/services/assignResponsiblePersonService/queryPersonalAssign";
+	var dataJson = JSON.stringify(requestParameter);
+	var result = $.ajax({
+		url : url,
+		data : dataJson,
+		type : "POST",
+		dataType : "json",
+		contentType : "application/json;charset=UTF-8",
+		async : false
+	})
+	
+	var html = "";
+	var resultData = result.responseJSON;
+	for (var i=0;i<resultData.length;i++){
+		var obj = resultData[i];
+		html += "<li class='ms-elem-selectable' id='"+obj.lpid+"' onclick='selectBuilding(\""+obj.lpid+"\",\""+obj.lp_name+"\",\"select-building-ul-1\")'><span>"+obj.lp_name+"</span></li>";
+	}
+	$("#select-building-ul-1").append(html);
+	var selectBuildingNum = $("#select-building-ul-1 li").length;
+	$("#selectBuildingNum-1").text("确定分派"+selectBuildingNum+"个楼盘给责任人");
+}
+
+function assignUpdateResponsiblePerson(){
+	var buildingIdStr = "";
+	var selectBuilding = $("#select-building-ul-1 li");
+	if(selectBuilding.length == 0){
+		buildingIdStr = "";
+	}else{
+		for(var i=0;i<selectBuilding.length;i++){
+			var obj = selectBuilding[i];
+			buildingIdStr += $(obj).attr("id");
+			if(i != selectBuilding.length-1){
+				buildingIdStr += ",";
+			}
+		}
+	}
+	var cityId = $("#cityId").val();
+	var responsiblePersonIdStr = $("#pId").val()
+	var requestParameter = new Object();
+	requestParameter.cityId = cityId;
+	requestParameter.buildingIdStr = buildingIdStr;
+	requestParameter.responsiblePersonIdStr = responsiblePersonIdStr;
+	requestParameter.creatorId = "1";
+	
+	var url = getRootPath()+"/services/assignResponsiblePersonService/updateAssgin";
+	var dataJson = JSON.stringify(requestParameter);
+	var result = $.ajax({
+		url : url,
+		data : dataJson,
+		type : "POST",
+		dataType : "json",
+		contentType : "application/json;charset=UTF-8",
+		async : false
+	})
+	
+	var resultData = $.parseJSON(result.responseText);
+	if(resultData == 1){
+		$("#modal-3").modal("hide");
+		alert("分派成功");
+		queryResponsiblePersonForList(1,0);
+	}else if(resultData == 0){
+		alert("分派失败");
+	}else{
+		alert("请选择楼盘再进行分派");
+	}
+}
+
+function assignUpdateResponsiblePerson1(){
+	var responsiblePersonIdStr = $("#viceManagerSelect-3").val();
+	if(responsiblePersonIdStr == null || typeof(responsiblePersonIdStr) == "undefined" || responsiblePersonIdStr ==""){
+		alert("请选择责任人");
+		return;
+	}
+	var requestParameter = new Object();
+	requestParameter.cityId = $("#citySelect-2").attr("value");
+	requestParameter.buildingIdStr = $("#lpId").val();
+	requestParameter.responsiblePersonIdStr = responsiblePersonIdStr;
+	requestParameter.creatorId = "1";
+	
+	var url = getRootPath()+"/services/assignResponsiblePersonService/updateAssgin1";
+	var dataJson = JSON.stringify(requestParameter);
+	var result = $.ajax({
+		url : url,
+		data : dataJson,
+		type : "POST",
+		dataType : "json",
+		contentType : "application/json;charset=UTF-8",
+		async : false
+	})
+	var resultData = $.parseJSON(result.responseText);
+	if(resultData == 1){
+		$("#modal-4").modal("hide");
+		alert("分派成功");
+		queryBuildingForListByPage(1,0);
+	}else{
+		alert("分派失败");
+	}
+}
+
+function queryHeadMessage(){
+	var requestParameter = new Object();
+	requestParameter.cityId = "1";
+	requestParameter.creatorId = "1";
+	var dataJson = JSON.stringify(requestParameter);
+	var url = getRootPath()+"/services/assignResponsiblePersonService/queryHeadMessage";
+	var result = $.ajax({
+		url : url,
+		data : dataJson,
+		type : "POST",
+		dataType : "json",
+		contentType : "application/json;charset=UTF-8",
+		async : false
+	})
+	
+	var personNum = result.responseJSON.result[0].personnum;
+	var alreadyAssign = result.responseJSON.result[0].alreadyassign;
+	var all = result.responseJSON.result1[0].num;
+	$("#headMessage").text("当前管辖共"+all+"个楼盘，共指派"+personNum+"个责任人，其中"+(all-alreadyAssign)+" 楼盘（"+result.responseJSON.result2[0].lp_name+"、"+result.responseJSON.result2[1].lp_name+"）未指派");
+}
+
+function page(paginationId,page,total,historyPageIndex,pageIndex,flag){
+	var paginationHtml = '<div style="float:right;" id="paginationId">' +
+	'<input id="pageNum" name="pageNum" type="hidden" value="10">'+
+	'<div id="macPageWidget"></div>' +
+	'<div class="clearfix"></div>'+
+	'<div class="clear"></div>'+
+ 	'</div>';
+	
+	if(flag == 1){
+		$("#paginationId").remove();
+	}
+ 	
+ 	if($("#paginationId").length == 0){
+ 		$("#"+paginationId).append(paginationHtml);
+ 	}
+    // 分页.
+	$('#macPageWidget').html(pagination(page, total));
+ 	bindPageEvent(paginationId);
+    // 分页高亮.
+	if(historyPageIndex==undefined || historyPageIndex==null){
+		historyPageIndex = 1;
+	}
+	$("#macPageWidget li a[pagenum='"+pageIndex+"']").addClass("pageOpen");
+}

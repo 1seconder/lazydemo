@@ -1,0 +1,39 @@
+package com.newenv.communityFocus.security.services;
+
+import java.util.List;
+
+import org.nutz.dao.entity.Record;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.newenv.communityFocus.base.BaseService;
+import com.newenv.communityFocus.domain.TblDepartment;
+import com.newenv.communityFocus.security.dao.TblDepartmentDao;
+
+public class TblDepartmentService   extends BaseService {
+	@Autowired
+	private TblDepartmentDao tblDepartmentDao;
+	
+	public TblDepartment getById(Integer id){
+		return tblDepartmentDao.getObjectById(id);
+	}
+	
+	public List<TblDepartment> findDepartmentByOrgIdAndBlurDeparmentQuery(Integer organizationId, String departmentStr) {
+		return tblDepartmentDao.findDepartmentByOrgIdAndBlurDeparmentQuery(organizationId, departmentStr);
+	}
+	
+	public List<TblDepartment> findDepartmentByOrgIdAndDeparmentIDs(int organizationId, List<Integer> departmentIDs){
+		return tblDepartmentDao.findDepartmentByOrgIdAndDeparmentIDs(organizationId, departmentIDs);
+	}
+
+	public TblDepartmentDao getTblDepartmentDao() {
+		return tblDepartmentDao;
+	}
+
+	public void setTblDepartmentDao(TblDepartmentDao tblDepartmentDao) {
+		this.tblDepartmentDao = tblDepartmentDao;
+	}
+
+	public List<Record> queryDepartAddress(Integer deptId) {
+		return tblDepartmentDao.queryDepartAddress(deptId);
+	}
+}

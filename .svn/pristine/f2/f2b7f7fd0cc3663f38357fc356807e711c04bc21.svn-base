@@ -1,0 +1,112 @@
+package com.newenv.communityFocus.domain.jinggeng;
+
+import java.util.Date;
+
+import org.nutz.dao.entity.annotation.Id;
+import org.nutz.dao.entity.annotation.Table;
+
+import com.newenv.communityFocus.security.services.SecurityUserHolder;
+
+@Table("lpjg_tel_update_record")
+public class TelFollow {
+	
+	@Id
+	private int id;
+	private long mdid;
+	private int bmId ;
+	private long fhid ;
+	private int creatorId;
+	private Date createDate;
+	private Date modifyDate;
+	private String  relationship ;//关系人
+	private String tel;
+	private int relationtype ;//关系类型
+	private int contentType ; //跟进内容类型
+	private String remarks ;
+	private int flag;
+	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public long getMdid() {
+		return mdid;
+	}
+	public void setMdid(long mdid) {
+		this.mdid = mdid;
+	}
+	public int getBmId() {
+		return bmId;
+	}
+	public void setBmId(int bmId) {
+		this.bmId = bmId;
+	}
+	public long getFhid() {
+		return fhid;
+	}
+	public void setFhid(long fhid) {
+		this.fhid = fhid;
+	}
+	public int getCreatorId() {
+		return creatorId;
+	}
+	public void setCreatorId(int creatorId) {
+		this.creatorId = creatorId;
+	}
+	public Date getCreateDate() {
+		return createDate;
+	}
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
+	public Date getModifyDate() {
+		return modifyDate;
+	}
+	public void setModifyDate(Date modifyDate) {
+		this.modifyDate = modifyDate;
+	}
+	public String getRelationship() {
+		return relationship;
+	}
+	public void setRelationship(String relationship) {
+		this.relationship = relationship;
+	}
+	public String getTel() {
+		return tel;
+	}
+	public void setTel(String tel) {
+		this.tel = tel;
+	}
+	public int getRelationtype() {
+		return relationtype;
+	}
+	public void setRelationtype(int relationtype) {
+		this.relationtype = relationtype;
+	}
+	public String getRemarks() {
+		return remarks;
+	}
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
+	public int getFlag() {
+		return flag;
+	}
+	public void setFlag(int flag) {
+		this.flag = flag;
+	}
+	public int getContentType() {
+		return contentType;
+	}
+	public void setContentType(int contentType) {
+		this.contentType = contentType;
+	}
+	
+	
+	
+	
+	
+
+}

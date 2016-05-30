@@ -1,0 +1,67 @@
+package com.newenv.communityFocus.stastistic.manager;
+
+import java.util.List;
+import java.util.Map;
+
+
+import com.newenv.communityFocus.dao.DaoHelper;
+import com.newenv.communityFocus.domain.SqAssignStatistic;
+
+/**
+ * @author hui.peng
+ *
+ */
+public class SqManager {
+	StringBuffer buff = new StringBuffer();
+	{
+		buff.append("SELECT DISTINCT prfl.id,dpt.id loginDeptid, prfl.fullname, prfl.tel,  prfl.join_time, prfl.identityCode ");
+		buff.append("	  ,ulogin.username,dpt.department_name, ttl.title_name, prfl.group_phone                  ");
+		buff.append("	  FROM tbl_user_profile prfl, tbl_user_login ulogin, tbl_department dpt, tbl_title ttl    ");
+		buff.append("	  WHERE ulogin.tbl_User_profile_id=prfl.id                                                ");
+		buff.append("	  AND prfl.tbl_department_id=dpt.id AND prfl.tbl_Title=ttl.id      ");
+		buff.append("	  AND ulogin.status=1 AND prfl.checked!=0       ");
+		buff.append("	  AND prfl.checked!=2 AND dpt.flag=1 AND dpt.CityID=1     ");
+		buff.append("	  AND title_name LIKE '%经纪人%'     ");
+	}
+	private String jjrSql = buff.toString();
+	
+	private static SqManager instance ;
+	
+	public static SqManager  getInstance(){
+		
+		if( instance== null){
+			instance = new SqManager();
+		}
+		return instance;
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public SqAssignStatistic statistic(DaoHelper daoHelper,int loginDeptid ){
+		//统计：
+		String jrSql = "select * from view_loginxinxi where parent_id in ("
+				+ " select tbl_department_id from view_loginxinxi v where v.parent_id IN "
+				+ "(SELECT tbl_department_id FROM view_loginxinxi WHERE parent_id =29) "
+				+ ") ";
+		List<Map> list0 = daoHelper.getList(jrSql);
+		int jjrNum = list0.size();//多少个mendian
+	    SqAssignStatistic bean = new SqAssignStatistic();
+	    bean.m_JjrSum = jjrNum;
+	    
+	    
+	    String assSql = 
+		    	" SELECT "+
+			    "(SELECT COUNT(DISTINCT lpid) FROM lpjg_assignment_room  WHERE flag= 1 and bmid="+loginDeptid+") lpcount,"+
+			    "(SELECT COUNT(DISTINCT dzid) FROM lpjg_assignment_room  WHERE flag= 1 and bmid="+loginDeptid+")dzcount, "+
+			    "(SELECT COUNT(DISTINCT dyid) FROM lpjg_assignment_room  WHERE flag= 1 and bmid="+loginDeptid+")dycount,"+
+			    "(SELECT COUNT(DISTINCT fhid) FROM lpjg_assignment_room  WHERE flag= 1 and bmid="+loginDeptid+") fhcount "+
+			    "FROM DUAL ";
+	    Map  assMap = daoHelper.getItem(assSql);
+	    bean.m_notAssignLpSum = (long) assMap.get("lpcount");
+	    bean.m_notAssignLdSum = (long) assMap.get("dzcount");
+	    bean.m_notAssignDySum = (long) assMap.get("dycount");
+	    bean.m_notAssignFjSum = (long) assMap.get("fhcount");
+	    
+		return bean;
+	}
+	
+}

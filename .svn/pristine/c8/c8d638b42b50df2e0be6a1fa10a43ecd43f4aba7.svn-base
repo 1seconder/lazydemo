@@ -1,0 +1,5 @@
+server.contextPath1=/communityFocus
+server.contextPath=/communityFocus
+server.port=8080
+spring.view.prefix: /WEB-INF/jsp/
+spring.view.suffix: .jsp

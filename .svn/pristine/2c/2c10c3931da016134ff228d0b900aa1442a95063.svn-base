@@ -1,0 +1,370 @@
+/**
+ * @Project: communityFocus
+ * @FilePath: com.newenv.communityFocus.sqtj.dao.SqtjDao.java
+ * @Description: 商圈统计dao
+ * @author: mingjie.lu
+ * @date: 2016年4月21日 下午4:54:54
+ */
+package com.newenv.communityFocus.dao;
+
+import java.text.ParseException;
+import java.util.List;
+import java.util.Map;
+
+import org.nutz.dao.entity.Record;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.newenv.communityFocus.base.BaseService;
+import com.newenv.communityFocus.base.PageInfo;
+import com.newenv.communityFocus.queryCondition.SqtjQueryCondition;
+import com.newenv.communityFocus.security.SecurityUserHolder;
+import com.newenv.communityFocus.util.DateUtils;
+import com.newenv.communityFocus.util.StringUtils;
+
+/**
+ * @ClassName: SqtjDao
+ * @Description: 商圈统计dao	
+ * @author: mingjie.lu
+ * @date: 2016年4月21日 下午4:54:54
+ */
+@Component
+public class SqtjDao extends BaseService {
+	@Autowired
+	private DaoHelper daoHelper;
+
+	public Integer getUserTitleId(Integer deptId) {
+		Integer id = null;
+		StringBuffer sql = new StringBuffer("SELECT tbl_organization_id FROM tbl_department where id = ").append(deptId);
+		Record record = daoHelper.getRecord(sql.toString());
+		if (record != null && record.get("tbl_organization_id") != null) {
+			id = Integer.parseInt(record.get("tbl_organization_id").toString());
+		}
+		return id;
+	}
+
+	public Integer getParentDeptId(Integer deptId) {
+		Integer id = null;
+		StringBuffer sql = new StringBuffer("SELECT parent_id FROM tbl_department where id = ").append(deptId);
+		Record record = daoHelper.getRecord(sql.toString());
+		if (record != null && record.get("parent_id") != null) {
+			id = Integer.parseInt(record.get("parent_id").toString());
+		}
+		return id;
+	}
+
+	public PageInfo getSqtjTopGridData(SqtjQueryCondition condition) throws ParseException {
+		StringBuffer sql = new StringBuffer();
+		Integer deptId = SecurityUserHolder.getCurrentUserLogin().getDepartment().getId();
+		Integer cityId = SecurityUserHolder.getCurrentUserLogin().getDepartment().getCityId();
+		Integer parentDeptId = getParentDeptId(deptId);
+		Integer userOrganizationId = this.getUserTitleId(deptId);
+		// 88 店组 85 门店 83 市场总监 82 市场副总区 78 总
+		Integer parentOrganizationId = null;
+		if (userOrganizationId != 78) {
+			parentOrganizationId = this.getUserTitleId(parentDeptId);
+		}
+		String start = "";
+		String end = "";
+		String months = "";
+		if (StringUtils.notEmpty(condition.getDateTime())) {
+			start = DateUtils.getDateStr4(DateUtils.getFirstDayOfMonth(DateUtils.parseDateTime1(condition.getDateTime())));
+			end = DateUtils.getDateStr4(DateUtils.getLastDayOfMonth(DateUtils.parseDateTime1(condition.getDateTime())));
+			months = DateUtils.getDateStrNow(DateUtils.parseDateTime1(condition.getDateTime())).substring(0, 6);
+		}
+		sql.append(" SELECT");
+		sql.append(" count(xc.id) AS counts,");
+		if (userOrganizationId != 78 && userOrganizationId != 3) {
+			sql.append(" (SELECT count(parent_xc.id) FROM xhj_matching AS parent_xc WHERE parent_xc.match_flag = 1");
+			if (StringUtils.notEmpty(condition.getDateTime())) {
+				sql.append(" and parent_xc.xhj_dealdate BETWEEN '").append(start).append("' AND '").append(end).append("'");
+			}
+			sql.append(" and parent_xc.xhj_deal_deptId in(SELECT dept1_id FROM view_alldepartment where cityid = ").append(cityId);
+			if (parentOrganizationId != null && parentOrganizationId == 85) {
+				sql.append(" and dept2_id = ").append(parentDeptId);
+			} else if (parentOrganizationId != null && parentOrganizationId == 83) {
+				sql.append(" and dept3_id = ").append(parentDeptId);
+			} else if (parentOrganizationId != null && parentOrganizationId == 82) {
+				sql.append(" and dept4_id = ").append(parentDeptId);
+			}
+			sql.append(" and flag = 1)) AS parentCounts,");
+		}
+		sql.append(" (SELECT count(all_xc.id) FROM xhj_matching AS all_xc WHERE all_xc.match_flag = 1");
+		if (StringUtils.notEmpty(condition.getDateTime())) {
+			sql.append(" and all_xc.xhj_dealdate BETWEEN '").append(start).append("' AND '").append(end).append("'");
+		}
+		sql.append(" and all_xc.xhj_deal_deptId in(SELECT dept1_id FROM view_alldepartment where cityid = ").append(cityId).append(" and flag = 1)) AS allCounts,");
+		sql.append(" (SELECT count(xm.id) FROM xhj_matching AS xm LEFT OUTER JOIN xhj_market_share_report AS xmsr ON xm.reportid = xmsr.id WHERE xmsr.cityid = ").append(cityId);
+		if (StringUtils.notEmpty(condition.getDateTime())) {
+			sql.append(" AND xmsr.months = '").append(months).append("'");
+		}
+		sql.append(" ) AS fdjCounts");
+		sql.append(" FROM xhj_matching AS xc where  xc.match_flag = 1");
+		if (StringUtils.notEmpty(condition.getDateTime())) {
+			sql.append(" and xc.xhj_dealdate BETWEEN '").append(start).append("' AND '").append(end).append("'");
+		}
+		StringBuffer sqlC = new StringBuffer(" and xc.xhj_deal_deptId in(SELECT dept1_id FROM view_alldepartment where cityid = ").append(cityId);
+		if (userOrganizationId == 78 || userOrganizationId == 3) {
+			sql.append(sqlC).append(" and flag = 1)");
+		} else if (userOrganizationId == 85) {
+			sql.append(sqlC).append(" and dept2_id = ").append(deptId).append(" and flag = 1)");
+		} else if (userOrganizationId == 83) {
+			sql.append(sqlC).append(" and dept3_id = ").append(deptId).append(" and flag = 1)");
+		} else if (userOrganizationId == 82) {
+			sql.append(sqlC).append(" and dept4_id = ").append(deptId).append(" and flag = 1)");
+		} else {
+			sql.append(" and xc.xhj_deal_deptId = ").append(deptId);
+		}
+		PageInfo pageInfo = condition.getPageInfo();
+		if (pageInfo == null) {
+			pageInfo = new PageInfo();
+			pageInfo.setPage(1);
+			pageInfo.setRows(10);
+		}
+		pageInfo = super.getPagerjdo(sql.toString(), pageInfo);
+		return pageInfo;
+	}
+
+	public PageInfo getSqtjReportData(SqtjQueryCondition condition) throws ParseException {
+		StringBuffer sql = new StringBuffer();
+		Integer deptId = SecurityUserHolder.getCurrentUserLogin().getDepartment().getId();
+		Integer cityId = SecurityUserHolder.getCurrentUserLogin().getDepartment().getCityId();
+		Integer userOrganizationId = this.getUserTitleId(deptId);
+		// 88 店组 85 门店 83 市场总监 82 市场副总区 78 总
+		String start = "";
+		String end = "";
+		if (StringUtils.notEmpty(condition.getDateTime())) {
+			start = DateUtils.getDateStr4(DateUtils.getFirstDayOfMonth(DateUtils.parseDateTime1(condition.getDateTime())));
+			end = DateUtils.getDateStr4(DateUtils.getLastDayOfMonth(DateUtils.parseDateTime1(condition.getDateTime())));
+		}
+		sql.append("SELECT xc.lpid,count(xc.id) AS counts,lp.lp_name FROM xhj_matching AS xc ");
+		sql.append("LEFT OUTER JOIN xhj_lpxx AS lp ON xc.lpid = lp.id ");
+		sql.append("LEFT OUTER JOIN xhj_jcstress AS stress ON lp.stressid = stress.id ");
+		sql.append("LEFT OUTER JOIN xhj_jcsq AS sq ON lp.sq_id = sq.id ");
+		sql.append("WHERE xc.match_flag = 1 ");
+		if (StringUtils.notEmpty(condition.getDateTime())) {
+			sql.append(" and xc.xhj_dealdate BETWEEN '").append(start).append("' AND '").append(end).append("'");
+		}
+		if (!StringUtils.isEmpty(condition.getBuildingId())) {
+			sql.append(" and lp.id = ").append(condition.getBuildingId());
+		} else {
+			if (!StringUtils.isEmpty(condition.getStressId())) {
+				sql.append(" and stress.id = ").append(condition.getStressId());
+			}
+			if (!StringUtils.isEmpty(condition.getSqId())) {
+				sql.append(" and sq.id = ").append(condition.getSqId());
+			}
+		}
+		StringBuffer sqlC = new StringBuffer(" and xc.xhj_deal_deptId in(SELECT dept1_id FROM view_alldepartment where cityid = ").append(cityId);
+		if (userOrganizationId == 78 || userOrganizationId == 3) {
+			sql.append(sqlC).append(" and flag = 1)");
+		} else if (userOrganizationId == 85) {
+			sql.append(sqlC).append(" and dept2_id = ").append(deptId).append(" and flag = 1)");
+		} else if (userOrganizationId == 83) {
+			sql.append(sqlC).append(" and dept3_id = ").append(deptId).append(" and flag = 1)");
+		} else if (userOrganizationId == 82) {
+			sql.append(sqlC).append(" and dept4_id = ").append(deptId).append(" and flag = 1)");
+		} else {
+			sql.append(" and xc.xhj_deal_deptId = ").append(deptId);
+		}
+		sql.append(" GROUP BY xc.lpid");
+		sql.append(" ORDER BY xc.lpid");
+		PageInfo pageInfo = condition.getPageInfo();
+		if (pageInfo == null) {
+			pageInfo = new PageInfo();
+			pageInfo.setPage(1);
+			pageInfo.setRows(10);
+		}
+		pageInfo = super.getPagerjdo(sql.toString(), pageInfo);
+		if (pageInfo.getGridModel().size() != 0) {
+			@SuppressWarnings("unchecked")
+			List<Map<String, Object>> hashMapList = (List<Map<String, Object>>) pageInfo.getGridModel();
+			for (int i = 0; i < hashMapList.size(); i++) {
+				Map<String, Object> hashMap = hashMapList.get(i);
+				condition.setBuildingId(hashMap.get("lpid").toString());
+				Integer xhjParentCount = getXhjParentDealCounts(condition);
+				Integer fdjCount = getFdjCounts(condition);
+				Integer xhjDealCount = getXhjDealCounts(condition);
+				hashMap.put("fdjcount", fdjCount);
+				hashMap.put("xhjdealcount", xhjDealCount);
+				hashMap.put("xhjparentcount", xhjParentCount);
+			}
+		}
+		return pageInfo;
+	}
+
+	public PageInfo getSqtjBottomGridData(SqtjQueryCondition condition) throws ParseException {
+		StringBuffer sql = new StringBuffer();
+		Integer deptId = SecurityUserHolder.getCurrentUserLogin().getDepartment().getId();
+		Integer cityId = SecurityUserHolder.getCurrentUserLogin().getDepartment().getCityId();
+		Integer userOrganizationId = this.getUserTitleId(deptId);
+		// 88 店组 85 门店 83 市场总监 82 市场副总区 78 总
+		String start = "";
+		String end = "";
+		if (StringUtils.notEmpty(condition.getDateTime())) {
+			start = DateUtils.getDateStr4(DateUtils.getFirstDayOfMonth(DateUtils.parseDateTime1(condition.getDateTime())));
+			end = DateUtils.getDateStr4(DateUtils.getLastDayOfMonth(DateUtils.parseDateTime1(condition.getDateTime())));
+		}
+		StringBuffer sqldz = new StringBuffer();
+		sqldz.append(
+				" SELECT xc.lpid,count(xc.id) AS counts,lp.lp_name,d.department_name as d1name,vd.dept2_name as d2name,dept3_name as d3name,3 as order_index,xc.xhj_dealdate AS xhjdealdate,stress.id AS stressid,sq.id AS sqid,xc.xhj_deal_deptid as xhjdealdeptid,vd.dept2_id,vd.dept3_id,vd.dept4_id ");
+		StringBuffer sqlsq = new StringBuffer();
+		sqlsq.append(
+				" SELECT xc.lpid,count(xc.id) AS counts,lp.lp_name,'' as d1name,vd.dept2_name as d2name,dept3_name as d3name,2 as order_index,xc.xhj_dealdate AS xhjdealdate,stress.id AS stressid,sq.id AS sqid,xc.xhj_deal_deptid as xhjdealdeptid,vd.dept2_id,vd.dept3_id,vd.dept4_id ");
+		StringBuffer sqlqy = new StringBuffer();
+		sqlqy.append(
+				" SELECT xc.lpid,count(xc.id) AS counts,lp.lp_name,'' as d1name,'' as d2name,dept3_name as d3name,1 as order_index,xc.xhj_dealdate AS xhjdealdate,stress.id AS stressid,sq.id AS sqid,xc.xhj_deal_deptid as xhjdealdeptid,vd.dept2_id,vd.dept3_id,vd.dept4_id ");
+		StringBuffer common = new StringBuffer();
+		common.append(" FROM xhj_matching AS xc LEFT OUTER JOIN xhj_lpxx AS lp ON xc.lpid = lp.id ");
+		common.append(" LEFT OUTER JOIN xhj_jcstress AS stress ON lp.stressid = stress.id ");
+		common.append(" LEFT OUTER JOIN xhj_jcsq AS sq ON lp.sq_id = sq.id ");
+		common.append(" LEFT JOIN tbl_department d ON d.id = xc.xhj_deal_deptid ");
+		common.append(" LEFT JOIN view_alldepartment vd ON xc.xhj_deal_deptid = vd.dept1_id and vd.flag = 1 and vd.cityid = ").append(cityId);
+		common.append(" WHERE xc.match_flag = 1 and xc.xhj_deal_deptid is not null");
+		common.append(" GROUP BY xc.lpid ");
+		StringBuffer select = new StringBuffer();
+		if (userOrganizationId == 78 || userOrganizationId == 82 || userOrganizationId == 83 || userOrganizationId == 3) {
+			select.append(sqldz).append(common).append(" ,xc.xhj_deal_deptid UNION ALL ").append(sqlsq).append(common).append(" ,vd.dept2_id UNION ALL ").append(sqlqy).append(common).append(" ,vd.dept3_id ");
+		} else if (userOrganizationId == 85) {
+			select.append(sqldz).append(common).append(" ,xc.xhj_deal_deptid UNION ALL ").append(sqlsq).append(common).append(" ,vd.dept2_id ");
+		} else {
+			select.append(sqldz).append(common).append(" ,xc.xhj_deal_deptid ");
+		}
+		sql.append(" select * FROM ( ").append(select).append(" ) t where 1 = 1 ");
+		if (StringUtils.notEmpty(condition.getDateTime())) {
+			sql.append(" and t.xhjdealdate BETWEEN '").append(start).append("' AND '").append(end).append("'");
+		}
+		if (!StringUtils.isEmpty(condition.getBuildingId())) {
+			sql.append(" and t.lpid = ").append(condition.getBuildingId());
+		} else {
+			if (!StringUtils.isEmpty(condition.getStressId())) {
+				sql.append(" and t.stressid = ").append(condition.getStressId());
+			}
+			if (!StringUtils.isEmpty(condition.getSqId())) {
+				sql.append(" and t.sqid = ").append(condition.getSqId());
+			}
+		}
+		if (userOrganizationId == 78 || userOrganizationId == 3) {
+			sql.append("");
+		} else if (userOrganizationId == 85) {
+			sql.append(" and t.dept2_id = ").append(deptId);
+		} else if (userOrganizationId == 83) {
+			sql.append(" and t.dept3_id = ").append(deptId);
+		} else if (userOrganizationId == 82) {
+			sql.append(" and t.dept4_id = ").append(deptId);
+		} else {
+			sql.append(" and t.xhjdealdeptid = ").append(deptId);
+		}
+		sql.append(" ORDER BY t.d3name,t.order_index ");
+		PageInfo pageInfo = condition.getPageInfo();
+		if (pageInfo == null) {
+			pageInfo = new PageInfo();
+			pageInfo.setPage(1);
+			pageInfo.setRows(10);
+		}
+		pageInfo = super.getPagerjdo(sql.toString(), pageInfo);
+		if (pageInfo.getGridModel().size() != 0) {
+			@SuppressWarnings("unchecked")
+			List<Map<String, Object>> hashMapList = (List<Map<String, Object>>) pageInfo.getGridModel();
+			for (int i = 0; i < hashMapList.size(); i++) {
+				Map<String, Object> hashMap = hashMapList.get(i);
+				condition.setBuildingId(hashMap.get("lpid").toString());
+				Integer xhjParentCount = getXhjParentDealCounts(condition);
+				Integer fdjCount = getFdjCounts(condition);
+				Integer xhjDealCount = getXhjDealCounts(condition);
+				hashMap.put("fdjcount", fdjCount);
+				hashMap.put("xhjdealcount", xhjDealCount);
+				hashMap.put("xhjparentcount", xhjParentCount);
+			}
+		}
+		return pageInfo;
+	}
+
+	public Integer getFdjCounts(SqtjQueryCondition condition) {
+		Integer count = 0;
+		StringBuffer sql = new StringBuffer();
+		Integer cityId = SecurityUserHolder.getCurrentUserLogin().getDepartment().getCityId();
+		String months = "";
+		if (StringUtils.notEmpty(condition.getDateTime())) {
+			try {
+				months = DateUtils.getDateStrNow(DateUtils.parseDateTime1(condition.getDateTime())).substring(0, 6);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		sql.append(" SELECT count(xm.id) AS fdjcounts FROM xhj_matching AS xm LEFT OUTER JOIN xhj_market_share_report AS xmsr ON xm.reportid=xmsr.id WHERE xmsr.cityid = ").append(cityId)
+				.append(" and xm.lpid = ").append(condition.getBuildingId());
+		if (StringUtils.notEmpty(condition.getDateTime())) {
+			sql.append(" AND xmsr.months = '").append(months).append("'");
+		}
+		Record record = daoHelper.getRecord(sql.toString());
+		if (record != null && record.get("fdjcounts") != null) {
+			count = Integer.parseInt(record.get("fdjcounts").toString());
+		}
+		return count;
+	}
+
+	public Integer getXhjDealCounts(SqtjQueryCondition condition) throws ParseException {
+		Integer count = 0;
+		StringBuffer sql = new StringBuffer();
+		Integer cityId = SecurityUserHolder.getCurrentUserLogin().getDepartment().getCityId();
+		String start = "";
+		String end = "";
+		if (StringUtils.notEmpty(condition.getDateTime())) {
+			start = DateUtils.getDateStr4(DateUtils.getFirstDayOfMonth(DateUtils.parseDateTime1(condition.getDateTime())));
+			end = DateUtils.getDateStr4(DateUtils.getLastDayOfMonth(DateUtils.parseDateTime1(condition.getDateTime())));
+		}
+		sql.append(" SELECT count(all_xc.id) AS allcounts FROM xhj_matching AS all_xc WHERE all_xc.match_flag = 1  and all_xc.lpid = ").append(condition.getBuildingId() + " ");
+		if (StringUtils.notEmpty(condition.getDateTime())) {
+			sql.append(" and all_xc.xhj_dealdate BETWEEN '").append(start).append("' AND '").append(end).append("'");
+		}
+		sql.append(" and all_xc.xhj_deal_deptId in(SELECT dept1_id FROM view_alldepartment where cityid=").append(cityId).append(" and flag = 1)");
+		Record record = daoHelper.getRecord(sql.toString());
+		if (record != null && record.get("allcounts") != null) {
+			count = Integer.parseInt(record.get("allcounts").toString());
+		}
+		return count;
+	}
+
+	public Integer getXhjParentDealCounts(SqtjQueryCondition condition) throws ParseException {
+		Integer count = 0;
+		StringBuffer sql = new StringBuffer();
+		Integer deptId = SecurityUserHolder.getCurrentUserLogin().getDepartment().getId();
+		Integer cityId = SecurityUserHolder.getCurrentUserLogin().getDepartment().getCityId();
+		Integer parentDeptId = getParentDeptId(deptId);
+		Integer userOrganizationId = this.getUserTitleId(deptId);
+		// 88 店组 85 门店 83 市场总监 82 市场副总区 78 总
+		Integer parentOrganizationId = null;
+		if (userOrganizationId != 78) {
+			parentOrganizationId = this.getUserTitleId(parentDeptId);
+		}
+		String start = "";
+		String end = "";
+		if (StringUtils.notEmpty(condition.getDateTime())) {
+			start = DateUtils.getDateStr4(DateUtils.getFirstDayOfMonth(DateUtils.parseDateTime1(condition.getDateTime())));
+			end = DateUtils.getDateStr4(DateUtils.getLastDayOfMonth(DateUtils.parseDateTime1(condition.getDateTime())));
+		}
+		if (userOrganizationId != 78 && userOrganizationId != 3) {
+			sql.append(" SELECT count(parent_xc.id) AS parentcounts FROM xhj_matching AS parent_xc WHERE parent_xc.match_flag = 1 and parent_xc.lpid = ").append(condition.getBuildingId());
+			if (StringUtils.notEmpty(condition.getDateTime())) {
+				sql.append(" and parent_xc.xhj_dealdate BETWEEN '").append(start).append("' AND '").append(end).append("'");
+			}
+			sql.append(" and parent_xc.xhj_deal_deptId in(SELECT dept1_id FROM view_alldepartment where cityid = ").append(cityId);
+			if (parentOrganizationId != null && parentOrganizationId == 85) {
+				sql.append(" and dept2_id = ").append(parentDeptId);
+			} else if (parentOrganizationId != null && parentOrganizationId == 83) {
+				sql.append(" and dept3_id = ").append(parentDeptId);
+			} else if (parentOrganizationId != null && parentOrganizationId == 82) {
+				sql.append(" and dept4_id = ").append(parentDeptId);
+			}
+			sql.append(" and flag = 1)");
+			Record record = daoHelper.getRecord(sql.toString());
+			if (record != null && record.get("parentcounts") != null) {
+				count = Integer.parseInt(record.get("parentcounts").toString());
+			}
+		} else {
+			count = getXhjDealCounts(condition);
+		}
+		return count;
+	}
+}

@@ -1,0 +1,176 @@
+package com.newenv.communityFocus.domain.jinggeng;
+
+import java.sql.Date;
+
+import org.nutz.dao.entity.annotation.Table;
+
+@Table("lpjg_competitors")
+public class Competition {
+	private int mdid ;
+	private int bmid ;
+	private int fhid ;
+	private int creatorid ;
+	private Date createDate;
+	private Date modifyDate ;
+	private String requires ;
+	private double price;
+	
+	private Date startdate ;
+	
+	private Date enddate ;
+	
+	private Date contractdate ;
+	
+	private String company;
+	
+	
+	private String remarks;
+	
+	
+	private int flag;
+
+
+	public int getMdid() {
+		return mdid;
+	}
+
+
+	public void setMdid(int mdid) {
+		this.mdid = mdid;
+	}
+
+
+	public int getBmid() {
+		return bmid;
+	}
+
+
+	public void setBmid(int bmid) {
+		this.bmid = bmid;
+	}
+
+
+	public int getFhid() {
+		return fhid;
+	}
+
+
+	public void setFhid(int fhid) {
+		this.fhid = fhid;
+	}
+
+
+	public int getCreatorid() {
+		return creatorid;
+	}
+
+
+	public void setCreatorid(int creatorid) {
+		this.creatorid = creatorid;
+	}
+
+
+	public Date getCreateDate() {
+		return createDate;
+	}
+
+
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
+
+
+	public Date getModifyDate() {
+		return modifyDate;
+	}
+
+
+	public void setModifyDate(Date modifyDate) {
+		this.modifyDate = modifyDate;
+	}
+
+
+	public String getRequires() {
+		return requires;
+	}
+
+
+	public void setRequires(String requires) {
+		this.requires = requires;
+	}
+
+
+	public double getPrice() {
+		return price;
+	}
+
+
+	public void setPrice(double price) {
+		this.price = price;
+	}
+
+
+	public Date getStartdate() {
+		return startdate;
+	}
+
+
+	public void setStartdate(Date startdate) {
+		this.startdate = startdate;
+	}
+
+
+	public Date getEnddate() {
+		return enddate;
+	}
+
+
+	public void setEnddate(Date enddate) {
+		this.enddate = enddate;
+	}
+
+
+	public Date getContractdate() {
+		return contractdate;
+	}
+
+
+	public void setContractdate(Date contractdate) {
+		this.contractdate = contractdate;
+	}
+
+
+	public String getCompany() {
+		return company;
+	}
+
+
+	public void setCompany(String company) {
+		this.company = company;
+	}
+
+
+	public String getRemarks() {
+		return remarks;
+	}
+
+
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
+
+
+	public int getFlag() {
+		return flag;
+	}
+
+
+	public void setFlag(int flag) {
+		this.flag = flag;
+	}
+	
+	
+	
+	
+	
+}

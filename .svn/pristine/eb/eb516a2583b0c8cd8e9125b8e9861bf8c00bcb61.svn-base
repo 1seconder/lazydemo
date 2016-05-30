@@ -1,0 +1,140 @@
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
+%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Xenon Boostrap Admin Panel" />
+<meta name="author" content="" />
+
+<title>版本信息</title>
+
+<link rel="stylesheet" href="<%=basePath%>/assets/css/fonts/linecons/css/linecons.css">
+<link rel="stylesheet" href="<%=basePath%>/assets/css/fonts/fontawesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="<%=basePath%>/assets/css/bootstrap.css">
+<link rel="stylesheet" href="<%=basePath%>/assets/css/xenon-core.css">
+<link rel="stylesheet" href="<%=basePath%>/assets/css/xenon-forms.css">
+<link rel="stylesheet" href="<%=basePath%>/assets/css/xenon-components.css">
+<link rel="stylesheet" href="<%=basePath%>/assets/css/xenon-skins.css">
+<link rel="stylesheet" href="<%=basePath%>/assets/css/custom.css">
+<link rel="stylesheet" href="<%=basePath%>/assets/css/shijianzhou.css">
+<script src="<%=basePath%>/assets/js/jquery-1.11.1.min.js"></script>
+
+</head>
+<body class="page-body">
+	<div class="page-container">
+		<div class="main-content">
+			<ul class="cbp_tmtimeline" id="result">
+				<li>
+					<time class="cbp_tmtime">
+						<span>2016年4月27日</span><span>8:30</span>
+					</time>
+					<div class="cbp_tmicon timeline-bg-success">
+						<i class="fa-location-arrow"></i>
+					</div>
+					<div class="cbp_tmlabel">
+						<h3>v5.0.11</h3>
+						<h2>
+							新增功能： <br>1.数据读写分离，提高服务器响应速度； 
+								   <br>2.电子合同系统对接法务部，支持相关业务流程；
+						</h2>
+					</div>
+				</li>
+				<li>
+					<time class="cbp_tmtime">
+						<span>2016年4月26日</span><span>12:30</span>
+					</time>
+					<div class="cbp_tmicon timeline-bg-success">
+						<i class="fa-location-arrow"></i>
+					</div>
+					<div class="cbp_tmlabel">
+						<h3>v5.0.10</h3>
+						<h2>
+							新增功能： <br>1.签约中心（大华）增加管辖门店 东塘东店；
+						</h2>
+					</div>
+				</li>
+				<li>
+					<time class="cbp_tmtime">
+						<span>2016年4月22日</span><span>10:00</span>
+					</time>
+					<div class="cbp_tmicon timeline-bg-success">
+						<i class="fa-location-arrow"></i>
+					</div>
+					<div class="cbp_tmlabel">
+						<h3>v5.0.9</h3>
+						<h2>
+							新增功能： <br>1.发短信服务器地址调整，接口调整；
+						</h2>
+					</div>
+				</li>
+				<li>
+					<time class="cbp_tmtime">
+						<span>2016年4月21日</span><span>12:00</span>
+					</time>
+					<div class="cbp_tmicon timeline-bg-success">
+						<i class="fa-location-arrow"></i>
+					</div>
+					<div class="cbp_tmlabel">
+						<h3>v5.0.8</h3>
+						<h2>
+							修改BUG： <br>1.BMS录成交合同，修复买卖合同的【填充】功能；
+						</h2>
+					</div>
+				</li>
+				<li>
+					<time class="cbp_tmtime">
+						<span>2015年5月26日</span><span>23:30</span>
+					</time>
+					<div class="cbp_tmicon timeline-bg-info">
+						<i class="fa-location-arrow"></i>
+					</div>
+					<div class="cbp_tmlabel">
+						<h3>v2.0</h3>
+						<h2>
+							新增功能： <br>1.电子合同系统独立部署（域名：hetong.xhj.com）；
+							       <br>2.页面全部优化，采用Bootstrap技术实现； 
+							       <br>3.登录功能迁移，优化，性能提升；
+							       <br>4.首页样式调整及界面布局； 
+							       <br>5.【模板管理】（买卖签约合同、买卖售前合同、租赁合同、新金代办协议、独家协议、新家人）功能迁移；
+							       <br>6.【合同管理】（我的合同、审批合同、确认合同、全部合同）功能迁移； 
+							       <br>7.【档案管理】（个人档案管理）功能迁移； 
+							       <br>8.录入合同，采用页面实现（之前是弹出窗体）；
+							       <br>9.录入合同，不再跳转到预览页面，可直接保存； 
+							       <br>10.查看明细功能，采用时间轴控件实现； 
+							       <br>11.去除验证码； 
+							       <br>……
+						</h2>
+					</div>
+				</li>
+				<li>
+					<time class="cbp_tmtime">
+						<span>2015年5月26日</span><span>23:30</span>
+					</time>
+					<div class="cbp_tmicon timeline-bg-gray">
+						<i class="fa-user"></i>
+					</div>
+					<div class="cbp_tmlabel empty">
+						<span>开始</span>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<link rel="stylesheet" href="<%=basePath%>/assets/js/multiselect/css/multi-select.css">
+	<script src="<%=basePath%>/assets/js/jquery-validate/jquery.validate.min.js"></script>
+	<script src="<%=basePath%>/assets/js/inputmask/jquery.inputmask.bundle.js"></script>
+	<script src="<%=basePath%>/assets/js/formwizard/jquery.bootstrap.wizard.min.js"></script>
+	<script src="<%=basePath%>/assets/js/datepicker/bootstrap-datepicker.js"></script>
+	<script src="<%=basePath%>/assets/js/multiselect/js/jquery.multi-select.js"></script>
+	<script src="<%=basePath%>/assets/js/jquery-ui/jquery-ui.min.js"></script>
+	<script src="<%=basePath%>/assets/js/selectboxit/jquery.selectBoxIt.min.js"></script>
+	<script src="<%=basePath%>/assets/js/xenon-custom.js"></script>
+</body>
+</html>

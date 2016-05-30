@@ -1,0 +1,285 @@
+package com.newenv.communityFocus.base;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * 房源参数常量
+ * 
+ * @author Johnny
+ */
+public class HouseConstants {
+
+	public static final String CURRENT_USER = "currentUser";
+	// 房源类型 租
+	public static final String HOUSE_TYPE_RENT = "2";
+	// 房源类型售
+	public static final String HOUSE_TYPE_SALE = "1";
+
+	public static final String HOUSE_A = "1";// A盘
+	public static final String HOUSE_B = "2";// B盘
+	public static final String HOUSE_C = "3";// C盘
+	public static final String HOUSE_ZR = "1";// 责任盘
+	public static final String HOUSE_WH = "2";// 维护盘
+	public static final String HOUSE_FW = "3";// 范围盘
+	public static final String HOUSE_TYPE_SHOP = "43";// 商铺
+	public static final String HOUSE_TYPE_RESIDENCE = "41";// 住宅
+	public static final String HOUSE_TYPE_HE_RESIDENCE = "1399";// 高端住宅
+	public static final String HOUSE_TYPE_OFFICE = "42";// 写字楼
+	public static final String HOUSE_TYPE_VILLA = "44";// 别墅
+	// 房源操作参数
+	public static final String HOUSE_SHOW = "0";// "查看详细电话"
+	public static final String HOUSE_ADD = "1";// "录入房源信息"
+	public static final String HOUSE_AUDITING = "2";// "审核房源信息"
+	public static final String HOUSE_EDIT = "3";// "修改房源信息"
+	public static final String HOUSE_APPLY_LOSE = "4";// "申请房源无效"
+
+	public static final String HOUSE_KEY_ADD = "6";// "录入房源钥匙信息"
+
+	public static final String HOUSE_KEY__EDIT = "8";// "修改房源钥匙信息"
+	public static final String HOUSE_KEY_APPLY_LOSE = "9";// "申请房源钥匙无效"
+	public static final String HOUSE_KEY_PASS_LOSE = "10";// "审核通过房源钥匙无效"
+	public static final String HOUSE_SHOW_ADD = "11";// "录入房勘信息"
+	public static final String HOUSE_SHOW_AUDITING = "12";// "录入房勘审核息"
+	public static final String HOUSE_SHOW_EDIT = "13";// "修改房源房勘"
+	public static final String HOUSE_SHOW_APPLY_LOSE = "14";// "申请房源房勘无效"
+
+	public static final String HOUSE_ENTRUST_ADD = "16";// "录入独家限时代卖"
+	public static final String HOUSE_ENTRUST_AUDITING_ONE = "17";// "审核家限时代卖"
+	public static final String HOUSE_ENTRUST_EDIT = "18";// "修改家限时代卖"
+	public static final String HOUSE_ENTRUST_APPLY_LOSE_ONE = "19";// "申请家限时代卖无效"
+
+	public static final String HOUSE_SALE_ADD = "21";// "新建售房合同"
+	public static final String HOUSE_RENT_ADD = "22";// "新建租房合同"
+	public static final String HOUSE_ENTRUST_AUDITING = "23";// "审核委托"
+	public static final String HOUSE_ENTRUST_APPLY_LOSE = "24";// "申请房源委托无效"
+
+	public static final String HOUSE_APPLY_LOSE_PASS = "5";// "审核通过房源无效"
+	public static final String HOUSE_SHOW_APPLY_PASS = "15";// "申请通过房勘无效"
+	public static final String HOUSE_ENTRUST_PASS_LOSE = "20";// "审核通过独家委托无效"
+
+	public static final String HOUSE_APPLY_LOSE_NOPASS = "25";// "审核驳回房源无效"
+	public static final String HOUSE_KEY_NOPASS = "26";// "审核驳回房源钥匙信息"
+	public static final String HOUSE_SHOW_APPLY_NOPASS = "27";// "申请驳回房勘无效"
+	public static final String HOUSE_ENTRUST_NOPASS_LOSE = "28";// "审核驳回独家委托无效"
+
+	public static final String HOUSE_EXCLUSIVE_DELEGATION_PASS = "29"; // "限时独家审核通过"
+	public static final String HOUSE_EXCLUSIVE_DELEGATION_DENY = "30"; // "限时独家审核驳回"
+	public static final String HOUSE_JS = "31"; // "解锁
+	public static final String HOUSE_LOCK = "32"; // "解锁
+	public static final String HOUSE_DISABLE = "33"; // 无效
+	public static final String HOUSE_EXCLUSIVE_TIMEOUT = "34"; // 限时代买协议到期
+
+	public static final String HOUSE_CHECK = "35"; // 资源管控房源审核通过
+	public static final String HOUSE_REJECT = "36"; // 资源管控驳回房源
+	public static final String HOUSE_PREPARE_HOUSE = "37"; // 资源管控预审核
+
+	public static final String HOUSE_CHECK_SHOP = "38"; // 店长房源审核通过
+	public static final String HOUSE_REJECT_SHOP = "39"; // 店长房源驳回
+	public static final String HOUSE_PREPARE_HOUSE_SHOP = "40"; // 店长房源预审核
+
+	public static final String HOUSE_FOCUS = "41"; // 房源聚焦
+	public static final String HOUSE_FOCUS_PASS = "42"; // 房源聚焦审核通过
+	public static final String HOUSE_FOCUS_REJECT = "43"; // 房源聚焦审核驳回
+	public static final String HOUSE_FOCUS_CANCELED = "44"; // 取消房源聚焦
+
+	public static final String HOUSE_CHECK_EXPIRED = "45"; // 房源因审核过期无效
+
+	public static final String DELEGATIONTYPE_MONEY = "240";// 限时挂牌
+	public static final Map<String, String> map = new HashMap<String, String>();
+	public static final Map<String, String> DELEGATIONTYPE_MAP = new HashMap<String, String>();
+
+	static {
+		map.put("0", "查看详细电话");
+		map.put("1", "录入房源信息");
+		map.put("2", "审核房源信息");
+		map.put("3", "修改房源信息");
+		map.put("4", "申请房源无效");
+		map.put("5", "房源举报已处理");
+		map.put("6", "录入房源钥匙信息");
+		map.put("7", "审核通过房源钥匙信息");
+		map.put("8", "修改房源钥匙信息");
+		map.put("9", "申请房源钥匙无效");
+		map.put("10", "审核通过房源钥匙无效");
+		map.put("11", "录入房勘信息");
+		map.put("12", "录入房勘审核息");
+		map.put("13", "修改房源房勘");
+		map.put("14", "申请房源房勘无效");
+		map.put("15", "申请通过房勘无效");
+		map.put("16", "录入独家限时代卖");
+		map.put("17", "审核独家限时代卖");
+		map.put("18", "修改独家限时代卖");
+		map.put("19", "申请独家限时代卖无效");
+		map.put("20", "审核通过独家限时代卖无效");
+		map.put("21", "新建售房合同");
+		map.put("22", "新建租房合同");
+		map.put("23", "审核委托");
+		map.put("24", "申请房源委托无效");
+		map.put("25", "审核驳回房源无效");
+		map.put("26", "审核驳回房源钥匙信息");
+		map.put("27", "申请驳回房勘无效");
+		map.put("28", "审核驳回独家委托无效");
+		map.put("29", "独家限时审核通过");
+		map.put("30", "独家限时审核驳回");
+		map.put("31", "解锁");
+		map.put("32", "锁定");
+
+		map.put("33", "无效该房源");
+
+		map.put("34", "限时代买协议到期");
+
+		map.put("35", "资源管控房源审核通过");
+		map.put("36", "资源管控驳回房源");
+		map.put("37", "资源管控预审核该房源");
+		map.put("38", "店长房源审核通过");
+		map.put("39", "店长房源驳回");
+		map.put("40", "店长房源预审核");
+
+		map.put("4101", "店聚焦");
+		map.put("4102", "区聚焦");
+		map.put("4103", "联盟聚焦");
+		map.put("42", "房源聚焦审核通过");
+		map.put("43", "房源聚焦审核驳回");
+		map.put("44", "取消房源聚焦");
+
+		map.put("45", "审核过期而无效");
+
+		DELEGATIONTYPE_MAP.put("760", "1");// 普通委托
+		DELEGATIONTYPE_MAP.put("63", "2");// 普通独家协议
+		DELEGATIONTYPE_MAP.put("240", "3");// 独家限时代卖
+		DELEGATIONTYPE_MAP.put("977", "4");// 下钱挂牌
+	}
+
+	// 客户操作
+	public static final String CUSTOMER_SHOW = "0";// 查看详细电话
+	public static final String CUSTOMER_ADD = "1";// 录入客户信息
+	public static final String CUSTOMER_EDIT = "2";// 修改客户信息
+	/// 成交操作
+	public static final String DEAL_CONTRACT_ADD = "0";// 新建成交合同
+	public static final String DEAL_CONTRACT_EDIT = "1";// 修改成交合同
+	public static final String DEAL_CONTRACT_SHOW_CUSTOMER = "2";// 查看客户信息
+	public static final String DEAL_COUSTOMER_LOSE = "3";// 设置客户无效
+
+	// 业主资料
+	public static final String OWNER_SHOW_PHONE = "0";// 查看详细电话
+	public static final String OWNER_ADD = "1";// 新建业主资料
+	public static final String OWNER_EDIT = "2";// 修改业主资料
+	public static final String OWNER_SHOW = "3";// 查看业主资料
+	public static final String OWNER_LOSE = "4";// 设置业主资料无效
+
+	// 跟进操作
+	public static final Integer UPDATE_TYPE_INFO = 341;// 340 跟进基本信息
+	public static final Integer UPDATE_TYPE_DK = 343;// 340 带看反馈信息
+	public static final Integer UPDATE_TYPE_YK = 345;// 340 约看反馈信息
+	public static final Integer UPDATE_TYPE_KK = 346;// 340 空看反馈信息
+	public static final Integer UPDATE_TYPE_DP = 569;// 340 店经理点评
+	public static final Integer UPDATE_TYPE_PG = 570;// 340 评估
+	public static final Integer UPDATE_TYPE_SH = 765;// 340 房源中心审核
+	public static final Integer UPDATE_TYPE_RL = 805;// 340 房源认领信息
+
+	/** 条件-范围 */
+	public static final String SESSION_FW = "sFw";
+	/** 条件-状态 */
+	public static final String SESSION_ZT = "sZt";
+	/** 条件-盘类型 */
+	public static final String SESSION_PLX = "sPlx";
+
+	/** 条件-区域 */
+	public static final String SESSION_QY = "sQy";
+	/** 条件-商圈 */
+	public static final String SESSION_SQ = "sSq";
+
+	/** 条件-户型 */
+	public static final String SESSION_HX = "sHx";
+	/** 条件-面积 */
+	public static final String SESSION_MJ = "sMj";
+	/** 条件-总价 */
+	public static final String SESSION_ZJ = "sZj";
+
+	/** 条件-户型-室 */
+	public static final String SESSION_HXS = "sHxS";
+	/** 条件-户型-厅 */
+	public static final String SESSION_HXT = "sHxT";
+	/** 条件-户型-卫 */
+	public static final String SESSION_HXW = "sHxW";
+
+	/** 条件-面积-小 */
+	public static final String SESSION_MJX = "sMjX";
+	/** 条件-范围 */
+	public static final String SESSION_MJD = "sMjD";
+
+	/** 条件-总价-小 */
+	public static final String SESSION_ZJX = "sZjX";
+	/** 条件-总价-大 */
+	public static final String SESSION_ZJD = "sZjD";
+
+	/** 条件-朝向 */
+	public static final String SESSION_CX = "sCx";
+	/** 条件-用途 */
+	public static final String SESSION_YT = "sYt";
+	/** 条件-装修等级 */
+	public static final String SESSION_ZX = "sZx";
+	/** 条件-房屋结构 */
+	public static final String SESSION_FWJG = "sFwjg";
+	/** 条件-标签 */
+	public static final String SESSION_BQ = "sBq";
+
+	/** 条件-年限 */
+	public static final String SESSION_NX = "sNx";
+
+	/** 条件-加密 */
+	public static final String SESSION_JM = "sJm";
+	/** 条件-房号 */
+	public static final String SESSION_FANGHAO = "sFanghao";
+
+	/** 附加条件-附加是否展开 */
+	public static final String SESSION_FJTJ = "sFjtj";
+
+	/** 附加条件-楼盘ID */
+	public static final String SESSION_LPID = "sLpid";
+
+	/** 附加条件-栋座ID */
+	public static final String SESSION_DZID = "sBuildingID";
+
+	/** 附加条件-单元ID */
+	public static final String SESSION_DYID = "sUnitID";
+
+	/** 附加条件-房源编号 */
+	public static final String SESSION_FYBH = "sNumber";
+
+	/** 附加条件-楼层 */
+	public static final String SESSION_LCX = "sStart_ceng";
+	public static final String SESSION_LCD = "sEnd_ceng";
+
+	/** 附加条件-室 */
+	public static final String SESSION_FSX = "sRoomNumberS";
+	public static final String SESSION_FSD = "sRoomNumberE";
+
+	/** 附加条件-厅 */
+	public static final String SESSION_FTX = "sHallNumberS";
+	public static final String SESSION_FTD = "sHallNumberE";
+
+	/** 附加条件-业主电话 */
+	public static final String SESSION_YZDH = "sUserphone";
+
+	/** 附加条件-归属店组 */
+	public static final String SESSION_GSDZ = "sDepartmentId";
+
+	/** 附加条件-经纪人 */
+	public static final String SESSION_JJR = "sBelongerID";
+
+	/** 附加条件-录入时间 */
+	public static final String SESSION_LRSJX = "sCreateDateS";
+	public static final String SESSION_LRSJD = "sCreateDateE";
+
+	/** 排序-总价 */
+	public static final String SESSION_OZJ = "oZj";
+	/** 排序-单价 */
+	public static final String SESSION_ODJ = "oDj";
+	/** 排序-面积 */
+	public static final String SESSION_OMJ = "oMj";
+
+	public static final String KEY_EDIT = "修改房源钥匙信息";
+	public static final String KEY_LOSE = "申请房源钥匙无效";
+
+}

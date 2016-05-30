@@ -1,0 +1,849 @@
+package com.newenv.communityFocus.services;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.newenv.communityFocus.base.BaseService;
+import com.newenv.communityFocus.base.PageInfo;
+import com.newenv.communityFocus.base.PostParameter;
+import com.newenv.communityFocus.base.RequestParameter;
+import com.newenv.communityFocus.dao.DaoHelper;
+import com.newenv.communityFocus.domain.lpjgAssignmentResponsible;
+import com.newenv.communityFocus.util.StringUtils;
+import com.newenv.communityFocus.vo.ResultFeedback;
+
+@Component
+@Path("/assignResponsiblePersonService")
+public class assignResponsiblePersonService extends BaseService {
+
+	@Autowired
+	private DaoHelper daoHelper;
+
+	private PageInfo pageInfo;
+
+	public PageInfo getPageInfo() {
+		return pageInfo;
+	}
+
+	public void setPageInfo(PageInfo pageInfo) {
+		this.pageInfo = pageInfo;
+	}
+
+	/**
+	 * 分派责任人
+	 *
+	 * @param requestParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/assignResponsiblePerson")
+	public Response assignResponsiblePerson(RequestParameter requestParameter) {
+		Integer result = 0;
+		Integer num = 5;
+		if (daoHelper.getList("select number from lp_syscs where name = '责任人分派参数'").size() > 0) {
+			String numStr = daoHelper.getList("select number from lp_syscs where name = '责任人分派参数'").get(0)
+					.get("number") == null ? ""
+							: daoHelper.getList("select number from lp_syscs where name = '责任人分派参数'").get(0)
+									.get("number").toString();
+			if (StringUtils.notEmpty(numStr)) {
+				num = Integer.valueOf(numStr);
+			}
+		}
+
+		String buildingStr = requestParameter.getBuildingIdStr();
+		String responsiblePersonStr = requestParameter.getResponsiblePersonIdStr();
+
+		String[] buildingIdArr = null;
+		String[] responsiblePersonIdArr = null;
+		Timestamp now = new Timestamp(System.currentTimeMillis());
+
+		if (!StringUtils.isEmpty(buildingStr) && !StringUtils.isEmpty(responsiblePersonStr)) {
+			buildingIdArr = buildingStr.split(",");
+			responsiblePersonIdArr = responsiblePersonStr.split(",");
+			String alreadyNum = " lpjg_assignment_responsible where userid = " + responsiblePersonIdArr[0]
+					+ " and flag = 1";
+			if (buildingIdArr.length + daoHelper.getCount(alreadyNum) > num) {
+				result = 3;
+			} else if (buildingIdArr.length != 0 && responsiblePersonIdArr.length != 0) {
+				lpjgAssignmentResponsible assignResponsiblePerson = new lpjgAssignmentResponsible();
+				assignResponsiblePerson.setCreatorId(requestParameter.getCreatorId());
+				assignResponsiblePerson.setCreateDate(now);
+				assignResponsiblePerson.setCityId(requestParameter.getCityId());
+				assignResponsiblePerson.setFlag(1);
+				for (int i = 0; i < responsiblePersonIdArr.length; i++) {
+					assignResponsiblePerson.setUserId(Integer.valueOf(responsiblePersonIdArr[i]));
+					for (int j = 0; j < buildingIdArr.length; j++) {
+						assignResponsiblePerson.setLpId(Integer.valueOf(buildingIdArr[j]));
+						daoHelper.save(assignResponsiblePerson);
+					}
+					result = 1;
+				}
+			}
+		}
+
+		return Response.ok().entity(result).build();
+
+	}
+
+	/**
+	 * 查询区域
+	 *
+	 * @param keyWord
+	 * @param cityId
+	 * @return Response
+	 */
+	@GET
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryQuYuForList")
+	public Response queryQuYuForList(@QueryParam("keyWord") String keyWord, @QueryParam("cityId") String cityId) {
+
+		HashMap<String, Object> hashMap = new HashMap<String, Object>();
+		List<Map> result = new ArrayList<Map>();
+		StringBuffer sql = new StringBuffer();
+		sql.append("select id,qy_name from xhj_jcstress where 1=1 ");
+		sql.append(" and cityId = " + cityId);
+		if (!StringUtils.isEmpty(keyWord)) {
+			sql.append(" and qy_name like '%" + keyWord + "%'");
+		}
+
+		result = daoHelper.getList(sql.toString());
+		hashMap.put("status", "ok");
+		hashMap.put("result", result);
+		return Response.ok().entity(hashMap).build();
+
+	}
+
+	/**
+	 * 查询商圈
+	 *
+	 * @param requestParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryShangQuanForList")
+	public Response queryShangQuanForList(RequestParameter requestParameter) {
+
+		List<Map> result = new ArrayList<Map>();
+		String stressId = requestParameter.getStressId();
+		StringBuffer sql = new StringBuffer();
+		sql.append("select id,sq_name from xhj_jcsq where 1=1 ");
+		sql.append(" and qyid = " + stressId);
+
+		result = daoHelper.getList(sql.toString());
+		return Response.ok().entity(result).build();
+
+	}
+
+	/**
+	 * 查询楼盘
+	 *
+	 * @param requestParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryBuildingForList")
+	public Response queryBuildingForList(RequestParameter requestParameter) {
+
+		List<Map> result = new ArrayList<Map>();
+		String sqId = requestParameter.getSqId();
+
+		StringBuffer sql = new StringBuffer();
+
+		sql.append(
+				"select t1.id,t1.lp_name from xhj_lpxx t1 where NOT EXISTS (SELECT * FROM lpjg_assignment_responsible t2 WHERE t1.id = t2.lpid)");
+		sql.append(" and t1.sq_id = " + sqId);
+
+		result = daoHelper.getList(sql.toString());
+		return Response.ok().entity(result).build();
+
+	}
+
+	/**
+	 * 查询城市
+	 *
+	 * @param requestParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryCityForList")
+	public Response queryCityForList(RequestParameter requestParameter) {
+
+		List<Map> result = new ArrayList<Map>();
+		Integer cityId = requestParameter.getCityId();
+
+		StringBuffer sql = new StringBuffer();
+
+		sql.append("select * from xhj_jccity where 1=1 ");
+		if (null != cityId) {
+			sql.append(" and id = " + cityId);
+		}
+
+		result = daoHelper.getList(sql.toString());
+		return Response.ok().entity(result).build();
+
+	}
+
+	/**
+	 * 查询各种职务的人
+	 *
+	 * @param requestParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryLevelPersonForList")
+	public Response queryLevelPersonForList(RequestParameter requestParameter) {
+
+		List<Map> result = new ArrayList<Map>();
+
+		String keyWord = requestParameter.getKeyWord();
+		Integer cityId = requestParameter.getCityId();
+		StringBuffer sql = new StringBuffer();
+		sql.append(
+				"SELECT fullname,tbl_user_profile_id,cityid FROM view_loginxinxi t WHERE t.flag = 1  AND t.checked NOT IN (0, 11, 2) AND tbl_title NOT IN (17,30,62,63,91) ");
+		if (null != cityId) {
+			sql.append(" AND cityid = " + cityId);
+		}
+		if (!StringUtils.isEmpty(keyWord)) {
+			sql.append(" AND t.title_name LIKE '%" + keyWord + "%'");
+		}
+
+		sql.append(" GROUP BY tbl_user_profile_id");
+		System.out.println(sql.toString());
+		result = daoHelper.getList(sql.toString());
+		return Response.ok().entity(result).build();
+
+	}
+
+	/**
+	 * 查询各种职务的人
+	 *
+	 * @param requestParameter
+	 * @return Response
+	 */
+	@GET
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryLevelPersonByName")
+	public Response queryLevelPersonByName(@QueryParam("keyWord") String keyWord,
+			@QueryParam("cityId") Integer cityId) {
+
+		HashMap<String, Object> hashMap = new HashMap<String, Object>();
+		List<Map> result = new ArrayList<Map>();
+
+		StringBuffer sql = new StringBuffer();
+		sql.append(
+				"SELECT fullname,tbl_user_profile_id as id,cityid FROM view_loginxinxi t WHERE t.flag = 1  AND t.checked NOT IN (0, 11, 2) ");
+		if (null != cityId) {
+			sql.append(" AND t.cityid = " + cityId);
+		}
+		if (!StringUtils.isEmpty(keyWord)) {
+			sql.append(" AND t.fullname LIKE '%" + keyWord + "%'");
+		}
+
+		sql.append(" GROUP BY tbl_user_profile_id");
+		System.out.println(sql.toString());
+		result = daoHelper.getList(sql.toString());
+		hashMap.put("status", "ok");
+		hashMap.put("result", result);
+		return Response.ok().entity(hashMap).build();
+
+	}
+
+	/**
+	 * 查询用户列表
+	 *
+	 * @param postParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryCustomByPage")
+	public Response queryCustomByPage(PostParameter postParameter) {
+		RequestParameter requestParameter = postParameter.getRequestParameter();
+
+		Integer cityId = requestParameter.getCityId();
+		Integer departmentId = requestParameter.getDepartmentId();
+		String userName = requestParameter.getUserName();
+		Integer creatorId = requestParameter.getCreatorId();
+		pageInfo = postParameter.getPageInfo();
+		if (pageInfo == null) {
+			pageInfo = new PageInfo();
+			pageInfo.setPage(1);
+		}
+
+		// 设置行数.
+		pageInfo.setRows(10);
+
+		StringBuffer sql = new StringBuffer();
+
+		sql.append(
+				"select * from(SELECT t.fullname,t.department_name,t.cityid,t.tbl_user_profile_id,t1.city_name,(SELECT  COUNT(DISTINCT (t1.lpid)) FROM lpjg_assignment_responsible t1 "
+						+ " WHERE t1.userid = t.tbl_User_profile_id and t1.flag = 1) AS assignNum,(SELECT COUNT(*) FROM xhj_lpxx where 1=1 ");
+
+		if (null != cityId) {
+			sql.append(" AND cityid =" + cityId);
+		}
+		sql.append(" ) AS SUM,(SELECT MAX(t1.createdate) "
+				+ "FROM lpjg_assignment_responsible t1 WHERE t1.userid = t.tbl_User_profile_id) AS createdate,(SELECT GROUP_CONCAT(DISTINCT(creatorid)) FROM lpjg_assignment_responsible WHERE userid = t.tbl_user_profile_id) AS creatorid FROM"
+				+ " view_loginxinxi t LEFT JOIN xhj_jccity t1 ON t.cityid = t1.id WHERE t.flag=1  AND t.checked NOT IN(0,11,2)) t where 1=1 ");
+		/*
+		 * sql.append(
+		 * "SELECT * FROM (SELECT t2.flag,t4.checked,t2.cityid,t3.tbl_User_profile_id,t4.fullname,t2.department_name,t6.city_name,(SELECT COUNT(DISTINCT (t1.lpid)) "
+		 * ); sql.append(
+		 * "FROM lpjg_assignment_responsible t1 WHERE t1.userid = t3.tbl_User_profile_id  AND t2.flag = 1) AS assignNum,(SELECT  COUNT(*) FROM xhj_lpxx) AS SUM,"
+		 * ); sql.append(
+		 * "(SELECT MAX(t1.createdate) FROM lpjg_assignment_responsible t1 WHERE t1.userid = t3.tbl_User_profile_id) AS createdate FROM tbl_position t1 INNER JOIN tbl_department t2 "
+		 * ); sql.append(
+		 * " ON t1.tbl_department_id = t2.id INNER JOIN tbl_user_login t3  ON t1.tbl_user_id = t3.id INNER JOIN tbl_user_profile t4 ON t3.tbl_user_profile_id = t4.id INNER JOIN tbl_title t5 "
+		 * ); sql.append(
+		 * "ON t1.tbl_title_id = t5.id  LEFT JOIN xhj_jccity t6 ON t2.cityid = t6.id WHERE t2.flag = 1 AND t4.checked NOT IN (0, 11, 2) ) t WHERE 1=1"
+		 * );
+		 */
+
+		if (null != requestParameter.getKeyWord()) {
+			if (requestParameter.getKeyWord().equals("1")) {
+				sql.append(" AND t.assignNum != 0 ");
+				sql.append(" AND t.creatorid REGEXP " + "'(^" + creatorId + "$|," + creatorId + "$|^" + creatorId
+						+ ",|.+," + creatorId + ",.+)'");
+			}
+		}
+		if (null != cityId) {
+			sql.append(" AND t.cityid =" + cityId);
+		}
+		if (null != departmentId) {
+			sql.append(" AND t.parent_ID =" + departmentId);
+		}
+		if (!StringUtils.isEmpty(userName)) {
+			sql.append(" AND t.fullname like '%" + userName + "%'");
+		}
+
+		sql.append(" GROUP BY tbl_user_profile_id");
+
+		System.out.println(sql.toString());
+		pageInfo = super.getPagerjdo(sql.toString(), pageInfo);
+		if (pageInfo.getGridModel().size() != 0) {
+			List<Map> hashMapList = (List<Map>) pageInfo.getGridModel();
+			for (int i = 0; i < hashMapList.size(); i++) {
+				Map hashMap = hashMapList.get(i);
+				if (null != hashMap.get("createdate")) {
+					hashMap.put("createdate", hashMap.get("createdate").toString().substring(0,
+							hashMap.get("createdate").toString().length() - 2));
+				} else {
+					hashMap.put("createdate", "未知");
+				}
+			}
+		}
+		// 封装返回.
+		ResultFeedback resultFeedback = new ResultFeedback();
+		resultFeedback.setListJson(pageInfo);
+
+		// return Response.ok().entity(JSON.toJSONString(pageInfo)).build();
+		return Response.ok().entity(resultFeedback).build();
+	}
+
+	/**
+	 * 查询楼盘列表
+	 *
+	 * @param postParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryBuildingForListByPage")
+	public Response queryBuildingForListByPage(PostParameter postParameter) {
+		RequestParameter requestParameter = postParameter.getRequestParameter();
+
+		String stressId = requestParameter.getStressId();
+		String sqId = requestParameter.getSqId();
+		String buildingIdStr = requestParameter.getBuildingIdStr();
+		Integer cityId = requestParameter.getCityId();
+		pageInfo = postParameter.getPageInfo();
+		if (pageInfo == null) {
+			pageInfo = new PageInfo();
+			pageInfo.setPage(1);
+		}
+
+		// 设置行数.
+		pageInfo.setRows(10);
+
+		StringBuffer sql = new StringBuffer();
+		sql.append(
+				"SELECT t2.qy_name,t2.id as stressId,t3.id as sqId,t3.sq_name,t1.lp_name,t1.id as lpid,t5.fullname,t4.createdate FROM xhj_lpxx t1 LEFT JOIN xhj_jcstress t2 ON "
+						+ "t1.stressid = t2.id LEFT JOIN xhj_jcsq t3 ON t1.sq_id = t3.id LEFT JOIN lpjg_assignment_responsible t4 ON t1.id = t4.lpid AND t4.flag = 1 LEFT JOIN "
+						+ "tbl_user_profile t5 ON t4.userid = t5.id  where 1=1 ");
+		if (!StringUtils.isEmpty(buildingIdStr)) {
+			sql.append(" and t1.id = " + buildingIdStr);
+		} else {
+			if (!StringUtils.isEmpty(stressId)) {
+				sql.append(" and t2.id = " + stressId);
+			}
+			if (!StringUtils.isEmpty(sqId)) {
+				sql.append(" and t3.id = " + sqId);
+			}
+		}
+
+		if (null != cityId) {
+			sql.append(" and t1.cityid = " + cityId);
+		}
+		System.out.println(sql.toString());
+		pageInfo = super.getPagerjdo(sql.toString(), pageInfo);
+		if (pageInfo.getGridModel().size() != 0) {
+			List<Map> hashMapList = (List<Map>) pageInfo.getGridModel();
+			for (int i = 0; i < hashMapList.size(); i++) {
+				Map hashMap = hashMapList.get(i);
+				if (null == hashMap.get("fullname")) {
+					hashMap.put("fullname", "未分派责任人");
+				}
+				if (null != hashMap.get("createdate")) {
+					hashMap.put("createdate", hashMap.get("createdate").toString().substring(0,
+							hashMap.get("createdate").toString().length() - 2));
+				} else {
+					hashMap.put("createdate", "未知");
+				}
+			}
+		}
+		// 封装返回.
+		ResultFeedback resultFeedback = new ResultFeedback();
+		resultFeedback.setListJson(pageInfo);
+
+		// return Response.ok().entity(JSON.toJSONString(pageInfo)).build();
+		return Response.ok().entity(resultFeedback).build();
+	}
+
+	/**
+	 * 查询操作记录列表
+	 *
+	 * @param postParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryOperationRecordByPage")
+	public Response queryOperationRecordByPage(PostParameter postParameter) {
+		RequestParameter requestParameter = postParameter.getRequestParameter();
+		Integer creatorId = requestParameter.getCreatorId();
+
+		pageInfo = postParameter.getPageInfo();
+		if (pageInfo == null) {
+			pageInfo = new PageInfo();
+			pageInfo.setPage(1);
+		}
+
+		// 设置行数.
+		pageInfo.setRows(10);
+
+		StringBuffer sql = new StringBuffer();
+		sql.append(
+				"SELECT GROUP_CONCAT(t4.LP_Name) AS lpnamestr,t2.fullname,(SELECT fullname FROM tbl_user_profile WHERE t1.userid = id) AS username,t3.department_name,t2.tel,t1.createdate,t4.LP_Name FROM "
+						+ "lpjg_assignment_responsible t1 LEFT JOIN tbl_user_profile t2 ON t1.creatorid = t2.id LEFT JOIN "
+						+ "tbl_department t3 ON t1.creatorid = t3.id LEFT JOIN xhj_lpxx t4 ON  t1.lpid = t4.id ");
+
+		if (null != creatorId) {
+			sql.append(" WHERE t1.creatorid = " + creatorId);
+		}
+		sql.append(" GROUP BY t1.createdate,t1.creatorid order by t1.createdate desc");
+		System.out.println(sql.toString());
+		pageInfo = super.getPagerjdo(sql.toString(), pageInfo);
+		if (pageInfo.getGridModel().size() != 0) {
+			List<Map> hashMapList = (List<Map>) pageInfo.getGridModel();
+			for (int i = 0; i < hashMapList.size(); i++) {
+				Map hashMap = hashMapList.get(i);
+				if (null != hashMap.get("createdate")) {
+					hashMap.put("createdate", hashMap.get("createdate").toString().substring(0,
+							hashMap.get("createdate").toString().length() - 2));
+				}
+				if (null == hashMap.get("department_name")) {
+					hashMap.put("department_name", "没有所属部门");
+				}
+			}
+		}
+		// 封装返回.
+		ResultFeedback resultFeedback = new ResultFeedback();
+		resultFeedback.setListJson(pageInfo);
+
+		// return Response.ok().entity(JSON.toJSONString(pageInfo)).build();
+		return Response.ok().entity(resultFeedback).build();
+	}
+
+	/**
+	 * 查询责任人
+	 *
+	 * @param requestParameter
+	 * @return Response
+	 */
+	@GET
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryViceManagerForList")
+	public Response queryViceManagerForList(@QueryParam("keyWord") String keyWord,
+			@QueryParam("cityId") String cityId) {
+
+		HashMap<String, Object> hashMap = new HashMap<String, Object>();
+		List<Map> result = new ArrayList<Map>();
+
+		StringBuffer sql = new StringBuffer();
+		sql.append(
+				"SELECT tbl_User_profile_id AS id,fullname,cityid,department_name FROM view_loginxinxi WHERE flag=1 AND checked NOT IN(0,11,2) ");
+		if (null != cityId) {
+			sql.append(" AND cityid=" + cityId);
+		}
+		if (!StringUtils.isEmpty(keyWord)) {
+			sql.append(" AND fullname like '%" + keyWord + "%'");
+		}
+		sql.append(" GROUP BY tbl_user_profile_id");
+
+		System.out.println(sql.toString());
+		result = daoHelper.getList(sql.toString());
+		hashMap.put("status", "ok");
+		hashMap.put("result", result);
+		return Response.ok().entity(hashMap).build();
+
+	}
+
+	/**
+	 * 查询总监列表
+	 *
+	 * @param requestParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryDirectorForList")
+	public Response queryDirectorForList(RequestParameter requestParameter) {
+
+		List<Map> result = new ArrayList<Map>();
+
+		Integer cityId = requestParameter.getCityId();
+		Integer departmentId = requestParameter.getDepartmentId();
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT * FROM view_loginxinxi where  tbl_Title_id=32 and flag=1  and checked not in(0,11,2)");
+		if (null != departmentId) {
+			sql.append(" AND parent_ID =" + departmentId);
+		}
+		if (null != cityId) {
+			sql.append(" AND cityid =" + cityId);
+		}
+
+		System.out.println(sql.toString());
+		result = daoHelper.getList(sql.toString());
+		return Response.ok().entity(result).build();
+
+	}
+
+	/**
+	 * 查询 商圈经理列表
+	 *
+	 * @param requestParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/querysqManagerForList")
+	public Response querysqManagerForList(RequestParameter requestParameter) {
+
+		List<Map> result = new ArrayList<Map>();
+
+		Integer cityId = requestParameter.getCityId();
+		Integer departmentId = requestParameter.getDepartmentId();
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT * FROM view_loginxinxi where tbl_Title_id=210180 AND  flag=1  and checked not in(0,11,2)");
+		if (null != departmentId) {
+			sql.append(" AND parent_ID =" + departmentId);
+		}
+		if (null != cityId) {
+			sql.append(" AND cityid =" + cityId);
+		}
+
+		System.out.println(sql.toString());
+		result = daoHelper.getList(sql.toString());
+		return Response.ok().entity(result).build();
+
+	}
+
+	/**
+	 * 查询责任人 所负责的楼盘
+	 *
+	 * @param requestParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryPersonalAssign")
+	public Response queryPersonalAssign(RequestParameter requestParameter) {
+
+		List<Map> result = new ArrayList<Map>();
+
+		String userId = requestParameter.getResponsiblePersonIdStr();
+		StringBuffer sql = new StringBuffer();
+		sql.append(
+				"SELECT * FROM lpjg_assignment_responsible t1 LEFT JOIN xhj_lpxx t2 ON t1.lpid = t2.id WHERE 1=1 and t1.flag =1 ");
+		if (!StringUtils.isEmpty(userId)) {
+			sql.append(" AND t1.userid = " + userId);
+		}
+
+		System.out.println(sql.toString());
+		result = daoHelper.getList(sql.toString());
+		return Response.ok().entity(result).build();
+
+	}
+
+	/**
+	 * 按人分派中的分派修改操作
+	 *
+	 * @param requestParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/updateAssgin")
+	public Response updateAssgin(RequestParameter requestParameter) {
+		Integer result = 0;
+
+		Integer num = 5;
+		if (daoHelper.getList("select number from lp_syscs where name = '责任人分派参数'").size() > 0) {
+			String numStr = daoHelper.getList("select number from lp_syscs where name = '责任人分派参数'").get(0)
+					.get("number") == null ? ""
+							: daoHelper.getList("select number from lp_syscs where name = '责任人分派参数'").get(0)
+									.get("number").toString();
+			if (StringUtils.notEmpty(numStr)) {
+				num = Integer.valueOf(numStr);
+			}
+		}
+		String buildingStr = requestParameter.getBuildingIdStr();
+		String responsiblePersonStr = requestParameter.getResponsiblePersonIdStr();
+		Integer sum = daoHelper
+				.getCount(" lpjg_assignment_responsible where flag = 1 and userid = " + responsiblePersonStr);
+		if (!StringUtils.isEmpty(buildingStr)) {
+			if (buildingStr.split(",").length > num) {
+				result = 3;
+				return Response.ok().entity(result).build();
+			}
+		}
+		StringBuffer sql = new StringBuffer();
+		sql.append("update lpjg_assignment_responsible set flag = 0 WHERE 1=1");
+		if (!StringUtils.isEmpty(responsiblePersonStr)) {
+			sql.append(" AND userid = " + responsiblePersonStr);
+		}
+		daoHelper.update(sql.toString());
+
+		String[] buildingIdArr = null;
+		String[] responsiblePersonIdArr = null;
+		Timestamp now = new Timestamp(System.currentTimeMillis());
+
+		if (!StringUtils.isEmpty(responsiblePersonStr)) {
+			if (!StringUtils.isEmpty(buildingStr)) {
+				buildingIdArr = buildingStr.split(",");
+				responsiblePersonIdArr = responsiblePersonStr.split(",");
+				lpjgAssignmentResponsible assignResponsiblePerson = new lpjgAssignmentResponsible();
+				assignResponsiblePerson.setCreatorId(requestParameter.getCreatorId());
+				assignResponsiblePerson.setCreateDate(now);
+				assignResponsiblePerson.setCityId(requestParameter.getCityId());
+				assignResponsiblePerson.setFlag(1);
+				for (int i = 0; i < responsiblePersonIdArr.length; i++) {
+					assignResponsiblePerson.setUserId(Integer.valueOf(responsiblePersonIdArr[i]));
+					for (int j = 0; j < buildingIdArr.length; j++) {
+						assignResponsiblePerson.setLpId(Integer.valueOf(buildingIdArr[j]));
+						daoHelper.save(assignResponsiblePerson);
+					}
+					result = 1;
+				}
+			} else {
+				if (sum > 0) {
+					responsiblePersonIdArr = responsiblePersonStr.split(",");
+					lpjgAssignmentResponsible assignResponsiblePerson = new lpjgAssignmentResponsible();
+					assignResponsiblePerson.setCreatorId(requestParameter.getCreatorId());
+					assignResponsiblePerson.setCreateDate(now);
+					assignResponsiblePerson.setCityId(requestParameter.getCityId());
+					assignResponsiblePerson.setFlag(0);
+					for (int i = 0; i < responsiblePersonIdArr.length; i++) {
+						assignResponsiblePerson.setUserId(Integer.valueOf(responsiblePersonIdArr[i]));
+						assignResponsiblePerson.setLpId(Integer.valueOf(-1));
+						daoHelper.save(assignResponsiblePerson);
+					}
+					result = 1;
+				} else {
+					result = 2;
+				}
+			}
+		}
+		return Response.ok().entity(result).build();
+	}
+
+	/**
+	 * 按盘分派中的分派修改操作
+	 *
+	 * @param requestParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/updateAssgin1")
+	public Response updateAssgin1(RequestParameter requestParameter) {
+		Integer result = 0;
+
+		Integer num = 5;
+		if (daoHelper.getList("select number from lp_syscs where name = '责任人分派参数'").size() > 0) {
+			String numStr = daoHelper.getList("select number from lp_syscs where name = '责任人分派参数'").get(0)
+					.get("number") == null ? ""
+							: daoHelper.getList("select number from lp_syscs where name = '责任人分派参数'").get(0)
+									.get("number").toString();
+			if (StringUtils.notEmpty(numStr)) {
+				num = Integer.valueOf(numStr);
+			}
+		}
+		String buildingStr = requestParameter.getBuildingIdStr();
+		String responsiblePersonStr = requestParameter.getResponsiblePersonIdStr();
+		if (daoHelper
+				.getCount(" lpjg_assignment_responsible where flag = 1 and userid = " + responsiblePersonStr) > num) {
+			return Response.ok().entity(3).build();
+		}
+		StringBuffer sql = new StringBuffer();
+		sql.append("update lpjg_assignment_responsible set flag = 0 WHERE 1=1");
+		if (!StringUtils.isEmpty(buildingStr)) {
+			sql.append(" AND lpid = " + buildingStr);
+		}
+
+		daoHelper.update(sql.toString());
+
+		System.out.println(sql.toString());
+
+		String[] buildingIdArr = null;
+		String[] responsiblePersonIdArr = null;
+		Timestamp now = new Timestamp(System.currentTimeMillis());
+
+		if (!StringUtils.isEmpty(buildingStr) && !StringUtils.isEmpty(responsiblePersonStr)) {
+			buildingIdArr = buildingStr.split(",");
+			responsiblePersonIdArr = responsiblePersonStr.split(",");
+			if (buildingIdArr.length != 0 && responsiblePersonIdArr.length != 0) {
+				lpjgAssignmentResponsible assignResponsiblePerson = new lpjgAssignmentResponsible();
+				assignResponsiblePerson.setCreatorId(requestParameter.getCreatorId());
+				assignResponsiblePerson.setCreateDate(now);
+				assignResponsiblePerson.setCityId(requestParameter.getCityId());
+				assignResponsiblePerson.setFlag(1);
+				for (int i = 0; i < responsiblePersonIdArr.length; i++) {
+					assignResponsiblePerson.setUserId(Integer.valueOf(responsiblePersonIdArr[i]));
+					for (int j = 0; j < buildingIdArr.length; j++) {
+						assignResponsiblePerson.setLpId(Integer.valueOf(buildingIdArr[j]));
+						daoHelper.save(assignResponsiblePerson);
+					}
+					result = 1;
+				}
+			}
+		}
+
+		return Response.ok().entity(result).build();
+	}
+
+	/**
+	 * 查询页面 头部需要显示的数据
+	 *
+	 * @param requestParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryHeadMessage")
+	public Response queryHeadMessage(RequestParameter requestParameter) {
+		List<Map> result = new ArrayList<Map>();
+		List<Map> result1 = new ArrayList<Map>();
+		List<Map> result2 = new ArrayList<Map>();
+		HashMap<String, Object> hashMap = new HashMap<String, Object>();
+
+		Integer creatorId = requestParameter.getCreatorId();
+		Integer cityId = requestParameter.getCityId();
+		StringBuffer sql = new StringBuffer();
+		sql.append(
+				"SELECT COUNT(DISTINCT(userid)) as personNum,COUNT(DISTINCT(lpid)) as alreadyAssign FROM lpjg_assignment_responsible WHERE 1=1 and flag = 1");
+		if (null != creatorId) {
+			sql.append(" AND creatorid = " + creatorId);
+		}
+		StringBuffer sql1 = new StringBuffer();
+		sql1.append("SELECT count(1) as num FROM xhj_lpxx WHERE 1=1 ");
+		if (null != cityId) {
+			sql1.append(" AND cityid = " + cityId);
+		}
+
+		StringBuffer sql2 = new StringBuffer();
+		sql2.append(
+				"SELECT t1.lp_name FROM xhj_lpxx t1 WHERE 1=1 and not exists(select * from lpjg_assignment_responsible t2 where t1.id = t2.lpid and t2.flag =1)");
+		if (null != cityId) {
+			sql2.append(" AND t1.cityid = " + cityId);
+		}
+
+		System.out.println(sql.toString());
+		result = daoHelper.getList(sql.toString());
+		result1 = daoHelper.getList(sql1.toString());
+		result2 = daoHelper.getList(sql2.toString());
+
+		hashMap.put("result", result);
+		hashMap.put("result1", result1);
+		hashMap.put("result2", result2);
+
+		return Response.ok().entity(hashMap).build();
+	}
+
+	/**
+	 * 参数 配置
+	 *
+	 * @param requestParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/setParameter")
+	public Response setParameter(RequestParameter requestParameter) {
+		Integer result = 0;
+
+		Integer parameter = null;
+		try {
+			parameter = requestParameter.getParameter();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.ok().entity(result).build();
+		}
+		StringBuffer sql = new StringBuffer();
+		if (null != parameter && parameter > 0) {
+			sql.append("update lp_syscs set number = " + parameter);
+			sql.append(" where name = '责任人分派参数'");
+			daoHelper.update(sql.toString());
+			result = 1;
+		}
+		return Response.ok().entity(result).build();
+	}
+}

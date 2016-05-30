@@ -1,0 +1,152 @@
+package com.newenv.communityFocus.security.services;
+
+import java.util.List;
+import java.util.Map;
+
+import org.nutz.dao.entity.Record;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
+
+import com.newenv.communityFocus.domain.HRPermission;
+import com.newenv.communityFocus.domain.TblDepartment;
+import com.newenv.communityFocus.domain.TblUserLogin;
+import com.newenv.communityFocus.domain.TblUserProfile;
+import com.newenv.communityFocus.domain.UserLogin;
+import com.newenv.communityFocus.security.dao.TblDepartmentDao;
+import com.newenv.communityFocus.security.dao.TblUserLoginDao;
+import com.newenv.communityFocus.security.dao.TblUserProfileDao;
+
+public class UserLoginService {
+	//hr 权限请求系统类型
+	private  String sysType;
+	//hr 权限请求地址
+	private  String hrPermissionUrl;
+	@Autowired
+	private TblUserLoginDao userLoginDao ;
+	@Autowired
+	private TblUserProfileDao userProfileDao ;
+	@Autowired
+	private TblDepartmentDao departmentDao;
+//	@Autowired
+//	private XhjJccityDao xhjJccityDao;
+	
+	public void setUserLoginDao(TblUserLoginDao userLoginDao) {
+		this.userLoginDao = userLoginDao;
+	}
+	
+	public void setUserProfileDao(TblUserProfileDao userProfileDao) {
+		this.userProfileDao = userProfileDao;
+	}
+
+
+	public void setDepartmentDao(TblDepartmentDao departmentDao) {
+		this.departmentDao = departmentDao;
+	}
+
+	public 	TblUserLogin login(String userName) throws Exception{
+		try{
+			return userLoginDao.login(userName);
+		}catch (Exception e) {
+			e.printStackTrace();
+			return null ;
+		}
+	}
+	
+	
+	public 	TblDepartment findTblDepartmentById(Integer id) throws Exception{
+		try{
+			return departmentDao.getObjectById(id);
+		}catch (Exception e) {
+			e.printStackTrace();
+			return null ;
+		}
+	}
+	
+	public 	TblUserProfile findTblUserProfileById(Integer tblUserProfileId) throws Exception{
+		try{
+			return userProfileDao.getObjectById(tblUserProfileId);
+		}catch (Exception e) {
+			e.printStackTrace();
+			return null ;
+		}
+	}
+	public Map<String, HRPermission> getHRPermissions (UserLogin u,TblUserLogin userLogin)throws Exception{
+		try{
+			List<HRPermission> permissions=userLoginDao.getHRPermissions(sysType,userLogin.getId());
+			if(!CollectionUtils.isEmpty(permissions)){
+				u.resetPermissions();
+					
+				u.addHRPermissions(permissions);
+			}
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return u.getPermissions();
+	}
+	
+	public void setOrChangeTitle(String title,Integer departmentId, Integer titleId){
+		TblDepartment department = departmentDao.getObjectById(departmentId);
+		UserLogin userLogin = SecurityUserHolder.getCurrentUserLogin();
+		userLogin.setDepartment(department);
+		userLogin.setCityId(String.valueOf(department.getCityId()));
+		/**
+		 * 待添加城市
+		 */
+//		Integer[] ids = xhjJccityDao.getCityParentInfo(department.getCityId());
+//		userLogin.setCountryId(String.valueOf(ids[0]));
+//		userLogin.setProvinceId(String.valueOf(ids[1]));
+		userLogin.resetPermissions();
+		
+		title = userLogin.getCityId() + "." + departmentId + "." + titleId;
+		List<Record> findAllTitleNamesByUsername = userLoginDao.findAllTitleNamesByUsername(userLogin.getUserLogin().getUsername());
+		for (int i = 0; i < findAllTitleNamesByUsername.size(); i++) {
+			Record record = findAllTitleNamesByUsername.get(i);
+			String cityDepId = record.getString("cityDepId");
+			if(cityDepId.equals(title))
+			{
+				userLogin.setTitleName(record.getString("cityDepName"));
+				break;
+			}
+		}
+		
+		//获取该用户当前岗位的全部权限
+		List<HRPermission> permissions = userLoginDao.getUserPermissions(userLogin.getUserLogin().getId(), titleId);
+		
+		userLogin.addHRPermissions(permissions);
+	}
+	
+	/**
+	 * 查询某个登录名的所有岗位。
+	 * @param userName
+	 * @return
+	 */
+	public List<Record> findAllTitleNamesByUsername(String userName){
+		return userLoginDao.findAllTitleNamesByUsername(userName);
+	}
+
+	public String getSysType() {
+		return sysType;
+	}
+
+	public void setSysType(String sysType) {
+		this.sysType = sysType;
+	}
+
+	public String getHrPermissionUrl() {
+		return hrPermissionUrl;
+	}
+
+	public void setHrPermissionUrl(String hrPermissionUrl) {
+		this.hrPermissionUrl = hrPermissionUrl;
+	}
+
+//	public XhjJccityDao getXhjJccityDao() {
+//		return xhjJccityDao;
+//	}
+//
+//	public void setXhjJccityDao(XhjJccityDao xhjJccityDao) {
+//		this.xhjJccityDao = xhjJccityDao;
+//	}
+	
+}

@@ -1,0 +1,128 @@
+package com.newenv.communityFocus.domain.jinggeng;
+
+
+import java.util.Date;
+
+import org.nutz.dao.entity.annotation.Id;
+import org.nutz.dao.entity.annotation.Table;
+
+import com.newenv.communityFocus.security.services.SecurityUserHolder;
+
+@Table("lpjg_precise_update_record")
+public class PeriodInfo {
+	
+	public static PeriodInfo  getPeriodInfo(){
+		PeriodInfo period = new PeriodInfo();
+//		period.setBmid(SecurityUserHolder.getDeptId());
+//		period.setCreatorid(SecurityUserHolder.getUserId());
+		period.setBmid(SecurityUserHolder.getDeptId());
+		period.setCreatorid(SecurityUserHolder.getUserId());
+		period.setCreateDate(new java.util.Date());
+		return period;
+	}
+	@Id
+	private int id ;
+	private int mdid ;
+	private int bmid ;
+	private long fhid ;
+	private int creatorid ;
+	
+	private Date createDate;
+	private Date modifyDate ;
+	
+	private String relationship ;//relationship
+	private String messages ;
+	private String stage ;
+	
+	private int flag ;
+
+	public int getMdid() {
+		return mdid;
+	}
+
+	public void setMdid(int mdid) {
+		this.mdid = mdid;
+	}
+
+	public int getBmid() {
+		return bmid;
+	}
+
+	public void setBmid(int bmid) {
+		this.bmid = bmid;
+	}
+
+	public long getFhid() {
+		return fhid;
+	}
+
+	public void setFhid(long fhid) {
+		this.fhid = fhid;
+	}
+
+	public int getCreatorid() {
+		return creatorid;
+	}
+
+	public void setCreatorid(int creatorid) {
+		this.creatorid = creatorid;
+	}
+
+	public Date getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
+
+	public Date getModifyDate() {
+		return modifyDate;
+	}
+
+	public void setModifyDate(Date modifyDate) {
+		this.modifyDate = modifyDate;
+	}
+
+	public String getRelationship() {
+		return relationship;
+	}
+
+	public void setRelationship(String relationship) {
+		this.relationship = relationship;
+	}
+
+	public String getMessages() {
+		return messages;
+	}
+
+	public void setMessages(String messages) {
+		this.messages = messages;
+	}
+
+	public String getStage() {
+		return stage;
+	}
+
+	public void setStage(String stage) {
+		this.stage = stage;
+	}
+
+	public int getFlag() {
+		return flag;
+	}
+
+	public void setFlag(int flag) {
+		this.flag = flag;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	
+}

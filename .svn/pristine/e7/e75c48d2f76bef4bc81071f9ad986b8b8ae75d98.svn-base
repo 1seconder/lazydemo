@@ -1,0 +1,189 @@
+/*
+* # Semantic UI
+* Version: 0.9.5
+* http://github.com/jlukic/semantic-ui
+*
+*
+* Copyright 2013 Contributors
+* Released under the MIT license
+* http://opensource.org/licenses/MIT
+*
+* Released: 11/25/2013
+*/
+.ui.dropdown {
+	cursor: pointer;
+	position: relative;
+	float:left;
+	line-height: 1;
+	-webkit-transition: border-radius .1s ease, width .2s ease;
+	transition: border-radius .1s ease, width .2s ease;
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+	-moz-tap-highlight-color: rgba(0,0,0,0);
+	tap-highlight-color: rgba(0,0,0,0)
+}
+.ui.dropdown .menu {
+	cursor: auto;
+	position: absolute;
+	top: 100%;
+	margin: 0;
+	background-color: #FFF;
+	min-width: 100%;
+	white-space: nowrap;
+	font-size: .875em;
+	text-shadow: none;
+	-webkit-box-shadow: 0 0 1px 1px rgba(0,0,0,.1);
+	box-shadow: 0 0 1px 1px rgba(0,0,0,.1);
+	border-radius: 0 0 .325em .325em;
+	-webkit-transition: opacity .2s ease;
+	transition: opacity .2s ease;
+	z-index: 11
+}
+.ui.dropdown>.dropdown.icon {
+	width: auto;
+	margin: 0 0 0 1em
+}
+.ui.dropdown>.dropdown.icon:before {
+	content: "\f0d7"
+}
+.ui.dropdown .menu .item .dropdown.icon {
+	width: auto;
+	float: right;
+	margin: 0 0 0 .5em
+}
+.ui.dropdown .menu .item .dropdown.icon:before {
+	content: "\f0da"
+}
+.ui.dropdown>.text {
+	display: inline-block;
+	-webkit-transition: color .2s ease;
+	transition: color .2s ease
+}
+.ui.dropdown .menu {
+	left: 0
+}
+.ui.dropdown .menu .menu {
+	top: 0!important;
+	left: 100%!important;
+	margin: 0!important;
+	border-radius: 0 .325em .325em 0!important
+}
+.ui.dropdown .menu .menu:after {
+	display: none
+}
+.ui.dropdown .menu .item {
+	cursor: pointer;
+	border: 0;
+	border-top: 1px solid rgba(0,0,0,.05);
+	height: auto;
+	font-size: .875em;
+	display: block;
+	color: rgba(0,0,0,.75);
+	padding: .85em 1em!important;
+	font-size: .875rem;
+	text-transform: none;
+	font-weight: 400;
+	text-align: left;
+	-webkit-touch-callout: none
+}
+.ui.dropdown .menu .item:before {
+	display: none
+}
+.ui.dropdown .menu .item .icon {
+	margin-right: .75em
+}
+.ui.dropdown .menu .item:first-child {
+	border-top: 0
+}
+.ui.menu .right.menu .dropdown:last-child .menu, .ui.buttons>.ui.dropdown:last-child .menu {
+	left: auto;
+	right: 0
+}
+.ui.vertical.menu .dropdown.item>.dropdown.icon:before {
+	content: "\f0da"
+}
+.ui.dropdown.icon.button>.dropdown.icon {
+	margin: 0
+}
+.ui.visible.dropdown>.menu {
+	display: block
+}
+.ui.dropdown .menu .item:hover {
+	background-color: rgba(0,0,0,.02);
+	z-index: 12
+}
+.ui.dropdown .menu .active.item {
+	background-color: rgba(0,0,0,.06)!important;
+	border-left: 0;
+	border-color: transparent!important;
+	-webkit-box-shadow: none;
+	-moz-shadow: none;
+	box-shadow: none;
+	z-index: 12
+}
+.ui.dropdown>.default.text, .ui.default.dropdown>.text {
+	color: rgba(0,0,0,.5)
+}
+.ui.dropdown:hover>.default.text, .ui.default.dropdown:hover>.text {
+	color: rgba(0,0,0,.8)
+}
+.ui.simple.dropdown .menu:before, .ui.simple.dropdown .menu:after {
+	display: none
+}
+.ui.simple.dropdown .menu {
+	display: block;
+	overflow: hidden;
+	top: -9999px!important;
+	position: absolute;
+	opacity: 0;
+	width: 0;
+	height: 0;
+	-webkit-transition: opacity .2s ease-out;
+	transition: opacity .2s ease-out
+}
+.ui.simple.active.dropdown, .ui.simple.dropdown:hover {
+	border-bottom-left-radius: 0!important;
+	border-bottom-right-radius: 0!important
+}
+.ui.simple.active.dropdown>.menu, .ui.simple.dropdown:hover>.menu {
+	overflow: visible;
+	width: auto;
+	height: auto;
+	top: 100%!important;
+	opacity: 1
+}
+.ui.simple.dropdown>.menu .item:active>.menu, .ui.simple.dropdown:hover>.menu .item:hover>.menu {
+	overflow: visible;
+	width: auto;
+	height: auto;
+	top: 0!important;
+	left: 100%!important;
+	opacity: 1
+}
+.ui.simple.disabled.dropdown:hover .menu {
+	display: none;
+	height: 0;
+	width: 0;
+	overflow: hidden
+}
+.ui.selection.dropdown {
+	cursor: pointer;
+	display: inline-block;
+	word-wrap: break-word;
+	white-space: normal;
+	background-color: #FFF;
+	padding: .4em 1em;
+	line-height: 1.33;
+	color: rgba(0,0,0,.8);
+	-webkit-box-shadow: 0 0 0 1px rgba(0,0,0,.1)!important;
+	box-shadow: 0 0 0 1px rgba(0,0,0,.1)!important;
+	border-radius: .3125em!important
+}
+.ui.selection.dropdown select {
+	display: none
+}
+.ui.selection.dropdown>.dropdown.icon {
+	opacity: .7;
+	margin: .1em 0 .2em 1.25em;
+	width: 0;height: 0;border-width: 5px;border-style: solid;border-color: #16b701 #fff #fff;font-size: 0;line-height: 0;-moz-transition: -moz-transform .2s ease-in;-o-transition: -o-transform .2s ease-in;transition: transform .2s ease-in;
+}
+.hidden{ display:none;}

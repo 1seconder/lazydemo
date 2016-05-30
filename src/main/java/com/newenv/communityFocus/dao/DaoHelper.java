@@ -1,0 +1,362 @@
+package com.newenv.communityFocus.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.nutz.dao.Cnd;
+import org.nutz.dao.Condition;
+import org.nutz.dao.Dao;
+import org.nutz.dao.QueryResult;
+import org.nutz.dao.Sqls;
+import org.nutz.dao.entity.Record;
+import org.nutz.dao.pager.Pager;
+import org.nutz.dao.sql.Sql;
+import org.nutz.dao.sql.VarSet;
+import org.nutz.dao.util.Daos;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+/**
+ * @author hui.peng
+ * @date 2016-03-03
+ *
+ */
+@Repository
+public class DaoHelper {
+	private static final Log logger = LogFactory.getLog(DaoHelper.class);
+
+	@Autowired
+	private Dao dao;
+
+	public void save(Object obj) {
+		try {
+			dao.insert(obj);
+		} catch (Exception e) {
+			logger.error("save Exception", e);
+			e.printStackTrace();
+		}
+	}
+
+	public void update(Object obj) {
+		try {
+			dao.update(obj);
+		} catch (Exception e) {
+			logger.error("update Exception", e);
+			e.printStackTrace();
+		}
+	}
+
+	public void delete(Object obj) {
+		try {
+			dao.delete(obj);
+		} catch (Exception e) {
+			logger.error("delete Exception", e);
+			e.printStackTrace();
+		}
+	}
+
+	public Object saveReturn(Object obj) {
+		try {
+			return dao.insert(obj);
+		} catch (Exception e) {
+			logger.error("Exception", e);
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public void update(String sqlStr) {
+		try {
+			logger.info(sqlStr);
+			Sql sql = Sqls.create(sqlStr);
+			dao.execute(sql);
+		} catch (Exception e) {
+			logger.error("update Exception", e);
+			e.printStackTrace();
+		}
+
+	}
+
+	public void update(String[] sqlStr) {
+		try {
+			int len = sqlStr.length;
+			Sql[] sqls = new Sql[len];
+			int index = 0;
+			for (String sql : sqlStr) {
+				logger.info(sql);
+				sqls[index++] = Sqls.create(sql);
+			}
+			dao.execute(sqls);
+		} catch (Exception e) {
+			logger.error("update Exception", e);
+			e.printStackTrace();
+		}
+	}
+
+	public Record getRecord(String sqlString) {
+		try {
+			logger.info(sqlString);
+			Sql sql = Sqls.create(sqlString);
+			sql.setCallback(Sqls.callback.record());
+			dao.execute(sql);
+			return sql.getObject(Record.class);
+		} catch (Exception e) {
+			logger.error("getRecord Exception", e);
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * @return
+	 */
+	public List<Record> getByCnd(String tables, String fields, Condition cnd, int pageNumber, int pageSize) {
+		try {
+			logger.info(tables);
+			return dao.query(tables, cnd, null);
+		} catch (Exception e) {
+			logger.error("getByCnd Exception", e);
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * 分页
+	 * 
+	 * @param tables
+	 * @param fields
+	 * @param cnd
+	 * @param pageNumber
+	 * @param pageSize
+	 * @return
+	 */
+	public QueryResult getPagerList(String tables, String fields, Condition cnd, int pageNumber, int pageSize) {
+		try {
+			logger.info(tables);
+			logger.info(fields);
+			pageNumber = pageNumber <= 0 ? 1 : pageNumber;
+			Pager pager = null;
+			List<Record> list = null;
+			int count = dao.count(tables, cnd);
+			if (count > 0) {
+				fields = fields == null || fields.trim().length() <= 0 ? "*" : fields;
+				pager = dao.createPager(pageNumber, pageSize);
+				pager.setRecordCount(count);
+				list = dao.query(tables, cnd, pager);
+				return new QueryResult(list, pager);
+			}
+		} catch (Exception e) {
+			logger.error("getPagerList Exception", e);
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * 获取单个数据对象
+	 * 
+	 * @param sqlString
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	public Map getItem(String sqlString) {
+		try {
+			logger.info(sqlString);
+			Sql sql = Sqls.create(sqlString);
+			sql.setCallback(Sqls.callback.record());
+			dao.execute(sql);
+			return sql.getObject(Map.class);
+		} catch (Exception e) {
+			logger.error("getItem Exception", e);
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * @param sqlString
+	 *            SQL
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	public List<Map> getList(String sqlString) {
+		try {
+			logger.info(sqlString);
+			Sql sql = Sqls.create(sqlString);
+			sql.setCallback(Sqls.callback.records());
+			dao.execute(sql);
+			return sql.getList(Map.class);
+		} catch (Exception e) {
+			logger.error("getList Exception", e);
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public List<Record> getRecordList(String sqlString) {
+		try {
+			logger.info(sqlString);
+			Sql sql = Sqls.create(sqlString);
+			sql.setCallback(Sqls.callback.records());
+			dao.execute(sql);
+			return sql.getList(Record.class);
+		} catch (Exception e) {
+			logger.error("getRecordList Exception", e);
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@SuppressWarnings("rawtypes")
+	public List<Map> getRecordAsList(String sqlString) {
+		try {
+			logger.info(sqlString);
+			Sql sql = Sqls.create(sqlString);
+			sql.setCallback(Sqls.callback.maps());
+			dao.execute(sql);
+			return sql.getList(Map.class);
+		} catch (Exception e) {
+			logger.error("getRecordAsList Exception", e);
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * 动态传参查询
+	 */
+	public Object getObject(String sqlString, Object... params) {
+		try {
+			logger.info(sqlString);
+			Sql sql = Sqls.create(sqlString);
+			VarSet varSet = sql.params();
+			for (Object obj : params) {
+				varSet.putAll(obj);
+			}
+			sql.setCallback(Sqls.callback.record());
+			dao.execute(sql);
+			return sql.getResult();
+		} catch (Exception e) {
+			logger.error("getObject Exception", e);
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public Record getItem(String table, String fields, Cnd cnd) {
+		try {
+			logger.info(table);
+			logger.info(fields);
+			return dao.fetch(table, cnd);
+		} catch (Exception e) {
+			logger.error("getItem Exception", e);
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * 
+	 * 查询的结果数
+	 * 
+	 * @param sqlCount
+	 * @return
+	 */
+	public Integer getCount(String sqlCount) {
+		try {
+			logger.info(sqlCount);
+			return dao.count(sqlCount);
+		} catch (Exception e) {
+			logger.error("getCount Exception", e);
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * 
+	 * 查询的结果数
+	 * 
+	 * @param sqlCount
+	 * @return
+	 */
+	public Long getCountBySql(String sqlCount) {
+		try {
+			logger.info(sqlCount);
+			return Daos.queryCount(dao, sqlCount);
+		} catch (Exception e) {
+			logger.error("getCountBySql Exception", e);
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * 根据条件统计
+	 * 
+	 * @param sqlCount
+	 * @param cnd
+	 * @return
+	 */
+	public Integer getCountByCnd(String sqlCount, Condition cnd) {
+		try {
+			logger.info(sqlCount);
+			return dao.count(sqlCount, cnd);
+		} catch (Exception e) {
+			logger.error("getCountByCnd Exception", e);
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * 查询结果集
+	 * 
+	 * @param <T>
+	 * @param c
+	 * @param cnd
+	 * @return
+	 */
+	public <T> List<T> getListByPOJO(Class<T> c, Condition cnd) {
+		try {
+			return dao.query(c, cnd, null);
+		} catch (Exception e) {
+			logger.error("getListByPOJO Exception", e);
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public <T> T getObjectByPOJO(Class<T> c, Condition cnd) {
+		try {
+			return dao.fetch(c, cnd);
+		} catch (Exception e) {
+			logger.error("getObjectByPOJO Exception", e);
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * 查询结果集
+	 * 
+	 * @param <T>
+	 * @param c
+	 * @param cnd
+	 * @return
+	 */
+	public <T> List<T> getListByPOJO(Class<T> c, Condition cnd, Integer len) {
+		try {
+			Pager pager = dao.createPager(1, len);
+			return dao.query(c, cnd, pager);
+		} catch (Exception e) {
+			logger.error("getListByPOJO Exception", e);
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+}

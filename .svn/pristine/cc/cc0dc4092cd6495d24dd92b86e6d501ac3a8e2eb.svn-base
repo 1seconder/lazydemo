@@ -1,0 +1,586 @@
+package com.newenv.communityFocus.domain.jinggeng;
+
+import java.sql.Date;
+
+//import java.util.Date;
+
+import org.nutz.dao.entity.annotation.Table;
+
+/**
+ * @author hui.peng
+ */
+@Table("lpjg_customerrequirement")
+public class CustomerRequirement  {
+//	private long id;
+	
+	private long customerID ;//客户ID
+	private long delegateSourceID  ;//委托来源
+	private Date requirementDate ;// 需求时间
+	private int cityId ;//城市id
+	private int  regionID ;//区域id
+	private String circle ;//商圈
+	private String estate ;//楼盘
+	private String orientation ;//朝向
+	private int  isGroupCustomer ;//是否客户
+	private Date liveInDate ;//入住日期
+	private int roomNumberFrom ;//户型-室数-从
+	private int roomNumberTo ;//户型-室数-从
+	private int kitchenNumberFrom ;
+	private int kitchenNumberTo ;
+	private int hallNumberFrom ;
+	private int hallNumberTo ;
+	private int toiletNumberFrom ;
+	private int toiletNumberTo;
+	private int balconyNumberFrom; 
+	private int balconyNumberTo;
+	private int sizeFrom ;
+	private int sizeTo ;
+	private int floorFrom ;
+	private int floorTo;
+	private double expectedPriceFrom;//心理价位
+	private double expectedPriceTo ;
+	private int  buildingType ;//建筑类型
+	private int decorationCondition ;//装修情况
+	private int customerLevel ;//客户等级
+	private int isParkingPlace ;//车位
+	private double isPropertyFee;//物业费
+	
+	private int isUrgently ;//紧迫感；
+	private String comment ;//备注
+	private int expectedBusLine ;//公交车线路
+	private int nearestBusStationWalkingTime ;//最近公交站步行时间
+	private int expectedSubwayLine ;//地铁期望路线
+	private int nearestSubwayStationWalkingTime ;//最近地铁站步行时间
+	private int expectedHospitalLevel ; //期望医院级别
+	private String hospitalName ; //医院名称
+	private int distanceToHospital ;//至医院距离
+	private int nearlySchoolType ; //附近学校类型
+	private int nearlySchoolName ;//附近学校名称
+	
+	
+	private int distanceToSchool  ;//至学校距离
+	private int  has  ;//其他需求
+	private String coreRequirementPoint  ;//核心需求点
+	private String coreResistancePoint  ;//核心抗拒点
+	private String serviceTimePeriod  ;//服务时段要求
+	private String communicationType ; //接触方式
+	private int buildingAgeFrom  ; //房龄-从
+	private int buildingAgeTo  ;//房龄-到
+	private String requireReason  ; //需求原因
+	private String furniture  ;//家具
+	
+	private String appliances ;//家电
+	private int useType ;//用途 （住宅，别墅。。。）
+	private int isToilet ; //是否有卫生间 
+	private int officeLevel ;//写字楼级别
+	private int industryType ;//行业
+	private double width ;//面宽
+	
+	private int is_hospital ;//医院
+	private int hospital_remark ;//医院备注
+	private int  is_park ;//公园
+	private String park_remark ;//公园备注
+	private int is_supermarkets ; //超市
+	private String supermarkets_remark ; //超时备注
+	private  int is_subway ;//地铁；
+	private  String subway_remark ;//地铁备注
+	private int is_bank ;//银行
+	private String bank_remark ;
+	private int is_school ;//学校
+	private String school_remark ;//
+	private int  	is_commercial_street ;//商业街
+	private String commercial_street_remark ;//
+	private int is_other ;//qita 
+	private String other_remark ;//other_remark 
+
+
+	private int  	is_bus  ;//
+	private String bus_remark  ;//
+	private String requirement_point  ;//需求点 
+	private int purchasing_power  ;//购买力 
+	private int deadline ; //期限
+	private String  service_remark ; //服务时段备注
+	public long getCustomerID() {
+		return customerID;
+	}
+	public void setCustomerID(long customerID) {
+		this.customerID = customerID;
+	}
+	public long getDelegateSourceID() {
+		return delegateSourceID;
+	}
+	public void setDelegateSourceID(long delegateSourceID) {
+		this.delegateSourceID = delegateSourceID;
+	}
+	public Date getRequirementDate() {
+		return requirementDate;
+	}
+	public void setRequirementDate(Date requirementDate) {
+		this.requirementDate = requirementDate;
+	}
+	public int getCityId() {
+		return cityId;
+	}
+	public void setCityId(int cityId) {
+		this.cityId = cityId;
+	}
+	public int getRegionID() {
+		return regionID;
+	}
+	public void setRegionID(int regionID) {
+		this.regionID = regionID;
+	}
+	public String getCircle() {
+		return circle;
+	}
+	public void setCircle(String circle) {
+		this.circle = circle;
+	}
+	public String getEstate() {
+		return estate;
+	}
+	public void setEstate(String estate) {
+		this.estate = estate;
+	}
+	public String getOrientation() {
+		return orientation;
+	}
+	public void setOrientation(String orientation) {
+		this.orientation = orientation;
+	}
+	public int getIsGroupCustomer() {
+		return isGroupCustomer;
+	}
+	public void setIsGroupCustomer(int isGroupCustomer) {
+		this.isGroupCustomer = isGroupCustomer;
+	}
+	public Date getLiveInDate() {
+		return liveInDate;
+	}
+	public void setLiveInDate(Date liveInDate) {
+		this.liveInDate = liveInDate;
+	}
+	public int getRoomNumberFrom() {
+		return roomNumberFrom;
+	}
+	public void setRoomNumberFrom(int roomNumberFrom) {
+		this.roomNumberFrom = roomNumberFrom;
+	}
+	public int getRoomNumberTo() {
+		return roomNumberTo;
+	}
+	public void setRoomNumberTo(int roomNumberTo) {
+		this.roomNumberTo = roomNumberTo;
+	}
+	public int getKitchenNumberFrom() {
+		return kitchenNumberFrom;
+	}
+	public void setKitchenNumberFrom(int kitchenNumberFrom) {
+		this.kitchenNumberFrom = kitchenNumberFrom;
+	}
+	public int getKitchenNumberTo() {
+		return kitchenNumberTo;
+	}
+	public void setKitchenNumberTo(int kitchenNumberTo) {
+		this.kitchenNumberTo = kitchenNumberTo;
+	}
+	public int getHallNumberFrom() {
+		return hallNumberFrom;
+	}
+	public void setHallNumberFrom(int hallNumberFrom) {
+		this.hallNumberFrom = hallNumberFrom;
+	}
+	public int getHallNumberTo() {
+		return hallNumberTo;
+	}
+	public void setHallNumberTo(int hallNumberTo) {
+		this.hallNumberTo = hallNumberTo;
+	}
+	public int getToiletNumberFrom() {
+		return toiletNumberFrom;
+	}
+	public void setToiletNumberFrom(int toiletNumberFrom) {
+		this.toiletNumberFrom = toiletNumberFrom;
+	}
+	public int getToiletNumberTo() {
+		return toiletNumberTo;
+	}
+	public void setToiletNumberTo(int toiletNumberTo) {
+		this.toiletNumberTo = toiletNumberTo;
+	}
+	public int getBalconyNumberFrom() {
+		return balconyNumberFrom;
+	}
+	public void setBalconyNumberFrom(int balconyNumberFrom) {
+		this.balconyNumberFrom = balconyNumberFrom;
+	}
+	public int getBalconyNumberTo() {
+		return balconyNumberTo;
+	}
+	public void setBalconyNumberTo(int balconyNumberTo) {
+		this.balconyNumberTo = balconyNumberTo;
+	}
+	public int getSizeFrom() {
+		return sizeFrom;
+	}
+	public void setSizeFrom(int sizeFrom) {
+		this.sizeFrom = sizeFrom;
+	}
+	public int getSizeTo() {
+		return sizeTo;
+	}
+	public void setSizeTo(int sizeTo) {
+		this.sizeTo = sizeTo;
+	}
+	public int getFloorFrom() {
+		return floorFrom;
+	}
+	public void setFloorFrom(int floorFrom) {
+		this.floorFrom = floorFrom;
+	}
+	public int getFloorTo() {
+		return floorTo;
+	}
+	public void setFloorTo(int floorTo) {
+		this.floorTo = floorTo;
+	}
+	public double getExpectedPriceFrom() {
+		return expectedPriceFrom;
+	}
+	public void setExpectedPriceFrom(double expectedPriceFrom) {
+		this.expectedPriceFrom = expectedPriceFrom;
+	}
+	public double getExpectedPriceTo() {
+		return expectedPriceTo;
+	}
+	public void setExpectedPriceTo(double expectedPriceTo) {
+		this.expectedPriceTo = expectedPriceTo;
+	}
+	public int getBuildingType() {
+		return buildingType;
+	}
+	public void setBuildingType(int buildingType) {
+		this.buildingType = buildingType;
+	}
+	public int getDecorationCondition() {
+		return decorationCondition;
+	}
+	public void setDecorationCondition(int decorationCondition) {
+		this.decorationCondition = decorationCondition;
+	}
+	public int getCustomerLevel() {
+		return customerLevel;
+	}
+	public void setCustomerLevel(int customerLevel) {
+		this.customerLevel = customerLevel;
+	}
+	public int getIsParkingPlace() {
+		return isParkingPlace;
+	}
+	public void setIsParkingPlace(int isParkingPlace) {
+		this.isParkingPlace = isParkingPlace;
+	}
+	public double getIsPropertyFee() {
+		return isPropertyFee;
+	}
+	public void setIsPropertyFee(double isPropertyFee) {
+		this.isPropertyFee = isPropertyFee;
+	}
+	public int getIsUrgently() {
+		return isUrgently;
+	}
+	public void setIsUrgently(int isUrgently) {
+		this.isUrgently = isUrgently;
+	}
+	public String getComment() {
+		return comment;
+	}
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+	public int getExpectedBusLine() {
+		return expectedBusLine;
+	}
+	public void setExpectedBusLine(int expectedBusLine) {
+		this.expectedBusLine = expectedBusLine;
+	}
+	public int getNearestBusStationWalkingTime() {
+		return nearestBusStationWalkingTime;
+	}
+	public void setNearestBusStationWalkingTime(int nearestBusStationWalkingTime) {
+		this.nearestBusStationWalkingTime = nearestBusStationWalkingTime;
+	}
+	public int getExpectedSubwayLine() {
+		return expectedSubwayLine;
+	}
+	public void setExpectedSubwayLine(int expectedSubwayLine) {
+		this.expectedSubwayLine = expectedSubwayLine;
+	}
+	public int getNearestSubwayStationWalkingTime() {
+		return nearestSubwayStationWalkingTime;
+	}
+	public void setNearestSubwayStationWalkingTime(int nearestSubwayStationWalkingTime) {
+		this.nearestSubwayStationWalkingTime = nearestSubwayStationWalkingTime;
+	}
+	public int getExpectedHospitalLevel() {
+		return expectedHospitalLevel;
+	}
+	public void setExpectedHospitalLevel(int expectedHospitalLevel) {
+		this.expectedHospitalLevel = expectedHospitalLevel;
+	}
+	public String getHospitalName() {
+		return hospitalName;
+	}
+	public void setHospitalName(String hospitalName) {
+		this.hospitalName = hospitalName;
+	}
+	public int getDistanceToHospital() {
+		return distanceToHospital;
+	}
+	public void setDistanceToHospital(int distanceToHospital) {
+		this.distanceToHospital = distanceToHospital;
+	}
+	public int getNearlySchoolType() {
+		return nearlySchoolType;
+	}
+	public void setNearlySchoolType(int nearlySchoolType) {
+		this.nearlySchoolType = nearlySchoolType;
+	}
+	public int getNearlySchoolName() {
+		return nearlySchoolName;
+	}
+	public void setNearlySchoolName(int nearlySchoolName) {
+		this.nearlySchoolName = nearlySchoolName;
+	}
+	public int getDistanceToSchool() {
+		return distanceToSchool;
+	}
+	public void setDistanceToSchool(int distanceToSchool) {
+		this.distanceToSchool = distanceToSchool;
+	}
+	public int getHas() {
+		return has;
+	}
+	public void setHas(int has) {
+		this.has = has;
+	}
+	public String getCoreRequirementPoint() {
+		return coreRequirementPoint;
+	}
+	public void setCoreRequirementPoint(String coreRequirementPoint) {
+		this.coreRequirementPoint = coreRequirementPoint;
+	}
+	public String getCoreResistancePoint() {
+		return coreResistancePoint;
+	}
+	public void setCoreResistancePoint(String coreResistancePoint) {
+		this.coreResistancePoint = coreResistancePoint;
+	}
+	public String getServiceTimePeriod() {
+		return serviceTimePeriod;
+	}
+	public void setServiceTimePeriod(String serviceTimePeriod) {
+		this.serviceTimePeriod = serviceTimePeriod;
+	}
+	public String getCommunicationType() {
+		return communicationType;
+	}
+	public void setCommunicationType(String communicationType) {
+		this.communicationType = communicationType;
+	}
+	public int getBuildingAgeFrom() {
+		return buildingAgeFrom;
+	}
+	public void setBuildingAgeFrom(int buildingAgeFrom) {
+		this.buildingAgeFrom = buildingAgeFrom;
+	}
+	public int getBuildingAgeTo() {
+		return buildingAgeTo;
+	}
+	public void setBuildingAgeTo(int buildingAgeTo) {
+		this.buildingAgeTo = buildingAgeTo;
+	}
+	public String getRequireReason() {
+		return requireReason;
+	}
+	public void setRequireReason(String requireReason) {
+		this.requireReason = requireReason;
+	}
+	public String getFurniture() {
+		return furniture;
+	}
+	public void setFurniture(String furniture) {
+		this.furniture = furniture;
+	}
+	public String getAppliances() {
+		return appliances;
+	}
+	public void setAppliances(String appliances) {
+		this.appliances = appliances;
+	}
+	public int getUseType() {
+		return useType;
+	}
+	public void setUseType(int useType) {
+		this.useType = useType;
+	}
+	public int getIsToilet() {
+		return isToilet;
+	}
+	public void setIsToilet(int isToilet) {
+		this.isToilet = isToilet;
+	}
+	public int getOfficeLevel() {
+		return officeLevel;
+	}
+	public void setOfficeLevel(int officeLevel) {
+		this.officeLevel = officeLevel;
+	}
+	public int getIndustryType() {
+		return industryType;
+	}
+	public void setIndustryType(int industryType) {
+		this.industryType = industryType;
+	}
+	public double getWidth() {
+		return width;
+	}
+	public void setWidth(double width) {
+		this.width = width;
+	}
+	public int getIs_hospital() {
+		return is_hospital;
+	}
+	public void setIs_hospital(int is_hospital) {
+		this.is_hospital = is_hospital;
+	}
+	public int getHospital_remark() {
+		return hospital_remark;
+	}
+	public void setHospital_remark(int hospital_remark) {
+		this.hospital_remark = hospital_remark;
+	}
+	public int getIs_park() {
+		return is_park;
+	}
+	public void setIs_park(int is_park) {
+		this.is_park = is_park;
+	}
+	public String getPark_remark() {
+		return park_remark;
+	}
+	public void setPark_remark(String park_remark) {
+		this.park_remark = park_remark;
+	}
+	public int getIs_supermarkets() {
+		return is_supermarkets;
+	}
+	public void setIs_supermarkets(int is_supermarkets) {
+		this.is_supermarkets = is_supermarkets;
+	}
+	public String getSupermarkets_remark() {
+		return supermarkets_remark;
+	}
+	public void setSupermarkets_remark(String supermarkets_remark) {
+		this.supermarkets_remark = supermarkets_remark;
+	}
+	public int getIs_subway() {
+		return is_subway;
+	}
+	public void setIs_subway(int is_subway) {
+		this.is_subway = is_subway;
+	}
+	public String getSubway_remark() {
+		return subway_remark;
+	}
+	public void setSubway_remark(String subway_remark) {
+		this.subway_remark = subway_remark;
+	}
+	public int getIs_bank() {
+		return is_bank;
+	}
+	public void setIs_bank(int is_bank) {
+		this.is_bank = is_bank;
+	}
+	public String getBank_remark() {
+		return bank_remark;
+	}
+	public void setBank_remark(String bank_remark) {
+		this.bank_remark = bank_remark;
+	}
+	public int getIs_school() {
+		return is_school;
+	}
+	public void setIs_school(int is_school) {
+		this.is_school = is_school;
+	}
+	public String getSchool_remark() {
+		return school_remark;
+	}
+	public void setSchool_remark(String school_remark) {
+		this.school_remark = school_remark;
+	}
+	public int getIs_commercial_street() {
+		return is_commercial_street;
+	}
+	public void setIs_commercial_street(int is_commercial_street) {
+		this.is_commercial_street = is_commercial_street;
+	}
+	public String getCommercial_street_remark() {
+		return commercial_street_remark;
+	}
+	public void setCommercial_street_remark(String commercial_street_remark) {
+		this.commercial_street_remark = commercial_street_remark;
+	}
+	public int getIs_other() {
+		return is_other;
+	}
+	public void setIs_other(int is_other) {
+		this.is_other = is_other;
+	}
+	public String getOther_remark() {
+		return other_remark;
+	}
+	public void setOther_remark(String other_remark) {
+		this.other_remark = other_remark;
+	}
+	public int getIs_bus() {
+		return is_bus;
+	}
+	public void setIs_bus(int is_bus) {
+		this.is_bus = is_bus;
+	}
+	public String getBus_remark() {
+		return bus_remark;
+	}
+	public void setBus_remark(String bus_remark) {
+		this.bus_remark = bus_remark;
+	}
+	public String getRequirement_point() {
+		return requirement_point;
+	}
+	public void setRequirement_point(String requirement_point) {
+		this.requirement_point = requirement_point;
+	}
+	public int getPurchasing_power() {
+		return purchasing_power;
+	}
+	public void setPurchasing_power(int purchasing_power) {
+		this.purchasing_power = purchasing_power;
+	}
+	public int getDeadline() {
+		return deadline;
+	}
+	public void setDeadline(int deadline) {
+		this.deadline = deadline;
+	}
+	public String getService_remark() {
+		return service_remark;
+	}
+	public void setService_remark(String service_remark) {
+		this.service_remark = service_remark;
+	}
+	
+	
+	
+}

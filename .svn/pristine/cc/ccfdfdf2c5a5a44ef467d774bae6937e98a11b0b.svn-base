@@ -1,0 +1,661 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
+<%
+	String path = request.getContextPath(); 
+	String basePath=  request.getScheme() + "://"
+            + request.getServerName() + ":" + request.getServerPort()+ path;
+%>
+<div class="panel" id="jc_yezujinli" style="display: none;">
+	<div class="panel-default">
+		<div class="row">
+			<div class="panel  panel-gray dujia_sc_hearder">
+				<div class="panel-heading  padd_hearde">
+					基本信息
+				</div>
+				<div class="panel-body">
+					<div class="row col-lg-12 col-md-12 col-xs-12 col-sm-12">
+						<div class="col-md-6 col-sm-6">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon red">业主姓名：</span>
+									<input type="text" class="form-control" id="name" value="${per.name }"/>
+									<span class="input-group-addon" style="padding: 0;"></span>
+									<select class="form-control" style="width: 150px;">
+										<option>请选择</option>
+										<option>男士</option>
+										<option>女士</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6 col-sm-12" id="linkid">
+							<div class="form-group" id="linkid1">
+								<div class="input-group input-group-minimal" >
+									<span class="input-group-addon red">联系电话：</span>
+									<input type="text" class="form-control" />
+									<span class="input-group-addon" style="padding: 0;"></span>
+									<select class="form-control" style="width: 80px;">
+										<option value="0">请选择</option>
+				                       	<option value="1">本人</option>
+				                        <option value="2">父母</option>
+				                        <option value="3">授权委托人</option>
+				                        <option value="4">配偶</option>
+				                        <option value="5">亲戚</option>
+				                        <option value="5">朋友</option>
+									</select>
+									<span class="input-group-addon"><i class="fa-plus" onclick="addLink()"></i></span>
+									<span class="input-group-addon"><i class="fa-plus" onclick="delLink(this)"></i></span>
+								</div>
+<!-- 								<p class="help-block red">系统查询到该联系方式下有3位经纪人维护查询</p> -->
+							</div>
+						</div>
+						<div class="col-md-6 col-sm-6">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon red">居住地址：</span>
+									<input class="form-control" type="text"  id="homeAddress" value="${per.homeAddress }">
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6 col-sm-6">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon red">房产地址：</span>
+									<input class="form-control" type="text"  >
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4 col-sm-6">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon red">客户等级：</span>
+									<select class="form-control" id="customerLevel" value="${req.customerLevel}">
+										<option value="283">A级</option>
+										<option value="284">B级</option>
+										<option value="285">C级</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4 col-sm-6">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon red">用途：</span>
+									<select class="form-control"  id="useType" >
+										<c:forEach items="${yt}" var="myList" varStatus="list1">  
+											<option value="${myList.id }">${mylist.name }</option>
+										</c:forEach>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4 col-sm-6">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon" >装修情况：</span>
+									<select class="form-control" id="decorationCondition" >
+										<c:forEach items="${decor}" var="myList" varStatus="list1">  
+											<option value="${myList.id }">${myList.name }</option>
+										</c:forEach>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-12 col-sm-12">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon red">户型：</span>
+									<select class="form-control" id="roomNumberFrom" value="${req.roomNumberFrom}">
+										<option value="1">1室</option>
+										<option value="2">2室</option>
+										<option value="3">3室</option>
+										<option value="4">4室</option>
+										<option value="5">5室</option>
+									</select>
+									<span class="input-group-addon">-</span>
+									<select class="form-control"  id="hallNumberFrom" value="${req.hallNumberFrom}">
+										<option value="1">1厅</option>
+										<option value="2">2厅</option>
+										<option value="3">3厅</option>
+										<option value="4">4厅</option>
+										<option value="5">5厅</option>
+									</select>
+									<span class="input-group-addon">-</span>
+									<select class="form-control"  id="kitchenNumberFrom" value="${req.kitchenNumberFrom}">
+										<option value="1">1厨</option>
+										<option value="2">2厨</option>
+										<option value="3">3厨</option>
+										<option value="4">4厨</option>
+										<option value="5">5厨</option>
+									</select>
+									<span class="input-group-addon">-</span>
+									<select class="form-control"  id="toiletNumberFrom" value="${req.toiletNumberFrom}">
+										<option value="1">1卫</option>
+										<option value="2">2卫</option>
+										<option value="3">3卫</option>
+										<option value="4">4卫</option>
+										<option value="5">5卫</option>
+									</select>
+									<span class="input-group-addon">-</span>
+									<select class="form-control"  id="balconyNumberFrom" value="${req.balconyNumberFrom}">
+										<option value="1">1阳台</option>
+										<option value="2">2阳台</option>
+										<option value="3">3阳台</option>
+										<option value="4">4阳台</option>
+										<option value="5">5阳台</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6 col-sm-12">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon red">预算（元）：</span>
+									<input type="text" class="form-control" id="expectedPriceFrom" value="${req.expectedPriceFrom }">
+									<span class="input-group-addon">-</span>
+									<input type="text" class="form-control"  id="expectedPriceTo" value="${req.expectedPriceTo }">
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6 col-sm-12">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon red">面积：</span>
+									<input type="text" class="form-control" id="sizeFrom" value="${ req.sizeFrom}">
+									<span class="input-group-addon">-</span>
+									<input type="text" class="form-control" id="sizeTo" value="${ req.sizeTo}">
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6 col-sm-12">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon red">楼层：</span>
+									<input type="text" class="form-control" id="floorFrom" value="${ req.floorFrom}">
+									<span class="input-group-addon">-</span>
+									<input type="text" class="form-control" id="floorTo" value="${ req.floorTo}">
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6 col-sm-12">
+							<div class="form-group">
+								<div class="input-group input-group-minimal"> 
+									<span class="input-group-addon red">楼龄：</span>
+									<input type="text" class="form-control" id="buildingAgeFrom" value="${ req.buildingAgeFrom}">
+									<span class="input-group-addon">-</span>
+									<input type="text" class="form-control" id="buildingAgeTo" value="${ req.buildingAgeTo}">
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6 col-sm-6">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon red">需求委托：</span>
+									<select class="form-control"  id="delegateType" value="${ cus.delegateType}" onchange="delegate_f()">
+										<option value="1">求购</option>
+										<option value="2">求租</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4 col-sm-6" id="rentdiv">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon red">租期（月）：</span>
+									<input type="text" class="form-control" id="buildingAgeTo" value="${ req.buildingAgeTo}"/>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6 col-sm-6">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon red">委托来源：</span>
+									<select class="form-control" value="${cus.delegateSource}" id="delegateSource">
+										<option value="1">店面开发</option>
+									</select>
+									<span class="input-group-addon">-</span>
+									<select class="form-control">
+										<option>精耕</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-2 col-sm-3 pull-right">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon">付：</span>
+									<input type="text" class="form-control" value="${cus.mortgage}" id="mortgage"/>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-2 col-sm-3 pull-right">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon">押：</span>
+									<input type="text" class="form-control" value="${cus.fee}" id="fee"/>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4 col-sm-6 pull-right">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon">付款方式：</span>
+									<select class="form-control" id="payType" value ="${rent.payType }">
+										<option>1</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="clearfix"></div>
+	</div>
+	<div class="panel-default">
+		<div class="row">
+			<div class="panel  panel-gray dujia_sc_hearder">
+				<div class="panel-heading  padd_hearde">
+					其他信息
+				</div>
+				<div class="panel-body">
+					<div class="row col-lg-12 col-md-12 col-xs-12 col-sm-12">
+						<div class="col-md-4 col-sm-6">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon">QQ：</span>
+									<input type="text" class="form-control" id="qq" value="${per.qq }"/>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4 col-sm-6">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon">微信：</span>
+									<input type="text" class="form-control" id="weXin" value="${per.weXin }"/>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4 col-sm-6">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon">电子信箱：</span>
+									<input type="text" class="form-control" id="email" value="${per.email }"/>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4 col-sm-6">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon">工作单位：</span>
+									<input type="text" class="form-control" id="workPlace" value="${per.workPlace }"/>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4 col-sm-6">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon">教育程度：</span>
+									<select class="form-control" id="education" >
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4 col-sm-6">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon">出生日期：</span>
+									<input type="text" class="form-control form_date" id="birthday" value="${per.birthday }"/>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4 col-sm-6">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon">消费观念：</span>
+									<select class="form-control" id="consumptionConcept" >
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4 col-sm-6">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon">单位地址：</span>
+									<input type="text" class="form-control" id="workPlace" value="${per.workPlace }" />
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4 col-sm-6">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon">身份证：</span>
+									<input type="text" class="form-control" id="identityCode" value="${per.identityCode }"/>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4 col-sm-6">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon">现家庭地址：</span>
+									<input type="text" class="form-control" id="homeAddress" value="${per.homeAddress }"/>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4 col-sm-6">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon">国籍：</span>
+									<select class="form-control" id="nationality" >
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4 col-sm-6">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon">工作性质：</span>
+									<select class="form-control" id="workType" >
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4 col-sm-6">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon">现有房产套数：</span>
+									<input type="text" class="form-control" id="ownedHouseNumber" value="${cus.ownedHouseNumber }"/>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4 col-sm-4">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon">居住人口：</span>
+									<input type="text" class="form-control" id="qq" value="${per.qq }"/>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4 col-sm-4">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon">紧迫感：</span>
+									<select class="form-control" id="isUrgently" value="${req.isUrgently }">
+										<option>1</option>
+										<option>2</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4 col-sm-4">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon">入住时间：</span>
+									<input type="text" class="form-control form-input form_date" id="liveInDate" value="${req.liveInDate }"/>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4 col-sm-4">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon">车位：</span>
+									<select class="form-control" id="isParkingPlace" value="${req.isParkingPlace }">
+										<option>1</option>
+										<option>2</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4 col-sm-4">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon">是否集团客户：</span>
+									<select class="form-control" id="IsGroupCustomer " value="${req.IsGroupCustomer  }">
+										<option value="1">是</option>
+										<option value="0">否</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4 col-sm-4">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon">期限：</span>
+									<select class="form-control" id="deadline" value="${req.deadline }">
+										<option></option>
+										<option></option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-12 col-sm-12">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="input-group-addon">备注：</span>
+									<textarea class="form-control" id="comment" value="${req.comment }"></textarea>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-12 col-sm-12">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="">小区熟悉程度：</span>
+									<p class="" id="isFamiliarToCommunity" >
+<!-- 										<label class="radio-inline"> -->
+<!-- 											<input type="radio" name="radio-2" checked=""> -->
+<!-- 											熟悉商圈小区 -->
+<!-- 										</label> -->
+<!-- 										<label class="radio-inline"> -->
+<!-- 											<input type="radio" name="radio-2"> -->
+<!-- 											多次看房，熟悉商圈小区 -->
+<!-- 										</label> -->
+<!-- 										<label class="radio-inline"> -->
+<!-- 											<input type="radio" name="radio-2"> -->
+<!-- 											不熟悉商圈小区 -->
+<!-- 										</label> -->
+	
+<%-- 										<c:forEach items="${familar}" var="myList" varStatus="list1">   --%>
+<%-- 											<label id="${myList.id }"> --%>
+<!-- 											<input type="checkbox" name="radio-2" > -->
+<%-- 												${myList.name } --%>
+<!-- 											</label> -->
+<%-- 										</c:forEach> --%>
+									</p>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-12 col-sm-12">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="">周边配套需求：</span>
+									<p class="" >
+										<label >
+											<input type="checkbox" name="radio-2" id="is_hospital">
+											医院
+										</label>
+										<label >
+											<input type="checkbox" name="radio-2" id="is_park">
+											公园
+										</label>
+										<label >
+											<input type="checkbox" name="radio-2" id="is_supermarkets">
+											超市
+										</label>
+										<label>
+											<input type="checkbox" name="radio-2" id="is_subway"> 
+											地铁
+										</label>
+										<label >
+											<input type="checkbox" name="radio-2" id="is_bank">
+											银行
+										</label>
+										<label >
+											<input type="checkbox" name="radio-2" id="is_school">
+											学校
+										</label>
+										<label >
+											<input type="checkbox" name="radio-2" id="is_commercial_street">
+											商业街
+										</label>
+										<label >
+											<input type="checkbox" name="radio-2" id="is_other">
+											其他
+										</label>
+									</p>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-12 col-sm-12">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="" >家具：</span>
+									<p class="" id="furniture" >
+<!-- 										<label > -->
+<!-- 											<input type="checkbox" style="padding-left: 0px;" name="radio-2" checked="" > -->
+<!-- 											全选 -->
+<!-- 										</label> -->
+									</p>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-12 col-sm-12">
+							<div class="form-group">
+								<div class="input-group input-group-minimal">
+									<span class="">家电：</span>
+									<p class="" id="appliances"  name="appliances" >
+									</p>
+								</div>
+							</div>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<button class="btn btn-secondary btn-icon btn-icon-standalone" style="padding: 0px !important; margin-top: 10px;">
+			<i class="fa-print"></i>
+			<span onclick="save2()">保存</span>
+		</button>
+		<div class="clearfix"></div>
+	</div>
+</div>
+
+
+<script type="text/javascript">
+	function addLink(){
+		var c = '<div class="form-group">' + $("#linkid1").html() + '</div>';
+		$("#linkid").append(c);
+	}
+	function delLink(o){
+		$(o).parent().parent().parent().remove();
+		//$("#linkid").removeChild($("#linkid1"));
+	}
+	
+	function save2(){
+		var per = new Object();
+		var req = new Object();
+		var cus = new Object();
+		per.name = $("#name").val();
+		per.mobilephone = $("#mobilephone").val();
+		per.homeAddress = $("#homeAddress").val();
+		
+		req.customerLevel = $("#customerLevel").val();
+		req.useType = $("#useType").val();
+		req.decorationCondition = $("#decorationCondition").val();
+		req.roomNumberFrom = $("#roomNumberFrom").val();
+		req.hallNumberFrom = $("#hallNumberFrom").val();
+		req.kitchenNumberFrom = $("#kitchenNumberFrom").val();
+		req.toiletNumberFrom = $("#toiletNumberFrom").val();
+		req.balconyNumberFrom = $("#balconyNumberFrom").val();
+		
+		
+		req.expectedPriceFrom = $("#expectedPriceFrom").val();
+		req.expectedPriceTo = $("#expectedPriceTo").val();
+		req.hallNumberFrom = $("#sizeFrom").val();
+		req.sizeTo = $("#sizeTo").val();
+		req.floorFrom = $("#floorFrom").val();
+		req.floorTo = $("#floorTo").val();
+		
+		
+		
+		req.buildingAgeFrom = $("#buildingAgeFrom").val();
+		req.buildingAgeTo = $("#buildingAgeTo").val();
+		cus.delegateType = $("#delegateType").val();
+		req.delegateSourceID = $("#delegateSource").val();
+		
+		per.qq = $("#qq").val();
+		per.weXin = $("#weXin").val();
+		per.email = $("#email").val();
+		per.workPlace = $("#workPlace").val();
+		per.education = $("#education").val();
+		per.birthday = $("#birthday").val();
+		per.consumptionConcept = $("#consumptionConcept").val();
+		per.workPlace = $("#workPlace").val();
+		
+		per.identityCode = $("#identityCode").val();
+		per.homeAddress = $("#homeAddress").val();
+		per.nationality = $("#nationality").val();
+		cus.ownedHouseNumber = $("#ownedHouseNumber").val();
+		req.isUrgently = $("#isUrgently").val();
+	    req.liveInDate = $("#liveInDate").val();
+		req.isParkingPlace = $("#isParkingPlace").val();
+		req.deadline = $("#deadline").val();
+	    req.comment = $("#comment").val();
+		
+	    req.is_hospital = $('#is_hospital').is(':checked') == true ? 1 : 0;
+	    req.is_park = $('#is_park').is(':checked') == true ? 1 : 0;$("#is_park").val();
+	    req.is_supermarkets = $("#is_supermarkets").is(':checked') == true ? 1 : 0;
+	    req.is_subway = $("#is_subway").is(':checked') == true ? 1 : 0;
+	    req.is_bank = $("#is_bank").is(':checked') == true ? 1 : 0;
+	    req.is_commercial_street = $("#is_commercial_street").is(':checked') == true ? 1 : 0;
+	    req.is_other = $("#is_other").is(':checked') == true ? 1 : 0;
+		
+		cus.isFamiliarToCommunity = $("#isFamiliarToCommunity").val();
+	    req.furniture = $("#furniture").val();
+		req.appliances = $("#appliances").val();
+		
+		var rent = new Object();
+		rent.payType = $("#payType").val();
+		rent.livePersonCount =  $("#livePersonCount").val();
+		rent.mortgage = $("#mortgage").val();
+		rent.fee =  $("#fee").val();
+		rent.rentingRange = $("#rentingRange").val();
+		rent.livePersonCount =  $("#livePersonCount").val();
+		var sale = new Object();
+
+		
+		var r = new Object();
+		r.fhid = $("#fanghao").val();
+		r.fhid = "${jb.fhid}";
+	
+		//req.customerID = 1;
+		//cus.personid = 45;
+		var params = new Object();
+		params.personInfo = per;
+		params.customerReq = req;
+		params.customerInfo = cus;
+		params.relationship = r;
+		params.rentInfo = rent;
+		params.buyInfo = sale;
+		params.type = 1;
+		params.fhid = "${jb.fhid}"
+		var dataJson = JSON.stringify(params);
+		$.ajax({
+			url: "<%=basePath%>/services/refineService/saveJjrYzManager2",
+			type : "POST",
+			dataType : "json",
+			data : dataJson ,
+			contentType : "application/json;charset=UTF-8",
+			async : false,
+			success: function(data){
+	 			alert("操作成功");
+	 		}
+		})
+	}
+	
+	function delegate_f(){
+		alert($("#delegateType").find("option:selected").text())
+	}
+
+</script>

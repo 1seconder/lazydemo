@@ -1,0 +1,57 @@
+package com.newenv.communityFocus.domain.jinggeng;
+
+
+public class JjrCustomerParams  {
+	
+	private PersonInfo personInfo;
+	
+	private CustomerRequirement customerReq;
+	
+	private CustomerInfo customerInfo;
+	
+	private CustomerRequirementOfBuy buyInfo;
+	
+	private CustomerRequirementOfRent rentInfo;
+
+	public PersonInfo getPersonInfo() {
+		return personInfo;
+	}
+
+	public void setPersonInfo(PersonInfo personInfo) {
+		this.personInfo = personInfo;
+	}
+
+	public CustomerRequirement getCustomerReq() {
+		return customerReq;
+	}
+
+	public void setCustomerReq(CustomerRequirement customerReq) {
+		this.customerReq = customerReq;
+	}
+
+	public CustomerInfo getCustomerInfo() {
+		return customerInfo;
+	}
+
+	public void setCustomerInfo(CustomerInfo customerInfo) {
+		this.customerInfo = customerInfo;
+	}
+
+	public CustomerRequirementOfBuy getBuyInfo() {
+		return buyInfo;
+	}
+
+	public void setBuyInfo(CustomerRequirementOfBuy buyInfo) {
+		this.buyInfo = buyInfo;
+	}
+
+	public CustomerRequirementOfRent getRentInfo() {
+		return rentInfo;
+	}
+
+	public void setRentInfo(CustomerRequirementOfRent rentInfo) {
+		this.rentInfo = rentInfo;
+	}
+
+	
+}
