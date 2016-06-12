@@ -1,0 +1,255 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
+<%
+	String path = request.getContextPath(); 
+	String basePath = "http://192.168.3.102:8084/communityFocus";
+%>
+<!--精耕模块--基本信息-->
+<div class="panel" id="jc_jibenxinxi">
+	<div class="panel-heading">
+		<h3 class="panel-title">基本信息</h3>
+	</div>
+	<div class="panel-body">
+		<div class="col-md-12 col-sm-12">
+			<div class="form-group">
+				<div class="input-group input-group-minimal">
+					<span class="input-group-addon red" >房屋名称：</span>
+					<select class="form-control" >
+						<option>小区名</option>
+					</select>
+					<span class="input-group-addon">-</span>
+					<select class="form-control">
+						<option>1栋</option>
+						<option>2栋</option>
+					</select>
+					<span class="input-group-addon">-</span>
+					<select class="form-control">
+						<option>单元</option>
+					</select>
+					<span class="input-group-addon">-</span>
+					<select class="form-control">
+						<option>房号</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-12 col-sm-12">
+			<div class="form-group">
+				<div class="input-group input-group-minimal">
+					<span class="input-group-addon red">户型：</span>
+					<select class="form-control" id="shi" >
+						<option>1室</option>
+					</select>
+					<span class="input-group-addon">-</span>
+					<select class="form-control" id="shi" value="${jb.shi }">
+						<option>1厅</option>
+					</select>
+					<span class="input-group-addon">-</span>
+					<select class="form-control" id="chu" value="${jb.shi }">
+						<option>1厨</option>
+					</select>
+					<span class="input-group-addon">-</span>
+					<select class="form-control" id="wei" value="${jb.shi }">
+						<option>1卫</option>
+					</select>
+					<span class="input-group-addon">-</span>
+					<select class="form-control" id="yangtai" value="${jb.shi }">
+						<option>1阳台</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-12 col-sm-12">
+			<div class="form-group">
+				<div class="input-group input-group-minimal">
+					<span class="input-group-addon red">区域范围：</span>
+					<select class="form-control" id="city" value="${jb.cityName }">
+						<option>地点</option>
+					</select>
+					<span class="input-group-addon">-</span>
+					<select class="form-control" id="qy" value="${jb.qyName }">
+						<option>区域</option>
+					</select>
+					<span class="input-group-addon">-</span>
+					<select class="form-control" id="sq" value="${jb.sqName }">
+						<option>商圈</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6 col-md-4 col-lg-3">
+			<div class="form-group">
+				<div class="input-group input-group-sm input-group-minimal">
+					<span class="input-group-addon">
+						用途：
+					</span>
+					<input class="form-control" type="text" id="purpose" value="${fw.purpose}">
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6 col-md-4 col-lg-3">
+			<div class="form-group">
+				<div class="input-group input-group-sm input-group-minimal">
+					<span class="input-group-addon">
+						朝向：
+					</span>
+					<input class="form-control" type="text" id="direction" value="${fw.direction}"> 
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6 col-md-4 col-lg-3">
+			<div class="form-group">
+				<div class="input-group input-group-sm input-group-minimal">
+					<span class="input-group-addon">
+						市场地址：
+					</span>
+					<input class="form-control" type="text"  id="marketAddress" value="${fw.marketAddress}">
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6 col-md-4 col-lg-3">
+			<div class="form-group">
+				<div class="input-group input-group-sm input-group-minimal">
+					<span class="input-group-addon">
+						国土性质：
+					</span>
+					<input class="form-control" type="text" id="territoryinfo" value="${fw.territoryinfo }">
+				</div>	
+			</div>
+		</div>
+		<div class="col-sm-6 col-md-4 col-lg-3">
+			<div class="form-group">
+				<div class="input-group input-group-sm input-group-minimal">
+					<span class="input-group-addon">
+						权属性质：
+					</span>
+					<input class="form-control" type="text"  id="propertyInfo" value="${fw.propertyInfo }">
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6 col-md-4 col-lg-3">
+			<div class="form-group">
+				<div class="input-group input-group-sm input-group-minimal">
+					<span class="input-group-addon">
+						产权编码：
+					</span>
+					<input class="form-control" type="text" id="propertyNumber" value="${fw.propertyNumber }">
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6 col-md-4 col-lg-3">
+			<div class="form-group">
+				<div class="input-group input-group-sm input-group-minimal">
+					<span class="input-group-addon">
+						产权面积：
+					</span>
+					<input class="form-control" type="text" id="propertysize" value="${fw.propertysize  }">
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6 col-md-4 col-lg-3">
+			<div class="form-group">
+				<div class="input-group input-group-sm input-group-minimal">
+					<span class="input-group-addon">
+						使用面积：
+					</span>
+					<input class="form-control" type="text" id="innersize" value="${fw.innersize  }">
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6 col-md-4 col-lg-3">
+			<div class="form-group">
+				<div class="input-group input-group-sm input-group-minimal">
+					<span class="input-group-addon">
+						产权年限：
+					</span>
+					<input class="form-control form_date" type="text" id="propertyage" value="${fw.propertyage  }">
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6 col-md-4 col-lg-3">
+			<div class="form-group">
+				<div class="input-group input-group-sm input-group-minimal">
+					<span class="input-group-addon">
+						备案号：
+					</span>
+					<input class="form-control form_date" type="text"  id="codes" value="aaa">
+				</div>
+			</div>
+		</div>
+	
+		<div class="clearfix"></div>
+	</div>
+	<button class="btn btn-secondary btn-icon btn-icon-standalone" style="padding: 0px !important; margin-top: 10px;">
+		<i class="fa-print"></i>
+		<span onclick="save()">保存</span>
+	</button>
+</div>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#prefId").val("<%=prefId%>");
+		$("#loginUserCityId").val("<%=cityId%>");
+		queryResponsiblePersonForList(1,0);
+		queryHeadMessage();
+		
+	});
+</script>
+<script>
+
+function save(){
+	var house = new Object(); 
+	
+// 	private String territoryInfo ;
+	
+// 	private int propertyNumber ;//产权编码
+	
+// 	private double propertySize ; //产权面积
+	
+// 	private double  innerSize ;//室内面积
+	
+// 	private int  propertyAge ;//产权年限
+	
+// 	private String facility ; //配套设施
+	
+	
+// 	private String codes ;//备案号
+	
+// 	private int  creatorid ;//
+	
+// 	private int belongerid ; //guishu ren 
+	
+// 	private Date createDate ;
+	
+	
+// 	private Date modifyDate ;
+
+	//house.marketAddress = 
+	house.propertyInfo = $("#propertyInfo").val();
+	house.codes = $("#codes").val();
+	
+	var dataJson =  JSON.stringify(house);
+	
+	var result = $.ajax({
+		url: "<%=basePath%>/services/refineService/saveFwBasicInfo",
+		type : "POST",
+		dataType : "json",
+		data : dataJson ,
+		contentType : "application/json;charset=UTF-8",
+		async : false
+	})
+	
+// 	$.ajax({
+<%-- 		url: "<%=basePath%>/services/refineService/saveFwBasicInfo", --%>
+// 		dataType: "json", 
+// 		type: "POST",
+// 		contentType : "application/json; charset=utf-8",
+// 		async : false,
+// 		data : dataJson,
+// 		success: function(data){
+// 			alert("操作成功");
+// 		}
+// 	});
+	
+}
+</script>

@@ -1,0 +1,171 @@
+package com.newenv.communityFocus.SellControl.services;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
+
+import org.nutz.dao.entity.Record;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.alibaba.fastjson.JSON;
+import com.newenv.communityFocus.SellControl.dao.SellControlDao;
+import com.newenv.communityFocus.base.BaseService;
+import com.newenv.communityFocus.base.PageInfo;
+import com.newenv.communityFocus.queryCondition.ConditionSC;
+import com.newenv.communityFocus.security.SecurityUserHolder;
+import com.newenv.communityFocus.security.services.UserLoginService;
+
+
+@Component
+//@EnableAutoConfiguration
+@Path("/sellControl")
+public class SellControlServices  extends BaseService{
+	@Autowired
+	private SellControlDao sellControlDao;
+	@Autowired
+	private UserLoginService userLoginService;
+	
+	@GET
+	@Produces("text/html")
+	@Path("/initPoint/")
+	public void initPoint(){
+		super.setRequestAttribute("userid", SecurityUserHolder.getUserId());
+		super.setRequestAttribute("departmentid", SecurityUserHolder.getDeptId());
+		super.setRequestAttribute("cityid", SecurityUserHolder.getCityId());
+		super.forwardTo("/pages/SellControl/xiaokongguanli.jsp");
+	};
+	
+	@GET
+	@Produces("application/json")
+	@Consumes("application/json")
+	@Path("/querySCLp/{bmid}/{userid}")
+	public Response querySCLp(@PathParam("bmid") Integer bmid ,@PathParam("userid") Integer userid){
+			List<Record> querySCData = sellControlDao.querySCLp(bmid,userid);
+			String jsonString = JSON.toJSONString(querySCData);
+			return Response.ok().entity(jsonString).build();
+	};
+
+	@GET
+	@Produces("application/json")
+	@Consumes("application/json")
+	@Path("/querySCDong/lp/{lpid}/{userid}")
+	public Response querySCDong(@PathParam("lpid") Integer lpid ,@PathParam("userid") Integer userid){
+			List<Record> querySCData = sellControlDao.querySCDong(lpid,userid);
+			String jsonString = JSON.toJSONString(querySCData);
+			return Response.ok().entity(jsonString).build();
+	};
+	
+	@GET
+	@Produces("application/json")
+	@Consumes("application/json")
+	@Path("/querySCDanyuan/dz/{dzid}/{userid}")
+	public Response querySCDanyuan(@PathParam("dzid") Integer dzid,@PathParam("userid") Integer userid ){
+			List<Record> querySCData = sellControlDao.querySCDanyuan(dzid,userid);
+			String jsonString = JSON.toJSONString(querySCData);
+			return Response.ok().entity(jsonString).build();
+	};
+	
+
+	@GET
+	@Produces("application/json")
+	@Consumes("application/json")
+	@Path("/querySCData/{bmid}/{userid}")
+	public Response querySCData(@PathParam("bmid") Integer bmid ,@PathParam("userid") Integer userid){
+			List<Record> querySCData = sellControlDao.querySCData(bmid,userid);
+			String jsonString = JSON.toJSONString(querySCData);
+			return Response.ok().entity(jsonString).build();
+	};
+	
+
+	@POST
+	@Produces("application/json;charset=UTF-8")
+	@Consumes("application/json;charset=UTF-8")
+	@Path("/querySCTable/")
+	public Response querySCTable(ConditionSC condition){
+		Map<String, Map<String, List<String>>> querySCTable = null;
+		String jsonString ="";
+		if(null != condition)
+		{
+			String  lpid = condition.getLpid(); 
+			if(null != lpid && lpid !="" && !lpid.equals(""))
+			{
+				querySCTable = sellControlDao.querySCTable(condition);
+			}
+		}
+		jsonString = JSON.toJSONString(querySCTable);
+		return Response.ok().entity(jsonString).build();
+	};
+	
+	
+	@POST
+	@Produces("application/json;charset=UTF-8")
+	@Consumes("application/json;charset=UTF-8")
+	@Path("/querySCList/")
+	public Response querySCList(ConditionSC condition){
+		PageInfo pageInfo = condition.getPageInfo();
+		if(pageInfo == null){
+			pageInfo = new PageInfo();
+			pageInfo.setPage(1);
+			pageInfo.setRows(10);
+		}
+//		List<Record> querySCList = null;
+		String jsonString ="";
+		if(null != condition)
+		{
+			String  lpid = condition.getLpid(); 
+			if(null != lpid && lpid !="" && !lpid.equals(""))
+			{
+				pageInfo = sellControlDao.querySCList(pageInfo,condition);
+			}
+		}
+		jsonString = JSON.toJSONString(pageInfo);
+		return Response.ok().entity(jsonString).build();
+	};
+	
+	@GET
+	@Produces("application/json"+ ";charset=UTF-8")
+	@Consumes("application/json")
+	@Path("/updateTitle/cityDepId/{cityDepId}")
+	public Response updateTitle(@PathParam("cityDepId") String id){
+//		UserLogin userLogin = SecurityUserHolder.getUserLogin();
+//		userLogin.setTitleName(name);
+		Integer tbl_title = 0;
+		Integer departmentId = 0;
+		Integer cityid = 0;
+		if(null != id && id.indexOf(".")>0)
+		{
+			String replace = id.replace(".", "-");
+			String[] split = replace.split("-");
+			String string0 = split[0];
+			string0 = (null==string0||string0=="")?"0":string0;
+			cityid = Integer.valueOf(string0);
+			
+			String string1 = split[1];
+			string1 = (null==string1||string1=="")?"0":string1;
+			departmentId = Integer.valueOf(string1);
+			
+			
+			String string2 = split[2];
+			string2 = (null==string2||string2=="")?"0":string2;
+			tbl_title = Integer.valueOf(string2);
+			
+		}
+
+		userLoginService.setOrChangeTitle(id, departmentId, tbl_title);	
+		String userloing = JSON.toJSONString( SecurityUserHolder.getCurrentUserLogin());
+		System.out.println(userloing);
+//		List<Record> querySCData = sellControlDao.querySCDong(lpid,userid);
+			String jsonString = JSON.toJSONString(id);
+		return Response.ok().entity(jsonString).build();
+	};
+	
+	
+}

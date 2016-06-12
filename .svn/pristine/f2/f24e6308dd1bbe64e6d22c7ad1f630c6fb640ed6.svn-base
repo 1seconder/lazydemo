@@ -1,0 +1,100 @@
+package com.newenv.communityFocus.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import org.nutz.dao.entity.Record;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.newenv.communityFocus.security.dao.UserDao;
+import com.newenv.communityFocus.security.services.SecurityUserHolder;
+
+@Repository
+public class CommonDao{
+	
+	@Autowired
+	private DaoHelper daoHelper;
+	
+	@Autowired
+	private UserDao userDao;
+	
+	public List<Record> getQuyuByCityId(int id)
+	{
+		String sql = "select * from xhj_jcstress where cityId  ="+id+"";
+		return daoHelper.getRecordList(sql.toString());
+	}
+	
+	public List<Record> getSqByQyId(int id)
+	{
+		String sql = "select * from xhj_jcsq where qyid  ="+id+"";
+		return daoHelper.getRecordList(sql.toString());
+	}
+	
+	public List<Record> getLpBySqId(int id)
+	{
+		List<Record> list = daoHelper.getRecordList(" SELECT id, lp_name lpname FROM xhj_lpxx where id in (select lpid from lpjg_assignment_loupan )");
+		return list;
+	}
+	
+	public List<Record> getMdByPq(int id)
+	{
+		List<Record> list = daoHelper.getRecordList(" SELECT id, lp_name lpname FROM xhj_lpxx where id in (select lpid from lpjg_assignment_loupan )");
+		return list;
+	}
+	
+	public List<Record> getConstantsByName(String name)
+	{
+		List<Record> list = daoHelper.getRecordList(" select id , name from web_syscs_1 where sid= (SELECT id FROM web_syscs WHERE NAME = '" + name +"' limit 1 )");
+		return list;
+	}
+	
+	
+	public Map<String,Object> getFhxx(long id ){
+		StringBuffer fjSql = new StringBuffer();
+		fjSql.append("SELECT l.id lpid ,lp_name lpname ,d.id dongid, lpd_name dong,dy.id dyid, dy_name danyuan,f.id fhid , fanghao, shi,ting ,wei,yang, ");
+		fjSql.append("(SELECT city_name FROM xhj_jccity WHERE id = l.cityid  ) cityname, ");
+		fjSql.append("(SELECT qy_name FROM xhj_jcstress WHERE id = l.stressid  ) qyname, ");
+		fjSql.append("(SELECT sq_name FROM xhj_jcsq WHERE id = l.sq_id  ) sqname,cityid ,stressid,sq_id   ");
+	    fjSql.append("FROM  xhj_lpxx l , xhj_lpdong d, xhj_lpdanyuan dy,xhj_lpfanghao f ");
+	    fjSql.append(" WHERE ");
+	    fjSql.append(" l.id = d.lpid ");
+	    fjSql.append(" AND  d.id = dy.dzid  ");
+	    fjSql.append(" AND  dy.id = f.dyid  ");
+	    fjSql.append(" and f.id = "+id);
+	    return daoHelper.getItem(fjSql.toString())   ;
+	}
+	
+	public List<Record> getUnusualFhList(){
+		
+		StringBuffer sb = new StringBuffer();
+		sb.append(" SELECT fh.id fhid,fh.fanghao,lp.id lpid , lp.lp_name lpname ");
+		sb.append(" FROM xhj_lpxx lp,xhj_lpdong dz , xhj_lpdanyuan dy,lpjg_assignment_loupan lap,xhj_lpfanghao fh,lpjg_assignment_room lar  ");
+		sb.append("  where lp.id=dz.lpid and dz.id = dy.dzid and dy.id=fh.dyid AND fh.id=lar.fhid and lp.id=lap.lpid and fh.statuss =1 and lp.statuss= 1   ");
+		
+	
+		//登陆控制
+		List<Record> organizationName = userDao.getOrganizationName(SecurityUserHolder.getUserId());
+		String string = organizationName.toString();
+		if(string.indexOf("门店")>0)
+		{
+			sb.append(" and lar.mdid = ").append(SecurityUserHolder.getDeptId());
+		}
+		
+		if(string.indexOf("店组")>0)
+		{
+			sb.append(" and lar.bmid = ").append(SecurityUserHolder.getDeptId());
+		}
+		
+		if(string.indexOf("经纪人")>0)
+		{
+			sb.append(" and lar.userid = ").append(SecurityUserHolder.getUserId());
+		}
+		
+		sb.append(" AND fh.id NOT IN  ( SELECT p.fhid  FROM  lpjg_precise_update_record  p ");
+		sb.append(" WHERE p.statuss= 0 AND p.creatorid="+ SecurityUserHolder.getUserId()+ "  )  ");
+		return daoHelper.getRecordList(sb.toString());
+	}	
+	
+	 
+}

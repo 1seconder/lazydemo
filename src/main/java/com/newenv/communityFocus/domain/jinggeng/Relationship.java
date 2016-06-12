@@ -1,0 +1,51 @@
+package com.newenv.communityFocus.domain.jinggeng;
+
+import java.util.Date;
+
+import org.nutz.dao.entity.annotation.Id;
+import org.nutz.dao.entity.annotation.Table;
+
+@Table("lpjg_relationship")
+public class Relationship {
+	@Id
+    private long id;	
+	
+	private long fhid ;
+	
+	private long userid;
+	
+	private long personid;
+	private Date createdate;
+	
+	public long getId() {
+		return id;
+	}
+	public void setId(long id) {
+		this.id = id;
+	}
+	public long getFhid() {
+		return fhid;
+	}
+	public void setFhid(long fhid) {
+		this.fhid = fhid;
+	}
+	public long getUserid() {
+		return userid;
+	}
+	public void setUserid(long userid) {
+		this.userid = userid;
+	}
+	public long getPersonid() {
+		return personid;
+	}
+	public void setPersonid(long personid) {
+		this.personid = personid;
+	}
+	public Date getCreatedate() {
+		return createdate;
+	}
+	public void setCreatedate(Date createdate) {
+		this.createdate = createdate;
+	}
+	
+}

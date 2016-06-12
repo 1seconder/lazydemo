@@ -1,0 +1,106 @@
+package com.newenv.communityFocus.security.services;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.newenv.communityFocus.base.BaseService;
+import com.newenv.communityFocus.domain.TblDepartment;
+import com.newenv.communityFocus.domain.TblUserLogin;
+import com.newenv.communityFocus.domain.TblUserProfile;
+import com.newenv.communityFocus.domain.UserLogin;
+import com.newenv.cxf.security.CXFSecurityUtil;
+
+@Component
+@Path("/securityUserHolder")
+public class SecurityUserHolder extends BaseService{
+
+	//声明  
+    private static ThreadLocal<UserLogin> local = new ThreadLocal<UserLogin>();     
+    
+    @Autowired
+    private UserLoginService userLoingService;
+    
+	/**
+	 * 赋值
+	 */
+	@GET
+	@Produces("text/html")
+//	@Produces("application/json")
+//	@Consumes("application/json")
+	@Path("/login/{name}")
+    public  void setCurrentUserLogin(@PathParam("name") String userName) {  
+		System.out.println("-login=========================================");
+		UserLogin login =  new UserLogin();
+//		List<Record> list = userLoingService.findAllTitleNamesByUsername(userName);
+//		userLoingService.findTblDepartmentById(userName)
+		TblUserProfile userProfile;
+		try {
+			TblUserLogin userLogin = userLoingService.login(userName);
+			System.out.println("-login=2222222222222222222222");
+			userProfile = userLoingService.findTblUserProfileById(userLogin.getTbl_User_profile_id());
+			System.out.println("-login=3333333333333333333333");
+			TblDepartment department = userLoingService.findTblDepartmentById(userProfile.getTbl_department_id());
+			System.out.println("-login=444444444444444444444");
+//			String ip = userLogin.getIp();
+//			Date loginTime = userLogin.getLoginTime();
+//			String address = userLogin.getAddress();
+//			String password = userLogin.getPassword();
+//			String username2 = userLogin.getUsername();
+			
+	//		userLoingService.getHRPermissions(u, userLogin)
+			login.setDepartment(department);
+			login.setUserLogin(userLogin);
+	//		login.setPermissions(permissions);
+			login.setUserProfile(userProfile);
+
+		} catch (Exception e) {
+			System.out.println("-==============================exception===============================");
+			e.printStackTrace();
+		}
+		
+		System.out.println("CXFSecurityUtil.isLogin(=================== "+CXFSecurityUtil.isLogin());
+		local.set(login);
+		super.forwardTo("/console/index.jsp");
+		
+		System.out.println("CXFSecurityUtil.isLogin() "+CXFSecurityUtil.isLogin());
+		System.out.println("=============================");
+		
+    }  
+	
+	
+    /**
+     * 取值
+     * @return
+     */
+    public static UserLogin getCurrentUserLogin() {  
+        return local.get();  
+    } 
+    
+    
+    public int  loginId() {  
+        return SecurityUserHolder.getCurrentUserLogin().getUserLogin().getId();
+    } 
+    
+    public int  deptId() {  
+        return SecurityUserHolder.getCurrentUserLogin().getDepartment().getId();
+    } 
+    
+    
+    public int  userId() {  
+    	return SecurityUserHolder.getCurrentUserLogin().getUserProfile().getId();
+    } 
+//    
+//    /**
+//     * 移除
+//     */
+//    public static void remove(){
+//    	local.remove();
+//    }
+    
+    
+}

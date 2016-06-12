@@ -1,0 +1,74 @@
+package com.newenv.communityFocus.security.services;
+
+import java.io.IOException;
+import java.util.List;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
+
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.alibaba.fastjson.JSON;
+import com.newenv.communityFocus.base.BaseService;
+import com.newenv.communityFocus.domain.TblUserLogin;
+import com.newenv.communityFocus.domain.UserLogin;
+import com.newenv.communityFocus.security.dao.TblDepartmentDao;
+import com.newenv.communityFocus.security.dao.TblUserLoginDao;
+import com.newenv.communityFocus.security.dao.TblUserProfileDao;
+
+@Component
+@Path("/dologin")
+public class UserServices extends BaseService {
+
+	@Autowired
+	private TblUserLoginDao userLoginDao;
+	@Autowired
+	private TblUserProfileDao userProfileDao;
+	@Autowired
+	private TblDepartmentDao departmentDao;
+
+	// @Autowired
+	// private XhjJccityDao xhjJccityDao;
+
+	
+	//�ļ��ϴ��ӿ�
+	@POST
+	@Produces("application/json;charset=UTF-8")
+	@Consumes("application/json;charset=UTF-8")
+	@Path("/login/")
+    public Response login(TblUserLogin  login){
+//		 List<TblUserLogin> userLogins = userLoginDao.login(login.getUsername());
+		TblUserLogin userLogin = userLoginDao.login(login.getUsername());
+//		 TblUserLogin userLogin = null;
+//		 if(null!=userLogins && userLogins.size()>0)
+//		 {
+////			 super.setRequestAttribute("userLogin", userLogin);
+//			 userLogin = userLogins.get(0);
+//		 }
+		
+//		if(null != userLogin && userLogin.getPassword().equals(login.getPassword()))
+//		{
+//			super.setRequestAttribute("userLogin", userLogin);
+//			String json = "{\"data\":\"/console/index.jsp\"}";
+			String jsonString = JSON.toJSONString(userLogin);
+			return Response.ok().entity(jsonString).build();
+//		}else
+//		{
+//			super.forwardTo("/login.jsp");
+//		}
+	}
+	// public TblUserLogin login(String userName) throws Exception{
+	// try{
+	// return userLoginDao.login(userName);
+	// }catch (Exception e) {
+	// e.printStackTrace();
+	// return null ;
+	// }
+	// }
+}

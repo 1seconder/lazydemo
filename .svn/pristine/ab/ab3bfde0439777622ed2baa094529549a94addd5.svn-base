@@ -1,0 +1,203 @@
+package com.newenv.communityFocus.services;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.nutz.dao.entity.Record;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.alibaba.fastjson.JSON;
+import com.newenv.communityFocus.base.BaseService;
+import com.newenv.communityFocus.dao.CommonDao;
+import com.newenv.communityFocus.dao.DaoHelper;
+import com.newenv.communityFocus.domain.RangePlateStatistic;
+import com.newenv.communityFocus.domain.RequestParameter;
+import com.newenv.communityFocus.domain.TableConstants;
+import com.newenv.communityFocus.domain.page.PageInfo;
+import com.newenv.communityFocus.stastistic.manager.FzManager;
+import com.newenv.communityFocus.stastistic.manager.SqManager;
+
+@Component
+@Path("/assignService")
+public class AssignService extends BaseService {
+
+	@Autowired
+	private DaoHelper daoHelper;
+	@Autowired
+	private CommonDao commonDao;
+	
+	private int loginId = 12;//12
+	int cityId = 1;
+	private int loginDeptid =11077;//11077
+	
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/query")
+	public Response query(RequestParameter parameter) {
+		try {
+			StringBuffer sql = new StringBuffer();
+//			String sql = "SELECT dept1_id ,dept1_name department_name FROM view_alldepartment   WHERE dept2_id=(SELECT tbl_department_id FROM tbl_user_profile WHERE tbl_title = 210180)";
+			sql.append(" SELECT dept1_id,department_name,fullname , SUM(CASE WHEN b.id IS NULL THEN 0 ELSE 1 END) assnum,DATE_FORMAT(MAX(b.createdate),'%Y-%m-%d %H:%i:%s') lasttime   ");
+					sql.append("  FROM                                                                                     ");
+					sql.append("  (                                                                                        ");
+					sql.append("  SELECT dept1_id ,dept1_name department_name,v.fullname,tbl_user_profile_id               ");
+					sql.append("  FROM view_loginxinxi v  , view_alldepartment v2                                          ");
+					sql.append("  WHERE v.tbl_department_id = v2.dept1_id                                                  ");
+					sql.append("  AND  dept2_id= (SELECT tbl_department_id FROM tbl_user_profile WHERE tbl_title = 210180) ");
+					sql.append("                                                                                           ");
+					sql.append("  ) a LEFT JOIN lpjg_assignment_room b ON a.tbl_user_profile_id = b.userid                 ");
+//					sql.append("  where                ");
+					sql.append(" GROUP BY dept1_id,department_name,fullname  ORDER BY  SUM(CASE WHEN b.id IS NULL THEN 0 ELSE 1 END)  ASC    ");
+			PageInfo pageInfo = parameter.getPageInfo();
+			if(pageInfo == null){
+				pageInfo = new PageInfo();
+				pageInfo.setPage(1);
+				pageInfo.setRows(10);
+			}
+			pageInfo = super.getPagerjdo(sql.toString(),sql.toString(), pageInfo);
+			String jsonString = JSON.toJSONString(pageInfo);
+			return Response.ok().entity(jsonString).build();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(500).build();
+		}
+
+	}
+	
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryLog")
+	public Response queryLog() {
+		List<Record> list = new ArrayList<Record>();
+		try {
+			list = daoHelper.getRecordList("SELECT id , (SELECT fullname FROM tbl_user_profile WHERE id = l.operatorid )operator ,"
+					+ " (SELECT d.department_name FROM tbl_user_profile t,tbl_department d WHERE t.id = l.operatorid  and t.tbl_department_id=d.id)bm , bmid ,message,   DATE_FORMAT(operatedate,'%Y-%m-%d %H:%i:%s') operatedate FROM  lpjg_operation_log l ORDER BY operatedate DESC ");
+			return Response.ok().entity(list).build();
+		}
+		catch (Exception e) {
+			return Response.status(500).build();
+		}
+
+	}
+	
+	
+	/**
+	 * 
+	 */
+	@GET
+	@Produces("text/html")
+	@Path("/fenpai/{type}")
+	public void operRecord(@PathParam("type") int typeId) {
+		StringBuffer buff = new StringBuffer();
+		buff.append("SELECT DISTINCT prfl.id,dpt.id loginDeptid, prfl.fullname, prfl.tel,  prfl.join_time, prfl.identityCode ");
+		buff.append("	  ,ulogin.username,dpt.department_name, ttl.title_name, prfl.group_phone                  ");
+		buff.append("	  FROM tbl_user_profile prfl, tbl_user_login ulogin, tbl_department dpt, tbl_title ttl    ");
+		buff.append("	  WHERE ulogin.tbl_User_profile_id=prfl.id                                                ");
+		buff.append("	  AND prfl.tbl_department_id=dpt.id AND prfl.tbl_Title=ttl.id      ");
+		buff.append("	  AND ulogin.status=1 AND prfl.checked!=0       ");
+		buff.append("	  AND prfl.checked!=2 AND dpt.flag=1 AND dpt.CityID=1     ");
+		// sql.append(" AND title_name LIKE '%市场副总经理%' ");
+		StringBuffer appendCnd = new StringBuffer();
+		if (typeId == 1) {
+			appendCnd.append(" AND title_name LIKE '%门店%'   ");
+//			List<Record> rl = daoHelper.getRecordList(buff + appendCnd.toString() );
+			appendCnd.delete(0, appendCnd.length());
+			appendCnd.append(" AND title_name LIKE '%经纪人%' ");
+			List<Record> jjr = daoHelper.getRecordList(buff + appendCnd.toString());
+			
+			
+			String sql = "SELECT  dept1_id id ,dept1_name department_name FROM view_alldepartment WHERE dept2_id=(SELECT tbl_department_id FROM tbl_user_profile WHERE tbl_title = 210180)";
+			List<Record> rl = daoHelper.getRecordList(sql);
+			super.setRequestAttribute("rl", rl);
+			super.setRequestAttribute("jjr", jjr);
+			super.setRequestAttribute("stat", SqManager.getInstance().statistic(daoHelper, typeId));
+			super.forwardTo("/pages/fenpai/fenpai_zuduipan.jsp");
+			
+		} else if (typeId == 2) {
+			appendCnd.append(" AND title_name LIKE '%门店%'   ");
+			List<Record> md = daoHelper.getRecordList(buff + appendCnd.toString() );
+			super.setRequestAttribute("md", md);
+			appendCnd.delete(0, appendCnd.length());
+			appendCnd.append(" AND dpt.parent_ID =  "+ loginDeptid);
+//			List<Record> jl = daoHelper.getRecordList(buff + appendCnd.toString());
+			List<Record> jl = daoHelper.getRecordList(" SELECT  dept3_id id , dept3_name department_name FROM view_alldepartment  WHERE dept4_id =2 GROUP BY dept3_id ,dept3_name ");
+			super.setRequestAttribute("jl", jl);
+			List qyList = commonDao.getQuyuByCityId(cityId);
+			super.setRequestAttribute("qylist", commonDao.getQuyuByCityId(cityId));
+			int qyId = (int) ((Record)qyList.get(0)).get("id");
+			super.setRequestAttribute("sqlist", commonDao.getSqByQyId(qyId));
+			
+			
+			//按盘分派：
+			super.setRequestAttribute("lplist", commonDao.getLpBySqId(qyId));
+			super.setRequestAttribute("mdlist", commonDao.getLpBySqId(qyId));
+			
+			
+			RangePlateStatistic bean = FzManager.getInstance().statistic(daoHelper,loginDeptid);
+			super.setRequestAttribute("stat", bean);
+			
+			super.forwardTo("/pages/fenpai/fenpai_zuyinpan.jsp");
+		 	
+		   
+		} else if (typeId == 3) {
+			buff.append("	  AND title_name = '市场副总经理'   ");
+			List<Record> rl = daoHelper.getRecordList(buff.toString());
+			// NutMap map = (NutMap) Mapl.maplistToObj(rl, NutMap.class);
+			super.setRequestAttribute("rl", rl);
+			super.forwardTo("/pages/fenpai/fenpai_zerenpan.jsp");
+		}
+	}
+
+	
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/saveFenPai/{type}/{jjrid}/{fhid}")
+	public Response saveFenPai(@PathParam("type") int type,@PathParam("jjrid") int jjrid,@PathParam("fhid") String fhid) {
+		List<Record> list = new ArrayList<Record>();
+		try {
+			//商圈分派--经纪人--房号
+			String [] fhs = fhid.split("\\,");
+			for(String fh : fhs){
+				Record  r =  new Record();
+				r.set(".table", TableConstants.ASSIGIN_FANGHAO2JJR);
+				r.set("cityid ", 1);
+				r.set("userid", jjrid);
+				r.set("fhid", fh);
+				r.set("flag", 1);
+				daoHelper.save(r);
+				
+				Map jjrDept = daoHelper.getItem("select tbl_department_id  deptid from view_loginxinxi where tbl_user_profile_id ="+jjrid);
+				int bmid = (int) jjrDept.get("deptid");
+				Record  r2 =  new Record();
+				r2.set(".table", TableConstants.ASSIGIN_OPERATION_LOG);
+				r2.set("operatorid", jjrid);
+				r2.set("bmid", bmid);
+				r2.set("message", "分配房号"+fhid+"给经纪人"+jjrid);
+				r2.set("fhid", fh);
+				daoHelper.save(r2);
+			}
+			return Response.ok().entity(list).build();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(500).build();
+		}
+	}
+
+
+}

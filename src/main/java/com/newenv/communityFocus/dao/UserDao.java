@@ -1,0 +1,36 @@
+package com.newenv.communityFocus.dao;
+
+import java.util.List;
+
+import org.nutz.dao.entity.Record;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.newenv.communityFocus.dao.DaoHelper;
+
+@Repository
+public class UserDao {
+	@Autowired
+	private DaoHelper daoHelper;
+
+	public List<Record> getTitle(Integer userid) {
+		String sql = "select id,title_name from tbl_title where id   = (select tbl_title from tbl_user_profile where id  = " + userid + ")";
+		return daoHelper.getRecordList(sql);
+	}
+
+	public List<Record> getDepartment(Integer userid) {
+		String sql = "select id,department_name from tbl_department where   id= (select tbl_department_id from tbl_user_profile where id  =  " + userid + ")";
+		return daoHelper.getRecordList(sql);
+	}
+
+	public List<Record> getOrganizationName(Integer userid) {
+		String sql = "select department_name from tbl_organization where id = (";
+		sql += "select tbl_organization_id from tbl_department where   id= (select tbl_department_id from tbl_user_profile where id  =  " + userid + "))";
+		return daoHelper.getRecordList(sql);
+	}
+	
+	public List<Record> getUserName(Integer userId) {
+		String sql = "select fullname from tbl_user_profile where id = "+userId;
+		return daoHelper.getRecordList(sql);
+	}
+}

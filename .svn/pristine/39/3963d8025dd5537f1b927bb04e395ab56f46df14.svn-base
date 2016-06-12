@@ -1,0 +1,221 @@
+package com.newenv.communityFocus.jinggeng.services;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
+
+import org.nutz.dao.entity.Record;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.alibaba.fastjson.JSON;
+import com.newenv.communityFocus.base.BaseService;
+import com.newenv.communityFocus.base.PageInfo;
+import com.newenv.communityFocus.jinggeng.dao.TraceDao;
+import com.newenv.communityFocus.queryCondition.ConditionSC;
+import com.newenv.communityFocus.security.SecurityUserHolder;
+import com.newenv.communityFocus.vo.UserLogin;
+
+/**
+ * @author chen. helix
+ * @date 2016.03.15 楼盘精耕services
+ */
+@Component
+// @EnableAutoConfiguration
+@Path("/traceServices")
+public class TraceServices extends BaseService {
+	@Autowired
+	private TraceDao traceDao;
+
+	@GET
+	@Produces("text/html")
+	@Path("/initTrace/")
+	public void initPoint() {
+		super.setRequestAttribute("userid", SecurityUserHolder.getUserId());
+		super.setRequestAttribute("departmentid", SecurityUserHolder.getDeptId());
+		super.setRequestAttribute("cityid", SecurityUserHolder.getCityId());
+		super.forwardTo("/pages/jinggeng/yezhujinggeng.jsp");
+	};
+
+	@GET
+	@Produces("text/html")
+	@Path("/initTrace/fhid/{fhid}/houseType/{houseType}/housenumber/{housenumber}/saleOrRentId/{saleOrRentId}/houseSourceId/{houseSourceId}")
+	public void initPoint(@PathParam("fhid") String fhid, @PathParam("houseType") String houseType,
+			@PathParam("housenumber") String housenumber, @PathParam("saleOrRentId") String saleOrRentId,
+			@PathParam("houseSourceId") String houseSourceId) {
+		String attribute = String.valueOf(this.getRequest().getAttribute(""));
+		UserLogin userLogin = SecurityUserHolder.getCurrentUserLogin();
+		super.setRequestAttribute("userLogin", userLogin);
+		super.setRequestAttribute("fhid", fhid);
+		super.setRequestAttribute("houseType", houseType);
+		super.setRequestAttribute("housenumber", housenumber);
+		super.setRequestAttribute("saleOrRentId", saleOrRentId);
+		super.setRequestAttribute("saleOrRentId", saleOrRentId);
+
+		super.setRequestAttribute("houseSourceId", houseSourceId);
+
+		super.forwardTo("/pages/jinggeng/lpjg.jsp");
+	};
+
+	@GET
+	@Produces("application/json")
+	@Consumes("application/json")
+	@Path("/isWeiTuoFangyuan/{fanghaoid}/{houseType}")
+	public Response isWeiTuoFangyuan(@PathParam("fanghaoid") String fanghaoid,
+			@PathParam("houseType") String houseType) {
+		// String fanghaoid =
+		// String.valueOf(this.getRequest().getAttribute(""));
+		List<Record> weiTuoFangyuan = traceDao.isWeiTuoFangyuan(fanghaoid, houseType);
+		return Response.ok().entity(weiTuoFangyuan).build();
+	};
+
+	@GET
+	@Produces("application/json")
+	@Consumes("application/json")
+	@Path("/isWeiTuoDuJia/{fanghaoid}/{houseType}")
+	public Response isWeiTuoDuJia(@PathParam("fanghaoid") String fanghaoid, @PathParam("houseType") String houseType) {
+		// String fanghaoid =
+		// String.valueOf(this.getRequest().getAttribute(""));
+		List<Record> isWeiTuoDuJia = traceDao.isWeiTuoDuJia(fanghaoid, houseType);
+		return Response.ok().entity(isWeiTuoDuJia).build();
+	};
+
+	@GET
+	@Produces("application/json")
+	@Consumes("application/json")
+	@Path("/isWeiTuoFangKan/{fanghaoid}/{houseType}")
+	public Response isWeiTuoFangKan(@PathParam("fanghaoid") String fanghaoid,
+			@PathParam("houseType") String houseType) {
+		// String fanghaoid =
+		// String.valueOf(this.getRequest().getAttribute(""));
+		List<Record> isWeiTuoFangKan = traceDao.isWeiTuoFangKan(fanghaoid, houseType);
+		return Response.ok().entity(isWeiTuoFangKan).build();
+	};
+
+	@GET
+	@Produces("application/json")
+	@Consumes("application/json")
+	@Path("/isWeiTuoYaoShi/{fanghaoid}")
+	public Response isWeiTuoYaoShi(@PathParam("fanghaoid") String fanghaoid, @PathParam("houseType") String houseType) {
+		// String fanghaoid =
+		// String.valueOf(this.getRequest().getAttribute(""));
+		List<Record> isWeiTuoYaoShi = traceDao.isWeiTuoYaoShi(fanghaoid, houseType);
+		return Response.ok().entity(isWeiTuoYaoShi).build();
+	};
+
+	@GET
+	@Produces("application/json")
+	@Consumes("application/json")
+	@Path("/querySCLp/{bmid}/{userid}")
+	public Response querySCLp(@PathParam("bmid") Integer bmid, @PathParam("userid") Integer userid) {
+		List<Record> querySCData = traceDao.querySCLp(bmid, userid);
+		String jsonString = JSON.toJSONString(querySCData);
+		return Response.ok().entity(jsonString).build();
+	};
+
+	@GET
+	@Produces("application/json")
+	@Consumes("application/json")
+	@Path("/querySCDong/lp/{lpid}/{userid}")
+	public Response querySCDong(@PathParam("lpid") Integer lpid, @PathParam("userid") Integer userid) {
+		List<Record> querySCData = traceDao.querySCDong(lpid, userid);
+		String jsonString = JSON.toJSONString(querySCData);
+		return Response.ok().entity(jsonString).build();
+	};
+
+	@GET
+	@Produces("application/json")
+	@Consumes("application/json")
+	@Path("/querySCDanyuan/dz/{dzid}/{userid}")
+	public Response querySCDanyuan(@PathParam("dzid") Integer dzid, @PathParam("userid") Integer userid) {
+		List<Record> querySCData = traceDao.querySCDanyuan(dzid, userid);
+		String jsonString = JSON.toJSONString(querySCData);
+		return Response.ok().entity(jsonString).build();
+	};
+
+	@POST
+	@Produces("application/json;charset=UTF-8")
+	@Consumes("application/json;charset=UTF-8")
+	@Path("/querySCTable/")
+	public Response querySCTable(ConditionSC condition) {
+		Map<String, Map<String, List<String>>> querySCTable = null;
+		String jsonString = "";
+		if (null != condition) {
+			String lpid = condition.getLpid();
+			if (null != lpid && lpid != "" && !lpid.equals("")) {
+				querySCTable = traceDao.querySCTable(condition);
+			}
+		}
+		jsonString = JSON.toJSONString(querySCTable);
+		return Response.ok().entity(jsonString).build();
+	};
+
+	@POST
+	@Produces("application/json;charset=UTF-8")
+	@Consumes("application/json;charset=UTF-8")
+	@Path("/updateGenjing/")
+	public Response updateGenjing(@PathParam("fhid") String fhid, @PathParam("stage") String stage,
+			@PathParam("creatorid") String creatorid) {
+		String jsonString = "{\"status\":\"ok\"}";
+		traceDao.updateGenjing(fhid, stage, creatorid);
+		return Response.ok().entity(jsonString).build();
+	}
+
+	@POST
+	@Produces("application/json;charset=UTF-8")
+	@Consumes("application/json;charset=UTF-8")
+	@Path("/querySCList/")
+	public Response querySCList(ConditionSC condition) {
+		PageInfo pageInfo = condition.getPageInfo();
+		if (pageInfo == null) {
+			pageInfo = new PageInfo();
+			pageInfo.setPage(1);
+			pageInfo.setRows(10);
+		}
+		// List<Record> querySCList = null;
+		if (null != condition) {
+			String lpid = condition.getLpid();
+			if (null != lpid && lpid != "" && !lpid.equals("")) {
+				pageInfo = traceDao.querySCList(pageInfo, condition);
+			} else {
+				if (null != condition.getType()) {
+					pageInfo = traceDao.querySCList(pageInfo, condition);
+				}
+			}
+		}
+		return Response.ok().entity(pageInfo).build();
+	};
+	
+	@POST
+	@Produces("application/json;charset=UTF-8")
+	@Consumes("application/json;charset=UTF-8")
+	@Path("/queryErrorSCList/")
+	public Response queryErrorSCList(ConditionSC condition) {
+		PageInfo pageInfo = condition.getPageInfo();
+		if (pageInfo == null) {
+			pageInfo = new PageInfo();
+			pageInfo.setPage(1);
+			pageInfo.setRows(100000000);
+		}
+		// List<Record> querySCList = null;
+		if (null != condition) {
+			String lpid = condition.getLpid();
+			if (null != lpid && lpid != "" && !lpid.equals("")) {
+				pageInfo = traceDao.queryErrorSCList(pageInfo, condition);
+			} else {
+				if (null != condition.getType()) {
+					pageInfo = traceDao.queryErrorSCList(pageInfo, condition);
+				}
+			}
+		}
+		return Response.ok().entity(pageInfo).build();
+	};
+
+}

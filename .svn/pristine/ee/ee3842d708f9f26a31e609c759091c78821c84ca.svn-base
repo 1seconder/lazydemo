@@ -1,0 +1,137 @@
+package com.newenv.communityFocus.security;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.nutz.dao.entity.Record;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.newenv.communityFocus.base.BaseService;
+import com.newenv.communityFocus.configuration.ConfigConfiguration;
+import com.newenv.communityFocus.domain.TblDepartment;
+import com.newenv.communityFocus.domain.TblUserLogin;
+import com.newenv.communityFocus.domain.TblUserProfile;
+import com.newenv.communityFocus.services.UserLoginService;
+import com.newenv.communityFocus.vo.HRPermission;
+import com.newenv.communityFocus.vo.UserLogin;
+import com.newenv.cxf.security.CXFSecurityUtil;
+
+@Component
+@Path("/securityUserHolder")
+public class SecurityUserHolder extends BaseService {
+
+	private static final Log logger = LogFactory.getLog(SecurityUserHolder.class);
+
+	@Autowired
+	private UserLoginService userLoingService;
+	
+	@Autowired
+	private ConfigConfiguration configConfiguration;
+
+	/**
+	 * key: 工号id tbl_user_login（username）
+	 */
+	private static Map<String, UserLogin> userMap = new HashMap<String, UserLogin>();
+
+	public static Map<String, UserLogin> getUserMap() {
+		return userMap;
+	}
+
+	public static void setUserMap(Map<String, UserLogin> userMap) {
+		SecurityUserHolder.userMap = userMap;
+	}
+
+	@GET
+	@Produces("text/html")
+	@Path("/login/{name}/{flag}")
+	public void setCurrentUserLogin(@PathParam("name") String userName, @PathParam("flag") String flag) throws Exception {
+		try {
+			List<Record> findAllTitleNamesByUsername = userLoingService.findAllTitleNamesByUsername(userName);
+			if ("login".equals(flag)) {
+				UserLogin login = new UserLogin();
+				TblUserProfile userProfile;
+				TblUserLogin userLogin = null;
+				userLogin = userLoingService.login(userName);
+				if (userLogin == null) {
+					super.forwardTo("/sec/fedservlet/");
+					return;
+				}
+				userProfile = userLoingService.findTblUserProfileById(userLogin.getTbl_User_profile_id());
+				TblDepartment department = userLoingService.findTblDepartmentById(userProfile.getTbl_department_id());
+				login.setDepartment(department);
+				login.setUserLogin(userLogin);
+				login.setUserProfile(userProfile);
+				List<HRPermission> userPermissions = userLoingService.getUserPermissions(login);
+				Map<String, HRPermission> permissions = new HashMap<String, HRPermission>();
+				for (HRPermission hrPermission : userPermissions) {
+					String menuName = hrPermission.getMenuName();
+					permissions.put(menuName, hrPermission);
+				}
+				login.setPermissions(permissions);
+				if (null != findAllTitleNamesByUsername && findAllTitleNamesByUsername.size() > 0) {
+					login.setTitleName(findAllTitleNamesByUsername.get(0).getString("cityDepName"));
+				}
+				login.setCityId(department.getCityId() + "");
+				userMap.put(String.valueOf(userLogin.getUsername()), login);
+				if (CXFSecurityUtil.isLogin()) {
+					logger.info("login success: username=" + SecurityUserHolder.getUserName() + " userid=" + SecurityUserHolder.getUserId() + " ,deptid=" + SecurityUserHolder.getDeptId() + " ,cityid=" + SecurityUserHolder.getCityId());
+				}
+				super.setRequestAttribute("titles", findAllTitleNamesByUsername);
+				super.setRequestAttribute("logoutUrl", configConfiguration.getLogoutUrl());
+				super.forwardTo("/console/index.jsp");
+			} else {
+				super.setRequestAttribute("titles", findAllTitleNamesByUsername);
+				super.setRequestAttribute("logoutUrl", configConfiguration.getLogoutUrl());
+				super.forwardTo("/console/index.jsp");
+			}
+		} catch (Exception e) {
+			logger.error("setCurrentUserLogin Exception:", e);
+			e.printStackTrace();
+		}
+
+	}
+
+	public static UserLogin getCurrentUserLogin() {
+		return getUserLogin();
+	}
+
+	private static UserLogin getUserLogin() {
+		UserLogin userLogin = null;
+		try {
+			userLogin = userMap.get(CXFSecurityUtil.getPrincipal().getName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return userLogin;
+	}
+
+	public static String getUserName() {
+		return SecurityUserHolder.getCurrentUserLogin().getUserLogin().getUsername();
+	}
+
+	public static int getDeptId() {
+		return SecurityUserHolder.getCurrentUserLogin().getDepartment().getId();
+	}
+
+	public static int getUserId() {
+		return SecurityUserHolder.getCurrentUserLogin().getUserProfile().getId();
+	}
+
+	public static int getCityId() {
+		try {
+			return SecurityUserHolder.getCurrentUserLogin().getDepartment().getCityId();
+		} catch (Exception e) {
+			return 1;
+		}
+	}
+
+}

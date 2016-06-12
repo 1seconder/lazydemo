@@ -1,0 +1,80 @@
+package com.newenv.communityFocus.base;
+
+import java.util.Collections;
+import java.util.List;
+
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.cxf.message.ExchangeImpl;
+import org.apache.cxf.phase.PhaseInterceptorChain;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.newenv.communityFocus.dao.DaoHelper;
+
+public class BaseService {
+	private static final Log logger = LogFactory.getLog(BaseService.class);
+
+	@Autowired
+	private DaoHelper daoHelper;
+
+	public void setRequestAttribute(String string, Object gp) {
+		((HttpServletRequest) PhaseInterceptorChain.getCurrentMessage().get("HTTP.REQUEST")).setAttribute(string, gp);
+	}
+
+	public void forwardTo(String entryPoint) {
+		try {
+			((HttpServletRequest) PhaseInterceptorChain.getCurrentMessage().get("HTTP.REQUEST")).getRequestDispatcher(entryPoint)
+					.forward((ServletRequest) PhaseInterceptorChain.getCurrentMessage().get("HTTP.REQUEST"), (ServletResponse) PhaseInterceptorChain.getCurrentMessage().get("HTTP.RESPONSE"));
+			ExchangeImpl ex = (ExchangeImpl) PhaseInterceptorChain.getCurrentMessage().getExchange();
+			ex.setOneWay(true);
+			PhaseInterceptorChain.getCurrentMessage().setExchange(ex);
+		} catch (Exception e) {
+			logger.error("forwardTo Exception:", e);
+			e.printStackTrace();
+		}
+	}
+
+	public HttpServletRequest getRequest() {
+		return (HttpServletRequest) PhaseInterceptorChain.getCurrentMessage().get("HTTP.REQUEST");
+	}
+
+	public HttpServletResponse getResponse() {
+		return (HttpServletResponse) PhaseInterceptorChain.getCurrentMessage().get("HTTP.RESPONSE");
+	}
+
+	/**
+	 * 分页
+	 * 
+	 * @param sql
+	 * @param pageInfo
+	 * @return
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public PageInfo getPagerjdo(String sql, PageInfo pageInfo) {
+		try {
+			Long records = daoHelper.getCountBySql(sql);
+			pageInfo.setRecords(Integer.valueOf(String.valueOf(records)));
+			List result = null;
+			if (pageInfo.getRecords() == 0) {
+				pageInfo.setTotal(0);
+				result = Collections.EMPTY_LIST;
+			} else {
+				int total = (pageInfo.getRecords() + pageInfo.getRows() - 1) / pageInfo.getRows();
+				pageInfo.setTotal(total);
+			}
+			sql = sql + " LIMIT " + (pageInfo.getPage() - 1) * pageInfo.getRows() + "," + pageInfo.getRows();
+			result = daoHelper.getList(sql);
+			pageInfo.setGridModel(result);
+		} catch (Exception e) {
+			logger.error("getPagerjdo error:", e);
+			e.printStackTrace();
+			return null;
+		}
+		return pageInfo;
+	}
+}

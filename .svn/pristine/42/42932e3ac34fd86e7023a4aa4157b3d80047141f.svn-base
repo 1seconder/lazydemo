@@ -1,0 +1,308 @@
+package com.newenv.communityFocus.services;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.nutz.dao.entity.Record;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.alibaba.fastjson.JSON;
+import com.newenv.communityFocus.base.BaseService;
+import com.newenv.communityFocus.dao.CommonDao;
+import com.newenv.communityFocus.dao.DaoHelper;
+import com.newenv.communityFocus.domain.FangYuan;
+import com.newenv.communityFocus.domain.RangePlateStatistic;
+import com.newenv.communityFocus.domain.RequestParameter;
+import com.newenv.communityFocus.domain.TableConstants;
+import com.newenv.communityFocus.domain.page.PageInfo;
+import com.newenv.communityFocus.security.services.SecurityUserHolder;
+import com.newenv.communityFocus.stastistic.manager.FzManager;
+
+@Component
+@Path("/assignLouPanService")
+public class AssignLouPanService extends BaseService {
+
+	@Autowired
+	private DaoHelper daoHelper;
+	@Autowired 
+	private CommonDao commonDao;
+	
+//	int lognId = 1;//登陆人Id
+//	private int loginId = 12;//12
+//	int cityId = 1;
+//	private int loginDeptid =11077;//11077
+
+	
+
+	/**
+	 * 按店查询
+	 * @param parameter
+	 * @return
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/query")
+	public Response query(RequestParameter parameter) {
+		int zjq = parameter.getZjqId();
+		int mdid = Integer.parseInt(parameter.getMdId());
+		List<Record> list = new ArrayList<Record>();
+		try {
+//			if(mdid == 0){//全部，查所有
+//				list = daoHelper.getRecordList(" SELECT * FROM view_loginxinxi WHERE parent_id IN (SELECT tbl_department_id FROM view_loginxinxi WHERE parent_id =3026) ");
+//			}
+			StringBuffer sql = new StringBuffer();
+			sql.append(" SELECT tbl_department_id, md, zjq ,(case  when num is null then 0 else num end ) num,DATE_FORMAT(createdate,'%Y-%m-%d %H:%i:%s')operatedate ");
+			sql.append(" FROM  ");
+			sql.append(" (  ");
+			sql.append(" SELECT  DISTINCT a.tbl_department_id,a.department_name md ,v2.department_name zjq  ");
+			sql.append(" FROM (     ");
+			sql.append("  SELECT DISTINCT tbl_department_id,department_name ,parent_id   ");
+			sql.append("  FROM view_loginxinxi  v   ");
+			if(zjq == 0 ){
+				sql.append(" WHERE  v.parent_id IN (SELECT tbl_department_id FROM view_loginxinxi where "
+						+ "parent_id ="+ SecurityUserHolder.getDeptId()  
+//						+" and tbl_organization_id =77"
+								+ ")");//wei副总锁在部门的部门id）
+			}else if(mdid == 0){
+				sql.append(" WHERE  v.parent_id = "+ zjq+"");
+			}else {
+				sql.append(" WHERE  v.tbl_department_id = "+ mdid+"");
+			}
+			sql.append(" )  a ,view_loginxinxi v2  WHERE  v2.tbl_department_id = a.parent_id                      ");
+			sql.append(" ) b left join (SELECT mdid,COUNT(1) num,MAX(createdate) createdate FROM lpjg_assignment_loupan  GROUP BY mdid ) p           ");
+			sql.append("  on b.tbl_department_id = p.mdid    ORDER BY num asc    ");
+//			list = daoHelper.getRecordList(sql.toString());
+			PageInfo pageInfo = parameter.getPageInfo();
+			if(pageInfo == null){
+				pageInfo = new PageInfo();
+				pageInfo.setPage(1);
+				pageInfo.setRows(10);
+			}
+			pageInfo = super.getPagerjdo(sql.toString(),sql.toString(), pageInfo);
+			String jsonString = JSON.toJSONString(pageInfo);
+			return Response.ok().entity(jsonString).build();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(500).build();
+		}
+	}
+	
+	/**
+	 * 按盘查询列表
+	 * @param parameter
+	 * @return
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryByPan")
+	public Response queryByPan(RequestParameter parameter) {
+		List<Map> qlist  = new ArrayList<Map>();
+		String qyid , sqid,lpid, sql=null ;
+		sqid = parameter.getSqId();
+		qyid = parameter.getStressId();
+		lpid = parameter.getBuildingIdStr();
+		try{
+//			qlist = FzManager.getInstance().statisticByPan(daoHelper, loginDeptid);
+//			super.setRequestAttribute("queryList", FzManager.getInstance().statisticByPan(daoHelper, loginDeptid));
+			
+//			String tmpSql = "SELECT count(DISTINCT tbl_department_id)    FROM view_loginxinxi  v WHERE  v.parent_id IN (SELECT tbl_department_id FROM view_loginxinxi WHERE parent_id ="+ loginDeptid + ")";
+//			Map mdNum = daoHelper.getItem(tmpSql);
+//			super.setRequestAttribute("mdNum", mdNum);
+			
+			StringBuffer lpsql = new StringBuffer();
+		    lpsql.append("SELECT a.id ,s.qy_name,q.sq_name, a.lp_name ,SUM( CASE WHEN l.id IS NULL THEN 0 ELSE 1 END) assnum,DATE_FORMAT(MAX(l.createdate),'%Y-%m-%d %H:%i:%s') lasttime ");	
+		    lpsql.append("FROM                                                                                      ");
+		    lpsql.append("(                                                                                         ");
+		    lpsql.append("SELECT  DISTINCT l.id , l.lp_name,l.stressid ,l.sq_id  FROM xhj_lcfz_1 b,view_loginxinxi v,xhj_lpxx l          ");
+		    lpsql.append("WHERE  b.bmid = v.tbl_department_id                                                       ");
+		    lpsql.append("AND b.lpid = l.id                                                                         ");
+		    lpsql.append("AND v.parent_id IN (SELECT tbl_department_id FROM view_loginxinxi WHERE parent_id ="+ SecurityUserHolder.getDeptId()+ ") ");
+		    lpsql.append(") a LEFT JOIN  lpjg_assignment_loupan l ON a.id = l.lpid" );
+		    lpsql.append( "   LEFT JOIN  xhj_jcstress s ON s.id = a.stressid ");
+		    lpsql.append( "   LEFT JOIN  xhj_jcsq  q ON q.id = a.sq_id    ");
+		    lpsql.append( "   GROUP BY a.id ,a.lp_name       ");
+		    lpsql.append("ORDER BY SUM( CASE WHEN l.id IS NULL THEN 0 ELSE 1 END)  ASC                             ");
+			    
+			PageInfo pageInfo = parameter.getPageInfo();
+			if(pageInfo == null){
+				pageInfo = new PageInfo();
+				pageInfo.setPage(1);
+				pageInfo.setRows(10);
+			}
+			pageInfo = super.getPagerjdo(lpsql.toString(),lpsql.toString(), pageInfo);
+			String jsonString = JSON.toJSONString(pageInfo);
+			return Response.ok().entity(jsonString).build();
+		}catch (Exception e) {
+			return Response.status(500).build();
+		}
+	
+	}
+	
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryList")
+	public Response queryList(RequestParameter parameter) {
+		List<Record> list = new ArrayList<Record>();
+		try {
+			
+			StringBuffer sql = new StringBuffer();
+			sql.append("SELECT DISTINCT prfl.id,dpt.id, prfl.fullname, prfl.tel,  prfl.join_time, prfl.identityCode ");
+			sql.append(" ,ulogin.username,dpt.department_name, ttl.title_name, prfl.group_phone                  ");
+			sql.append(" FROM tbl_user_profile prfl, tbl_user_login ulogin, tbl_department dpt, tbl_title ttl    ");
+			sql.append(" WHERE ulogin.tbl_User_profile_id=prfl.id                                                ");
+			sql.append(" AND prfl.tbl_department_id=dpt.id AND prfl.tbl_Title=ttl.id      ");
+			sql.append(" AND ulogin.status=1 AND prfl.checked!=0       ");
+			sql.append(" AND prfl.checked!=2 AND dpt.flag=1  ");
+			sql.append(" AND dpt.CityID=1    ");
+			sql.append(" AND title_name LIKE '%经纪人%'" );
+			
+			list = daoHelper.getRecordList(sql.toString());
+			return Response.ok().entity(list).build();
+		}
+		catch (Exception e) {
+			return Response.status(500).build();
+		}
+
+	}
+	
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/saveFenPai")
+	public Response saveFenPai(RequestParameter parameter) {
+		int userId = SecurityUserHolder.getUserId();
+		int  loginDeptid = SecurityUserHolder.getDeptId();
+		List<Record> list = new ArrayList<Record>();
+			if(1  == parameter.getType()){//按店分派
+				String [] lps = parameter.getLps().split("\\,");
+				List<Map> lpxxList = daoHelper.getList(" SELECT id, lp_name lpname FROM xhj_lpxx where id in (" +  parameter.getLps() +")");
+				Map myMap = new HashMap();
+				for(Map map : lpxxList){
+					String key = String.valueOf(map.get("id"));
+					String value = String.valueOf(map.get("lpname"));
+					myMap.put(key, value);
+				}
+				Map menDian = daoHelper.getItem(" SELECT department_name name  FROM tbl_department where id = "+parameter.getMdId());
+				String mendianName = (String) menDian.get("name");
+				
+				String lpdesc ="";
+				for(String lp : lps){
+					Record  r =  new Record();
+					r.set(".table", TableConstants.ASSIGIN_LOUPAN2MD);
+					r.set("cityid ", 1);
+					r.set("zjid", userId);//（副总id）
+//					SecurityUserHolder.getCurrentUserLogin().getUserLogin();
+					r.set("mdid", parameter.getMdId());
+					r.set("lpid", lp);
+					r.set("creatorid", parameter.getCreatorId());
+					r.set("flag", 1);
+					daoHelper.save(r);
+					
+					lpdesc = myMap.get(lp)+",";
+				}
+				if(lps.length == 0){
+					return Response.ok().entity(list).build();
+				}
+				Record  r2 =  new Record();
+				r2.set(".table", TableConstants.ASSIGIN_OPERATION_LOG);
+				r2.set("operationtype", new java.util.Date());
+				r2.set("operatedate", new java.util.Date());
+				r2.set("operatorid", userId);
+				r2.set("type", 1);
+				System.out.println("loginDeptid=============="+loginDeptid);
+				r2.set("bmid", loginDeptid);//???????
+				r2.set("message", lpdesc.substring(0,lpdesc.length()-1)+" 分配给(门店)"+mendianName);
+				daoHelper.save(r2);
+			}
+			if(2  == parameter.getType()){//按店分派
+				String [] mds = parameter.getMds().split("\\,");
+				Map lpMap = (Map) daoHelper.getItem(" SELECT id, lp_name lpname FROM xhj_lpxx where id= " +parameter.getBuildingIdStr());
+				String lp = (String) lpMap.get("lpname");
+				
+				Map myMap = new HashMap();
+				List<Map> menDianList = daoHelper.getList(" SELECT id ,department_name name  FROM tbl_department where id in ("+parameter.getMds()+")");
+				for(Map map : menDianList){
+					String key = String.valueOf(map.get("id"));
+					String value = String.valueOf(map.get("name"));
+					myMap.put(key, value);
+				}
+				
+				for(String md : mds){
+					Record  r =  new Record();
+					r.set(".table", TableConstants.ASSIGIN_LOUPAN2MD);
+					r.set("cityid ", 1);
+					r.set("zjid", parameter.getZjid());
+					r.set("mdid", parameter.getMdId());
+					r.set("lpid", parameter.getBuildingIdStr());
+					r.set("creatorid", parameter.getCreatorId());
+					r.set("flag", 1);
+					daoHelper.save(r);
+					
+					Record  r2 =  new Record();
+					r2.set(".table", TableConstants.ASSIGIN_OPERATION_LOG);
+					r2.set("operatorid", SecurityUserHolder.getUserId());//登录人id
+					r2.set("bmid", loginDeptid);
+					r2.set("message", lp+" 分配给(门店)"+myMap.get(md));
+					daoHelper.save(r2);
+				}
+			}
+			return Response.ok().entity(list).build();
+	}
+		
+	
+	
+	/**
+	 * 按店分派
+	 *
+	 * @param requestParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/fenpaiBydian")
+	public Response fenpaiBydian(RequestParameter requestParameter) {
+
+
+		int cityId = 1;
+		List<Record> quyuList = commonDao.getQuyuByCityId(cityId);
+//		super.setRequestAttribute("quyuList", quyuList);
+		return Response.ok().entity(quyuList).build();
+	}
+
+	
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryLog")
+	public Response queryLog() {
+		List<Record> list = new ArrayList<Record>();
+		try {
+			list = daoHelper.getRecordList("select * from lpjg_operation_log");
+			return Response.ok().entity(list).build();
+		}
+		catch (Exception e) {
+			return Response.status(500).build();
+		}
+
+	}
+	
+
+
+}

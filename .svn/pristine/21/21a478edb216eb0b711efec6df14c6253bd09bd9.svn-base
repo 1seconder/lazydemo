@@ -1,0 +1,106 @@
+package com.newenv.communityFocus.jinggeng.services;
+
+import java.util.List;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
+
+import org.nutz.dao.entity.Record;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.alibaba.fastjson.JSON;
+import com.newenv.communityFocus.base.BaseService;
+import com.newenv.communityFocus.domain.UserLogin;
+import com.newenv.communityFocus.jinggeng.dao.TraceDao;
+import com.newenv.communityFocus.security.services.SecurityUserHolder;
+
+/**
+ * @author chen. helix
+ *@date 2016.03.15
+ *楼盘精耕services
+ */
+@Component
+//@EnableAutoConfiguration
+@Path("/traceServices")
+public class TraceServices  extends BaseService{
+	@Autowired
+	private TraceDao traceDao;
+	
+	@GET
+	@Produces("text/html")
+	@Path("/initTrace/")
+	public void initPoint(){
+		String attribute = String.valueOf(this.getRequest().getAttribute(""));
+		UserLogin userLogin = SecurityUserHolder.getUserLogin();
+		super.setRequestAttribute("userLogin", userLogin);
+		super.forwardTo("/pages/jinggeng/lpjg.jsp");
+	};
+	
+	@GET
+	@Produces("text/html")
+	@Path("/initTrace/houseType/{houseType}/housenumber/{housenumber}/saleOrRentId/{saleOrRentId}/houseSourceId/{houseSourceId}")
+	public void initPoint(@PathParam("houseType") String houseType,@PathParam("housenumber") String housenumber,@PathParam("saleOrRentId") String saleOrRentId,@PathParam("houseSourceId") String houseSourceId){
+		String attribute = String.valueOf(this.getRequest().getAttribute(""));
+		UserLogin userLogin = SecurityUserHolder.getUserLogin();
+		super.setRequestAttribute("userLogin", userLogin);
+		super.setRequestAttribute("houseType", houseType);
+		super.setRequestAttribute("housenumber", housenumber);
+		super.setRequestAttribute("saleOrRentId", saleOrRentId);
+		super.setRequestAttribute("houseSourceId", houseSourceId);
+
+		super.forwardTo("/pages/jinggeng/lpjg.jsp");
+	};
+	
+	@GET
+	@Produces("application/json")
+	@Consumes("application/json")
+	@Path("/isWeiTuoFangyuan/{fanghaoid}")
+	public Response isWeiTuoFangyuan(@PathParam("fanghaoid") String fanghaoid){
+//		String fanghaoid = String.valueOf(this.getRequest().getAttribute(""));
+		List<Record> weiTuoFangyuan = traceDao.isWeiTuoFangyuan(fanghaoid);
+		return Response.ok().entity(weiTuoFangyuan).build();
+	};
+	
+	
+	@GET
+	@Produces("application/json")
+	@Consumes("application/json")
+	@Path("/isWeiTuoDuJia/{fanghaoid}")
+	public Response isWeiTuoDuJia(@PathParam("fanghaoid") String fanghaoid){
+//		String fanghaoid = String.valueOf(this.getRequest().getAttribute(""));
+		List<Record> isWeiTuoDuJia = traceDao.isWeiTuoDuJia(fanghaoid);
+		return Response.ok().entity(isWeiTuoDuJia).build();
+	};
+	
+	
+	@GET
+	@Produces("application/json")
+	@Consumes("application/json")
+	@Path("/isWeiTuoFangKan/{fanghaoid}")
+	public Response isWeiTuoFangKan(@PathParam("fanghaoid") String fanghaoid){
+//		String fanghaoid = String.valueOf(this.getRequest().getAttribute(""));
+		List<Record> isWeiTuoFangKan = traceDao.isWeiTuoFangKan(fanghaoid);
+		return Response.ok().entity(isWeiTuoFangKan).build();
+	};
+	
+	
+	
+	@GET
+	@Produces("application/json")
+	@Consumes("application/json")
+	@Path("/isWeiTuoYaoShi/{fanghaoid}")
+	public Response isWeiTuoYaoShi(@PathParam("fanghaoid") String fanghaoid){
+//		String fanghaoid = String.valueOf(this.getRequest().getAttribute(""));
+		List<Record> isWeiTuoYaoShi = traceDao.isWeiTuoYaoShi(fanghaoid);
+		return Response.ok().entity(isWeiTuoYaoShi).build();
+	};
+	
+	
+	
+	
+}

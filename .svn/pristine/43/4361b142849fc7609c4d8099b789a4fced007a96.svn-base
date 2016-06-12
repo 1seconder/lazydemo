@@ -1,0 +1,198 @@
+/**
+ * @Project: communityFocus
+ * @FilePath: com.newenv.communityFocus.sqtj.services.SqtjServices.java
+ * @Description: 商圈统计服务类
+ * @author: mingjie.lu
+ * @date: 2016年4月21日 下午4:53:11
+ */
+package com.newenv.communityFocus.sqtj.services;
+
+import java.net.URLEncoder;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.alibaba.fastjson.JSON;
+import com.newenv.communityFocus.base.BaseService;
+import com.newenv.communityFocus.base.PageInfo;
+import com.newenv.communityFocus.poioutput.PoiStreamingOutput;
+import com.newenv.communityFocus.queryCondition.SqtjQueryCondition;
+import com.newenv.communityFocus.sqtj.dao.SqtjDao;
+import com.newenv.communityFocus.util.DateUtils;
+
+/**
+ * @ClassName: SqtjServices
+ * @Description: 商圈统计服务
+ * @author: mingjie.lu
+ * @date: 2016年4月21日 下午4:53:11
+ */
+@Component
+@Path("/sqtjServices")
+public class SqtjServices extends BaseService {
+	@Autowired
+	private SqtjDao sqtjDao;
+
+	/**
+	 * 
+	 * @Title: forwardToSqtj @Description: 跳转到商圈统计页面 @return void @throws
+	 */
+	@GET
+	@Produces("text/html")
+	@Path("/forwardToSqtj/")
+	public void forwardToSqtj() {
+		super.forwardTo("/pages/sqtj/shizhanlv.jsp");
+	}
+
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/sqtjTopGridData")
+	public Response sqtjTopGridData(SqtjQueryCondition condition) {
+		try {
+			String jsonString = JSON.toJSONString(sqtjDao.getSqtjTopGridData(condition));
+			return Response.ok().entity(jsonString).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(500).build();
+		}
+	}
+
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/sqtjReportData")
+	public Response sqtjReportData(SqtjQueryCondition condition) {
+		try {
+			condition.getPageInfo().setRows(1000000);
+			String jsonString = JSON.toJSONString(sqtjDao.getSqtjReportData(condition));
+			return Response.ok().entity(jsonString).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(500).build();
+		}
+	}
+	
+
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/sqtjBottomGridData")
+	public Response sqtjBottomGridData(SqtjQueryCondition condition) {
+		try {
+			String jsonString = JSON.toJSONString(sqtjDao.getSqtjBottomGridData(condition));
+			return Response.ok().entity(jsonString).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(500).build();
+		}
+	}
+
+	
+	@SuppressWarnings("unchecked")
+	@GET
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/sqtjExportData/{dateTime}/{stressId}/{sqId}/{buildingId}/{flag}")
+	public Response sqtjExportData(@PathParam("dateTime") String dateTime, @PathParam("stressId") String stressId, @PathParam("sqId") String sqId, @PathParam("buildingId") String buildingId,
+			@PathParam("flag") String flag) {
+		try {
+			String fileName = "楼盘市占率";
+			SqtjQueryCondition condition = new SqtjQueryCondition();
+			condition.setDateTime("null".equals(dateTime) ? null : dateTime);
+			condition.setStressId("null".equals(stressId) ? null : stressId);
+			condition.setFlag(flag);
+			condition.setSqId("null".equals(sqId) ? null : sqId);
+			condition.setBuildingId("null".equals(buildingId) ? null : buildingId);
+			if ("export".equals(condition.getFlag())) {
+				PageInfo pageInfo = condition.getPageInfo();
+				if (pageInfo == null) {
+					pageInfo = new PageInfo();
+					pageInfo.setPage(1);
+					pageInfo.setRows(1000000);
+				}
+			}
+			List<Map<String, Object>> list = (List<Map<String, Object>>) sqtjDao.getSqtjBottomGridData(condition).getGridModel();
+
+			String[] head = new String[] { "楼盘名", "总监", "门店", "店组", "成交套数", "本公司成交套数/房产局成交套数", "相对市占率", "绝对市占率" };
+			// 创建一个工作空间
+			HSSFWorkbook workbook = new HSSFWorkbook();
+			// 样式设置
+			HSSFCellStyle style = workbook.createCellStyle();
+			style.setAlignment(HSSFCellStyle.ALIGN_LEFT);
+			// 创建一个工作薄
+			HSSFSheet sheet = workbook.createSheet(fileName);
+			HSSFRow rowHead = sheet.createRow(0);
+			for (int i = 0; i < head.length; i++) {
+				HSSFCell cellHead = rowHead.createCell(i);
+				cellHead.setCellValue(head[i]);
+				cellHead.setCellStyle(style);
+			}
+			if (list != null && list.size() > 0) {
+				int i = 1;
+				for (Map<String, Object> map : list) {
+					HSSFRow rowBody = sheet.createRow(i++);
+					for (int j = 0; j < head.length; j++) {
+						HSSFCell cellBody = rowBody.createCell(j);
+						// 楼盘名
+						if (j == 0) {
+							cellBody.setCellValue(map.get("lp_name").toString());
+						}
+						// 总监
+						else if (j == 1) {
+							cellBody.setCellValue(map.get("d3name").toString());
+						}
+						// 门店
+						else if (j == 2) {
+							cellBody.setCellValue(map.get("d2name").toString());
+						}
+						// 店组
+						else if (j == 3) {
+							cellBody.setCellValue(map.get("d1name").toString());
+						}
+						// 成交套数
+						else if (j == 4) {
+							cellBody.setCellValue(map.get("counts").toString());
+						}
+						// 本公司成交套数/房产局成交套数
+						else if (j == 5) {
+							cellBody.setCellValue(map.get("xhjdealcount").toString() + "/" + map.get("fdjcount").toString());
+						}
+						// 相对市占率
+						else if (j == 6) {
+							cellBody.setCellValue(map.get("counts").toString() + "/" + map.get("xhjdealcount").toString());
+						}
+						// 绝对市占率
+						else if (j == 7) {
+							cellBody.setCellValue(map.get("counts").toString() + "/" + map.get("fdjcount").toString());
+						}
+						cellBody.setCellStyle(style);
+					}
+				}
+			}
+			PoiStreamingOutput output = new PoiStreamingOutput(workbook);
+			fileName = DateUtils.getDateStrNowTime(new Date()) + "楼盘市占率" + ".xls";
+			fileName = URLEncoder.encode(fileName, "UTF-8");
+			return Response.ok(output, "application/xls").header("Content-Disposition", "attachment; filename=" + fileName).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(500).build();
+		}
+	}
+}

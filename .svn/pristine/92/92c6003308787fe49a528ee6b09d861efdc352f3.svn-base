@@ -1,0 +1,178 @@
+package com.newenv.communityFocus.security.services;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+
+import org.nutz.dao.entity.Record;
+import org.nutz.json.Json;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.newenv.communityFocus.base.BaseService;
+import com.newenv.communityFocus.domain.HRPermission;
+import com.newenv.communityFocus.domain.TblDepartment;
+import com.newenv.communityFocus.domain.TblUserLogin;
+import com.newenv.communityFocus.domain.TblUserProfile;
+import com.newenv.communityFocus.domain.UserLogin;
+import com.newenv.cxf.security.CXFSecurityUtil;
+
+@Component
+@Path("/securityUserHolder")
+public class SecurityUserHolder extends BaseService{
+
+//	@Resource
+//	private HttpServletRequest request;
+	
+	//声明  
+    private static ThreadLocal<UserLogin> local = new ThreadLocal<UserLogin>();     
+    
+    @Autowired
+    private UserLoginService userLoingService;
+    
+    /**
+     * key: 工号id tbl_user_login（username）
+     */
+    private static Map<String,UserLogin> userMap = new HashMap<String,UserLogin>();
+	/**
+	 * 赋值
+	 * @throws Exception 
+	 */
+	@GET
+	@Produces("text/html")
+//	@Produces("application/json")
+//	@Consumes("application/json")
+	@Path("/login/{name}")
+    public  void setCurrentUserLogin(@PathParam("name") String userName) throws Exception {  
+		System.out.println("-login=========================================");
+		UserLogin login =  new UserLogin();
+//		List<Record> list = userLoingService.findAllTitleNamesByUsername(userName);
+//		userLoingService.findTblDepartmentById(userName)
+		TblUserProfile userProfile;
+		TblUserLogin userLogin = null;
+			
+		userLogin = userLoingService.login(userName);
+		if(userLogin == null){
+			super.forwardTo("/sec/fedservlet/");
+			return;
+		}
+		
+		System.out.println("-login=2222222222222222222222");
+		userProfile = userLoingService.findTblUserProfileById(userLogin.getTbl_User_profile_id());
+		System.out.println("-login=3333333333333333333333");
+		TblDepartment department = userLoingService.findTblDepartmentById(userProfile.getTbl_department_id());
+		System.out.println("-login=444444444444444444444");
+	//			String ip = userLogin.getIp();
+	//			Date loginTime = userLogin.getLoginTime();
+	//			String address = userLogin.getAddress();
+	//			String password = userLogin.getPassword();
+	//			String username2 = userLogin.getUsername();
+		
+	//		userLoingService.getHRPermissions(u, userLogin)
+		login.setDepartment(department);
+		login.setUserLogin(userLogin);
+	//		login.setPermissions(permissions);
+		login.setUserProfile(userProfile);
+		
+		List<HRPermission> userPermissions = userLoingService.getUserPermissions(login);
+		Map<String, HRPermission> permissions = new HashMap<String, HRPermission>();
+		for (HRPermission hrPermission : userPermissions) {
+			String menuName = hrPermission.getMenuName();
+			permissions.put(menuName, hrPermission);
+		}
+		login.setPermissions(permissions);
+		permissions.clear();
+
+		List<Record> findAllTitleNamesByUsername = userLoingService.findAllTitleNamesByUsername(userName);
+		if(null != findAllTitleNamesByUsername && findAllTitleNamesByUsername.size()>0)
+		{
+			login.setTitleName(findAllTitleNamesByUsername.get(0).getString("cityDepName"));
+		}
+		login.setCityId(department.getCityId()+"");
+		userMap.put(String.valueOf(userLogin.getUsername()), login);
+		
+//		HttpSession session = request.getSession();
+//		session.setAttribute(SecurityUserHolder.getCurrentUserLogin().getUserProfile().getId()+"", login);
+		
+		
+		System.out.println("CXFSecurityUtil.isLogin(=================== "+CXFSecurityUtil.isLogin());
+		local.set(login);
+//		super.forwardTo("/console/index.jsp");
+		System.out.println("username--"+SecurityUserHolder.getCurrentUserLogin().getUserLogin().getUsername());
+		System.out.println("deptid--"+SecurityUserHolder.getCurrentUserLogin().getDepartment().getId());
+		System.out.println("userid--"+SecurityUserHolder.getCurrentUserLogin().getUserProfile().getId());
+		
+		System.out.println("CXFSecurityUtil.isLogin() "+CXFSecurityUtil.isLogin());
+		System.out.println("=============================");
+		
+//		for (Record record : findAllTitleNamesByUsername) {
+//			String cityDepId = record.getString("cityDepId");
+//			String cityDepName = record.getString("cityDepName");
+//			
+//		}
+		String json = Json.toJson(findAllTitleNamesByUsername);
+		System.out.println(json);
+		super.setRequestAttribute("titles", findAllTitleNamesByUsername);
+		super.forwardTo("/console/index.jsp");
+    }  
+	
+	
+    /**
+     * 取值
+     * @return
+     */
+    public static UserLogin getCurrentUserLogin() {  
+//        return local.get();  
+    	return getUserLogin();
+    } 
+    
+    
+    public static UserLogin getUserLogin(){
+    	UserLogin userLogin = null;
+    	try {
+    		userLogin = userMap.get(CXFSecurityUtil.getPrincipal().getName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    	return userLogin;
+    }
+    
+    public static String  getUserName(){  
+    	return getUserLogin().getUserLogin().getUsername();
+    } 
+    
+    public static int  getDeptId() {  
+    	return getUserLogin().getDepartment().getId();
+    } 
+    
+    public static int  getUserId() {  
+    	return getUserLogin().getUserProfile().getId();
+    } 
+    
+    
+    public static int  getCityId() {  
+    	try{
+    		return getUserLogin().getDepartment().getCityId();
+    	}catch(Exception e){
+    		return 1;
+    	}
+    } 
+    
+//    
+//    /**
+//     * 移除
+//     */
+//    public static void remove(){
+//    	local.remove();
+//    }
+    
+    
+}

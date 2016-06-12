@@ -1,0 +1,37 @@
+package com.newenv.communityFocus.dao;
+
+import java.util.List;
+
+import org.nutz.dao.entity.Record;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public class CommonDao{
+	
+	@Autowired
+	private DaoHelper daoHelper;
+	public List<Record> getQuyuByCityId(int id)
+	{
+		String sql = "select * from xhj_jcstress where cityId  ="+id+"";
+		return daoHelper.getRecordList(sql.toString());
+	}
+	
+	public List<Record> getSqByQyId(int id)
+	{
+		String sql = "select * from xhj_jcsq where qyid  ="+id+"";
+		return daoHelper.getRecordList(sql.toString());
+	}
+	
+	public List<Record> getLpBySqId(int id)
+	{
+		List list = daoHelper.getRecordList(" SELECT id, lp_name lpname FROM xhj_lpxx where id in (select lpid from lpjg_assignment_loupan )");
+		return list;
+	}
+	
+	public List<Record> getMdByPq(int id)
+	{
+		List list = daoHelper.getRecordList(" SELECT id, lp_name lpname FROM xhj_lpxx where id in (select lpid from lpjg_assignment_loupan )");
+		return list;
+	}
+}

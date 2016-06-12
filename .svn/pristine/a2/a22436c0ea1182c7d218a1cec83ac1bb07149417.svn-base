@@ -1,0 +1,55 @@
+package com.newenv.communityFocus.security.filter;
+
+import java.io.IOException;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+
+import com.newenv.communityFocus.util.AppConstants;
+import com.newenv.communityFocus.vo.UserLogin;
+
+public class SessionFilter implements Filter {
+
+//	/** 检查不通过时，转发的URL */
+//	private String forwardUrl;
+//
+//	/** 需要排除（不拦截）的URL的正则表达式 */
+//	private Pattern excepUrlPattern;
+//
+//	/** 要检查的 session 的名称 */
+//	private String sessionKey;
+
+	//@Override
+	public void destroy() {
+		
+	}
+
+	//@Override
+	public void doFilter(ServletRequest req, ServletResponse resp,
+			FilterChain chain) throws IOException, ServletException {
+		HttpServletRequest request = (HttpServletRequest)req;  
+		UserLogin userLogin = (UserLogin)request.getSession().getAttribute(AppConstants.CURRENT_USER);  
+//		Pattern pat = ew Pattern
+		String servletPath = request.getServletPath();
+		String excepUrlPattern = "/login.jsp|/register.jsp|/mobilelogin.jsp|/getTitle.action|/dologin.action";
+		if (userLogin != null || excepUrlPattern.indexOf(servletPath)>=0) {
+			//重新设值session
+//			SecurityUserHolder.setCurrentUserLogin(userLogin); 
+			chain.doFilter(req, resp);
+		}else{
+	    	//如果是session超时，在此处做处理
+	    	request.getRequestDispatcher("/login.jsp").forward(request,resp);
+	    }
+	    
+	}
+
+	//@Override
+	public void init(FilterConfig cfg) throws ServletException {
+	}
+
+}

@@ -1,0 +1,1109 @@
+package com.newenv.communityFocus.services;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.nutz.dao.Cnd;
+import org.nutz.dao.entity.Record;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.newenv.communityFocus.base.BaseService;
+import com.newenv.communityFocus.base.JjrCustomerParams;
+import com.newenv.communityFocus.base.LogType;
+import com.newenv.communityFocus.base.RequestParameter;
+import com.newenv.communityFocus.dao.CommonDao;
+import com.newenv.communityFocus.dao.DaoHelper;
+import com.newenv.communityFocus.dao.UserDao;
+import com.newenv.communityFocus.domain.OperationLog;
+import com.newenv.communityFocus.domain.jinggeng.Competition;
+import com.newenv.communityFocus.domain.jinggeng.CustomerCommunicator;
+import com.newenv.communityFocus.domain.jinggeng.CustomerInfo;
+import com.newenv.communityFocus.domain.jinggeng.CustomerRequirement;
+import com.newenv.communityFocus.domain.jinggeng.CustomerRequirementOfBuy;
+import com.newenv.communityFocus.domain.jinggeng.CustomerRequirementOfRent;
+import com.newenv.communityFocus.domain.jinggeng.HouseBasicInfo;
+import com.newenv.communityFocus.domain.jinggeng.PeriodInfo;
+import com.newenv.communityFocus.domain.jinggeng.PersonInfo;
+import com.newenv.communityFocus.domain.jinggeng.Relationship;
+import com.newenv.communityFocus.domain.jinggeng.TelFollow;
+import com.newenv.communityFocus.security.SecurityUserHolder;
+import com.newenv.communityFocus.util.StringUtils;
+
+
+/**
+ * 批量精耕（接触期）
+ * @author  
+ *
+ */
+@Component
+@Path("/refineService")
+public class RefineManagerService extends BaseService {
+	
+	private Log logger = LogFactory.getLog(RefineManagerService.class);
+	
+	@Autowired
+	private DaoHelper daoHelper;
+	
+	@Autowired
+	private CommonDao commDao;
+	
+	@Autowired
+	private UserDao userDao; 
+	
+	public void init(int businessType, long fhid){
+		//1.显示精耕异常的楼盘
+			List<Record> lpList = null;
+			String str = "SELECT * FROM lpjg_info where fhid="+fhid +" and flag = 1 and creatorid = "+ SecurityUserHolder.getUserId();
+			Map fwList = daoHelper.getItem(str);
+			super.setRequestAttribute("fw", fwList);
+			super.setRequestAttribute("fang", daoHelper.getItem("SELECT * FROM xhj_lpfanghao where id="+fhid));
+			Map<String,Object> fhMap = commDao.getFhxx(fhid);
+			super.setRequestAttribute("jb", fhMap);
+			
+			List<Record> rl = commDao.getConstantsByName("权属性质");
+			List<Record> yt = commDao.getConstantsByName("房屋用途");
+			List<Record> dir = commDao.getConstantsByName("房屋朝向");
+			List<Record> gtu = commDao.getConstantsByName("国土性质");
+			super.setRequestAttribute("rl", rl);
+			super.setRequestAttribute("yt", yt);
+			super.setRequestAttribute("dir", dir);
+			super.setRequestAttribute("gtu", gtu);
+			
+			super.setRequestAttribute("businessType", businessType);
+			int loginType = getLoginType();
+			if(businessType == 1){
+				
+			}else{
+				String s = " SELECT distinct lp.id , lp.lp_name lpname  FROM  lpjg_precise_update_record  p , xhj_lpxx lp, xhj_lpdong d, xhj_lpdanyuan dy , xhj_lpfanghao f   " +
+						" WHERE p.fhid = f.id AND f.dyid = dy.id AND dy.dzid = d.id AND d.lpid = lp.id ";
+				if(loginType == 1){
+					s += " and p.mdid = " + SecurityUserHolder.getDeptId() ;
+				}else if(loginType == 2){
+					s += " and p.bmid = " + SecurityUserHolder.getDeptId() ;
+				}else if(loginType == 3){
+					s += " and p.creatorid= " + SecurityUserHolder.getUserId() ;
+				}
+				lpList = daoHelper.getRecordList(s);
+			}
+			super.setRequestAttribute("loginType", getLoginType());
+			super.setRequestAttribute("lpList", lpList);
+	}
+	
+	@GET
+	@Produces({ MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Path("/getLoginType/{userId}")
+	public Response getLoginType(@PathParam("userId") int userId){
+		Map<String,Integer> map = new HashMap<String,Integer>();
+		map.put("type", getType(userId));
+		return Response.ok().entity(map).build();
+	}
+	
+	
+	/**
+	 * 获取登录人职位信息
+	 * @param userId
+	 * @return
+	 */
+	public int getType(@PathParam("userId") int userId){
+		int loginType = 1 ;//商圈经理 ， 2： 店组长，  3： 经纪人
+		List<Record> titleName = userDao.getTitle(userId);
+		String string = titleName.toString();
+		if(string.indexOf("商圈经理")> -1 )
+		{
+			loginType = 1;
+		}
+		
+		if(string.indexOf("门店")> -1)
+		{
+			loginType = 2;
+		}
+		
+		if(string.indexOf("经纪人")> -1 )
+		{
+			loginType = 3;
+		}
+		return loginType;
+	}
+	
+	/**
+	 * 获取登录人职位信息（PC端use it）
+	 * @return
+	 */
+	public int getLoginType(){
+		return getType(SecurityUserHolder.getUserId());
+	}
+	
+	/**
+	 * 普通精耕 businessType 传常量1：
+	 * @param businessType ：1
+	 * @param fhid 房号ID
+	 */
+	@GET
+	@Produces("text/html") 
+	@Path("/mainPage/{type}/{fhid}")
+	public void mainPage(@PathParam("type") int businessType,@PathParam("fhid") long fhid) {
+		init(businessType, fhid);
+		super.setRequestAttribute("idx", -1);
+		super.forwardTo("/pages/jinggeng/lpjg.jsp");
+	}
+	
+	
+	/**
+	 * 异常批量精耕 
+	 * @param businessType ：常量2
+	 * @param fhid  房号ID
+	 * @param idx   异常房号数组下标0,1,2...
+	 */
+	@GET
+	@Produces("text/html")
+	@Path("/mainPage/{type}/{fhid}/{idx}")
+	public void mainPage2(@PathParam("type") int businessType,@PathParam("fhid") long fhid,@PathParam("idx") long idx) {
+		List<Record> fhList = commDao.getUnusualFhList(SecurityUserHolder.getDeptId(),SecurityUserHolder.getUserId());
+		super.setRequestAttribute("fhList", fhList);
+		if(fhList.size() > 0 && idx == 0){//第一次进来
+			fhid = Long.parseLong(String.valueOf(fhList.get(0).get("fhid")));
+		}
+		init(businessType, fhid);
+		super.setRequestAttribute("idx", idx);
+		super.forwardTo("/pages/jinggeng/lpjg.jsp");
+	}
+	
+	
+	/**
+	 * tab页切换
+	 * @param 页面请求参数，传房号ID
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/pageJump")
+	public Response pageJump(RequestParameter params) {
+		Map<String,Object> dataMap = new HashMap<String,Object>();
+		try{
+			int loginType = getLoginType(); 
+			int fhid = 0;
+			if(!params.getFhs().equals("null")){
+				fhid = Integer.parseInt(params.getFhs());
+			}
+			if(params.getType() == 0){
+				
+				dataMap  = queryFw(fhid, loginType, SecurityUserHolder.getDeptId(),SecurityUserHolder.getUserId());
+				
+			}else if(params.getType() == 1){//shangquanjingli
+				
+			}else if(params.getType() == 2){//经纪人业主信息
+				
+				dataMap = queryJJrYz(fhid, loginType, SecurityUserHolder.getUserId(),params.getKeyWord());
+				
+			}else if(params.getType() == 3){//电话更进
+				
+				return quereyTel(fhid, SecurityUserHolder.getUserId());
+				
+			}else if(params.getType() == 4){//竞争对手更进
+				
+				quereyCompetorsInfo(fhid ,loginType, SecurityUserHolder.getUserId(), SecurityUserHolder.getDeptId() );
+				
+			}	
+		}catch(Exception e){
+			logger.error(e.getMessage());
+			return Response.status(500).build();
+		}
+		return Response.ok().entity(dataMap).build();
+	}
+	
+	
+	
+	/**
+	 * 查询房屋基本信息(provided for APP)
+	 * @param house
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	@GET
+	@Produces({ MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Path("/queryFwInfo/{fhid}/{loginType}/{deptId}/{userId}")
+	public Response queryFwInfo(@PathParam("fhid")  int fhid,@PathParam("loginType")  int loginType ,@PathParam("deptId")  int deptId,@PathParam("userId")  int userId) {
+		Map<String,Object> dataMap = new HashMap<String,Object>();
+		try{
+			dataMap  = queryFw(fhid, loginType, deptId, userId);
+			
+		}catch(Exception e){
+			logger.error(e.getMessage());
+			return Response.status(500).build();
+		}
+		return Response.ok().entity(dataMap).build();
+	}
+	
+	/**
+	 * 业主经纪人信息(provided for APP)
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	@GET
+	@Produces({ MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Path("/queryJjrYzInfo/{fhId}/{loginType}/{userId}")
+	public Response queryJjrYzInfo(@PathParam("fhId") int fhId, @PathParam("loginType") int loginType ,@PathParam("userId") int userId) {
+		Map<String,Object> dataMap = new HashMap<String,Object>();
+		try{
+			dataMap  = queryJJrYz(fhId, loginType, userId,null);
+		}catch(Exception e){
+			logger.error(e.getMessage());
+			return Response.status(500).build();
+		}
+		return Response.ok().entity(dataMap).build();
+	}
+	
+	/**
+	 * 查看业主信息(provided for APP)
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	@GET
+	@Produces({ MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Path("/queryYzInfo/{fhId}/{loginType}/{userId}")
+	public Response queryYzInfo(@PathParam("fhId") int fhid, @PathParam("loginType") int loginType ,@PathParam("userId") int userId) {
+		Map<String,Object> dataMap = new HashMap<String,Object>();
+		try{
+			dataMap = getYz( fhid,  loginType ,userId);
+		}catch(Exception e){
+			return Response.status(500).build();
+		}
+		return Response.ok().entity(dataMap).build();
+	}
+	
+	
+	public Map getYz(@PathParam("fhId") int fhid, @PathParam("loginType") int loginType ,@PathParam("userId") int userId){
+		Map<String,Object> dataMap = new HashMap<String,Object>();
+		Map rel = daoHelper.getItem("SELECT * FROM lpjg_relationship where  fhid="+ fhid +"  and userid=" + userId);
+		if((rel != null &&  rel.get("personid") != null)){
+			int personId = 0;
+			personId = (Integer) rel.get("personid");
+			Map per = daoHelper.getItem("SELECT DATE_FORMAT(birthday,'%Y-%m-%d')  birthday,ID ,Name ,Number ,IdentityCode,QQ,WeXin ,CityID,Gender,EMail ,HomePhone,MobilePhone ,OfficePhone ,OfficeAddress ,HomeAddress ,WorkType ,WorkPlace,lpaddress   FROM lpjg_personinfo where id= "+ personId);
+			Map cus = daoHelper.getItem("SELECT id , delegatetype FROM lpjg_customerInfo where personid= "+ personId);
+			
+			int cusId = (Integer) cus.get("id");
+			int delegateType = (Integer) cus.get("delegatetype");
+			Map req = daoHelper.getItem("SELECT customerlevel FROM lpjg_customerrequirement where customerid=" + cusId);
+			List<Map>  communicator = daoHelper.getRecordAsList("SELECT (SELECT NAME  NAME FROM web_syscs_1 WHERE sid= (SELECT id FROM web_syscs WHERE NAME = '业主关系') AND id = c.relationtype)  relationtype, telephone FROM lpjg_communicator c where personid=" + personId);
+			dataMap.put("per", per);
+//			dataMap.put("cus", cus);
+			dataMap.put("req", req);
+			dataMap.put("communicator", communicator);
+			if(delegateType == 1){
+				Map buy = daoHelper.getItem("SELECT saletype,payingtype  FROM lpjg_customerrequirementofbuy where customerid=" + cusId);
+				dataMap.put("buy", buy);
+			}else{
+				Map rent = daoHelper.getItem("SELECT mortgage,fee FROM lpjg_customerrequirementofrent where customerid=" + cusId);
+				dataMap.put("rent", "押"+rent.get("mortgage")+"付"+rent.get("fee"));
+			}
+		}
+		return dataMap;
+	}
+	
+	/**
+	 * 查询房屋信息
+	 * @param fhid 房号ID
+	 * @param loginType 登录角色 @see getLoginType()
+	 * @param deptid 登录人部门ID
+	 * @param userId 登录人用户ID
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	public Map queryFw(int fhid, int loginType , int deptid, int userId){
+		Map<String,Object> dataMap = new HashMap<String,Object>();
+		try{
+			String s = "SELECT * FROM lpjg_info p where fhid="+fhid;
+			if(loginType == 2){
+				s += " and p.bmid = " + deptid ;
+			}else if(loginType == 3){
+				s += " and p.creatorid= " + userId ;
+			}
+			Map fwList = daoHelper.getItem(s );
+			List rl =  commDao.getConstantsByName("权属性质");
+			List yt = commDao.getConstantsByName("房屋用途"); 
+			List dir =  commDao.getConstantsByName("房屋朝向");
+			List gtu = commDao.getConstantsByName("国土性质");
+			Map fhMap = commDao.getFhxx(fhid);
+			
+			dataMap.put("fw", fwList);
+			dataMap.put("rl", rl);
+			dataMap.put("yt", yt);
+			dataMap.put("dir", dir);
+			dataMap.put("gtu", gtu);
+			dataMap.put("jb", fhMap);
+		}catch(Exception e ){
+			e.printStackTrace();
+		}
+		return dataMap;
+	}
+	
+	
+	/**
+	 * 查询经纪人业主
+	 * @param fhid
+	 * @param loginType
+	 * @param userId
+	 * @param keyWord
+	 * @return
+	 */
+	public Map<String,Object> queryJJrYz(int fhid, int loginType , int userId,String keyWord){
+		Map<String,Object> dataMap = new HashMap<String,Object>();
+		Map rel = daoHelper.getItem("SELECT * FROM lpjg_relationship where  fhid="+ fhid +"  and userid=" + userId);
+		if((rel != null &&  rel.get("personid") != null) || (StringUtils.notEmpty(keyWord))){
+			int personId = 0;
+			if(StringUtils.notEmpty(keyWord)){
+				personId = fhid;
+			}else{
+				personId = (Integer) rel.get("personid");
+			}
+			Map per = daoHelper.getItem("SELECT DATE_FORMAT(birthday,'%Y-%m-%d')  birthday,ID ,Name ,Number ,IdentityCode,QQ,WeXin ,CityID,Gender,EMail ,HomePhone,MobilePhone ,OfficePhone ,OfficeAddress ,HomeAddress ,WorkType ,WorkPlace ,Nationality   ,CreateDate  ,CredentialsType ,Statuss ,Transport ,CarType ,Education ,BuyingMotivation ,ConsumptionConcept ,AccountsAddress,lpAddress  FROM lpjg_personinfo where id= "+ personId);
+			Map cus = daoHelper.getItem("SELECT * FROM lpjg_customerInfo where personid= "+ personId);
+			
+			int cusId = (Integer) cus.get("id");
+			Map req = daoHelper.getItem("SELECT * FROM lpjg_customerrequirement where customerid=" + cusId);
+			Map rent = daoHelper.getItem("SELECT * FROM lpjg_customerrequirementofrent where customerid=" + cusId);
+			Map buy = daoHelper.getItem("SELECT * FROM lpjg_customerrequirementofbuy where customerid=" + cusId);
+			List<Map> communicator = daoHelper.getRecordAsList("SELECT * FROM lpjg_communicator where personid=" + personId);
+			dataMap.put("per", per);
+			dataMap.put("cus", cus);
+			dataMap.put("req", req);
+			dataMap.put("rent", rent);
+			dataMap.put("buy", buy);
+			dataMap.put("communicator", communicator);
+		}
+		
+		List<Record>  yt = commDao.getConstantsByName("房屋用途");
+		List<Record>  decor = commDao.getConstantsByName("装修情况");
+		List<Record>  weituo = commDao.getConstantsByName("委托来源");
+		List<Record>  jy = commDao.getConstantsByName("教育程度");
+		List<Record>  consum = commDao.getConstantsByName("消费观念");
+		List<Record>  workType = commDao.getConstantsByName("工作性质");
+		List<Record>  nationality = commDao.getConstantsByName("国籍");
+		List<Record>  furniture = commDao.getConstantsByName("家具");
+		List<Record>  dianqi = commDao.getConstantsByName("电器");
+		List<Record>  familar = commDao.getConstantsByName("小区熟悉程度");
+		List<Record>  rela = commDao.getConstantsByName("业主关系");
+		
+		dataMap.put("yt", yt);
+		dataMap.put("decor", decor);
+		dataMap.put("weituo", weituo);
+		dataMap.put("jy", jy);
+		dataMap.put("consum", consum);
+		dataMap.put("workType", workType);
+		dataMap.put("nationality", nationality);
+		dataMap.put("furniture", furniture);
+		dataMap.put("dianqi", dianqi);
+		dataMap.put("familar",familar);
+		dataMap.put("rela",rela);
+		
+		return dataMap;
+	}
+	
+	/**
+	 * 查询电话更进（provided for App)
+	 * @param fhId
+	 * @param userId
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	@GET
+	@Produces({ MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Path("/quereyTelInfo/{fhId}/{userId}")
+	public Response quereyTel(@PathParam("fhId") int fhId, @PathParam("userId") int userId) {
+		Map<String,Object> dataMap = new HashMap<String,Object>();
+		try{
+			dataMap  = quereyTelInfo(fhId, userId);
+		}catch(Exception e){
+			logger.error(e.getMessage());
+			return Response.status(500).build();
+		}
+		return Response.ok().entity(dataMap).build();
+	}
+	
+	
+	/**
+	 * 查询更进电话信息
+	 * @param fhid
+	 * @param userId
+	 * @return
+	 */
+	public Map quereyTelInfo(int fhid , int userId){
+		int type = getLoginType();
+		String s = " SELECT * FROM lpjg_tel_update_record  where fhid="+fhid + " and creatorid = "+ userId ;
+		
+		Map rl = daoHelper.getItem(s);
+		return rl;
+	}
+	
+	/**
+	 * 查询竞争对手信息
+	 * @param house
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	@GET
+	@Produces({ MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Path("/quereyCompetorsInfo/{fhId}/{type}/{userId}/{deptId}")
+	public Response quereyCompetorsInfo(@PathParam("fhId")  int fhId ,@PathParam("type")  int type,@PathParam("userId")   int userId,@PathParam("deptId")  int deptId){
+		String s = " SELECT requires,price ,DATE_FORMAT(startdate,'%Y-%m-%d %H:%m:%s') startdate ,DATE_FORMAT(enddate,'%Y-%m-%d %H:%m:%s') enddate,company , remarks ,fhid  FROM lpjg_competitors  where fhid="+fhId;
+		if(type == 2){
+			s += " and bmid = "+ deptId;
+		}else if(type == 3){
+			s += " and creatorid = "+ userId;
+		}
+			
+		Map map = daoHelper.getItem(s);
+		return Response.ok().entity(map).build();
+	}
+	
+	
+	/**
+	 * 查询竞争对手
+	 * @return
+	 */
+	@GET
+	@Produces({ MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Path("/queryCompany")
+	public List<Map> queryCompany(){
+		return daoHelper.getList(" SELECT * FROM lpjg_competitors_company ");
+	}
+	
+	
+	/**
+	 * 查询经纪人业主列表（PC 端）
+	 * @param parameter
+	 * @return
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/querySqManager")
+	public Response querySqManager(RequestParameter parameter) {
+		return querySqManager2(Integer.parseInt(parameter.getFhs()), getLoginType(), SecurityUserHolder.getDeptId());
+	}
+	
+	/**
+	 * 查询经纪人业主列表
+	 * provided for App
+	 * @return
+	 */
+	@GET
+	@Produces({ MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Path("/querySqManager2/{fhId}/{type}/{deptId}")
+	public Response querySqManager2(@PathParam("fhId") int fhId,@PathParam("type") int type ,@PathParam("deptId") int deptId ) {
+		List<Record> list = new ArrayList<Record>();
+		try{
+			StringBuffer sql = new StringBuffer();
+			sql.append("SELECT pr.id, pr.fhid , p.name,(select GROUP_CONCAT(telephone ) from   lpjg_communicator WHERE personid = p.id ) mobilePhone, p.weXin,p.qq,p.email, ") ;
+			sql.append(" ( SELECT  fullname FROM tbl_user_profile  u WHERE u.id= pr.creatorid ) jjrname, DATE_FORMAT(pr.modifydate,'%Y-%m-%d %H:%i:%s') modifydate,(select delegatetype from lpjg_customerInfo a where a.personid = p.id) delegatetype ");
+			sql.append(" FROM lpjg_precise_update_record pr ,lpjg_relationship  r, lpjg_personinfo  p ");
+			sql.append(" WHERE  pr.fhid = r.fhid AND r.personid = p.id and pr.fhid= "+ fhId);
+			if(type == 1){
+				sql.append(" and pr.mdid = " + deptId);
+			}else if(type == 2){
+				sql.append(" and pr.bmid = " + deptId);
+			}
+			sql.append(" order by pr.modifydate desc ");
+			sql.append(" ");
+			list = daoHelper.getRecordList(sql.toString());
+		}catch(Exception e){
+			logger.error(e.getMessage());
+			return Response.status(500).build();
+		}
+		return Response.ok().entity(list).build();
+	}
+	
+	/**
+	 * 保存房屋基本信息(provided for App)
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/saveFwBasicInfo")
+	public Response saveFwBasicInfo(HouseBasicInfo house) {
+		List<Record> list = new ArrayList<Record>();
+		try{
+			int userId,deptId ;
+			if(house.getCreatorid() != 0 ){
+				userId = house.getCreatorid();
+				deptId = (int) house.getBmid();
+			}else{
+				userId = SecurityUserHolder.getUserId();
+				deptId = SecurityUserHolder.getDeptId();
+			}
+			HouseBasicInfo info = daoHelper.getObjectByPOJO(HouseBasicInfo.class, Cnd.where("fhid", "=", house.getFhid()).and("creatorid","=", userId ));
+			if(info == null){
+				house.setMdid(commDao.querySjDeptId(deptId));
+				house.setCreatorid(userId);
+				house.setFlag(1);
+				house.setBmid(deptId);
+				//house.setCreatorid(creatorid);.house.
+				house.setModifyDate(new Date());
+				daoHelper.save(house);
+				
+			}else{
+				house.setMdid(commDao.querySjDeptId(deptId));
+				house.setCreatorid(userId);
+				house.setBmid(deptId);
+				house.setId(info.getId());
+				house.setModifyDate(new Date());
+				house.setFlag(1);
+				daoHelper.update(house);
+			}
+			List<Record> userName = userDao.getUserName(userId);
+			String string = userName.get(0).getString("fullname");
+			String msg = string + "保存房屋基本信息，房屋："+ getFw(house.getFhid());
+			updatePeriod(house.getFhid(), msg,"接触期",deptId, userId);
+			saveOperationLog(house.getFhid(), msg);
+		}catch(Exception e){
+			logger.error(e.getMessage());
+			e.printStackTrace();
+			return Response.status(500).build();
+		}
+		
+//		接触    委托   了解需求  客户带看    合同洽谈
+
+		return Response.ok().entity(list).build();
+	}
+	
+	/**
+	 * 
+	 * 保存日志
+	 * @param fhid
+	 * @param msg
+	 */
+	public void saveOperationLog(long fhid, String msg ){
+		OperationLog log = new OperationLog(); 
+		log.setFhid(fhid);
+		log.setMessage(msg);
+		log.setType(LogType.TYPE_JIECHOUQI.getType());//
+		daoHelper.save(log);
+	}
+
+	
+	/**
+	 * 保存经济人客户信息2
+	 * @param info
+	 * @return
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/saveJjrYzManager2")
+	public Response saveCustomerInfo2(JjrCustomerParams info) {
+		List<Record> list = new ArrayList<Record>();
+		try{
+			int bmId,creatorId;
+			if(info.getCreatorId() != 0){
+				creatorId = info.getCreatorId();
+				bmId = info.getBmId(); 
+			}else{
+				creatorId = SecurityUserHolder.getUserId();
+				bmId  = SecurityUserHolder.getDeptId();
+			}
+			if(info.getType() == 1){//add
+				//1.关系，//2.业主信息
+				/**
+				 * 如果查不到关系表，直接新增关系表与业主表
+				 * 如果关系表有数据，业主表有数据， 更新关系表personId字段   ---or---只需要更新业主表
+				 * 如果关系表有数据，业主表无数据，新增业主表，更新关系表personId字段
+				 * 
+				 * person 为新记录的记录
+				 */
+				Relationship rel = daoHelper.getObjectByPOJO(Relationship.class, Cnd.where("fhid","=",info.getFhid()).and("userid","=",creatorId));
+				PersonInfo person= null;
+				
+				if(rel == null){
+					//保存person
+					person = (PersonInfo) daoHelper.saveReturn(info.getPersonInfo());
+					
+					//保存relation
+					Relationship r = info.getRelationship();
+					r.setPersonid(person.getId());
+					r.setUserid(creatorId);
+					r.setCreatedate(new java.util.Date());
+					
+					rel = (Relationship) daoHelper.saveReturn(r);
+				}else{
+					
+					PersonInfo origPer =  daoHelper.getObjectByPOJO(PersonInfo.class, Cnd.where("id", "=", rel.getPersonid()));
+					if(origPer == null){
+						person = (PersonInfo) daoHelper.saveReturn(info.getPersonInfo());
+						
+					}else{
+						person = info.getPersonInfo();
+						person.setId(origPer.getId());
+						daoHelper.update(person);
+					}
+					
+					rel.setPersonid(person.getId());
+					daoHelper.update(rel);
+				}	
+				System.out.println("业主信息更新");
+
+				
+				//3.客户信息
+				CustomerInfo origCus = daoHelper.getObjectByPOJO(CustomerInfo.class, Cnd.where("personid","=",person.getId()));
+				CustomerInfo cus = null;
+				cus = info.getCustomerInfo();
+				if(origCus != null){
+					cus.setId(origCus.getId());
+					cus.setPersonid(person.getId());
+					daoHelper.update(cus);
+					
+				}else{
+					cus.setPersonid(person.getId());
+					cus = (CustomerInfo) daoHelper.saveReturn(cus);
+				}
+				System.out.println("客户信息更新");
+				
+				///4.客户需求
+				CustomerRequirement origReq = daoHelper.getObjectByPOJO(CustomerRequirement.class, Cnd.where("customerid","=",cus.getId()));
+				CustomerRequirement req = info.getCustomerReq();
+				if(origReq != null ){
+					req.setId(origReq.getId());
+					req.setCustomerID(cus.getId());
+					daoHelper.update(req);
+				}else{
+					req.setCustomerID(cus.getId());
+					daoHelper.save(req);
+				}	
+				System.out.println("客户需求更新");
+					
+				//5租售信息
+				if(2 == info.getCustomerInfo().getDelegateType()){
+					CustomerRequirementOfRent rentInfo = info.getRentInfo();
+					CustomerRequirementOfRent origRent = daoHelper.getObjectByPOJO(CustomerRequirementOfRent.class, Cnd.where("customerid","=",cus.getId()));
+
+					if(origRent == null){
+						rentInfo.setCustomerId(cus.getId());
+						daoHelper.save(rentInfo);
+					}else{
+						rentInfo.setId(origRent.getId());
+						rentInfo.setCustomerId(cus.getId());
+						daoHelper.update(rentInfo);
+					}	
+				}else if(1 == info.getCustomerInfo().getDelegateType()){
+					CustomerRequirementOfBuy buyInfo = info.getBuyInfo();
+					CustomerRequirementOfBuy origBuy = daoHelper.getObjectByPOJO(CustomerRequirementOfBuy.class, Cnd.where("customerid","=",cus.getId()));
+
+					if(origBuy == null){
+						buyInfo.setCustomerId(cus.getId());
+						daoHelper.save(buyInfo);
+					}else{
+						buyInfo.setId(origBuy.getId());
+						buyInfo.setCustomerId(cus.getId());
+						daoHelper.update(buyInfo);
+					}	
+				}
+				System.out.println("租售信息更新");
+				
+				//6联系方式
+				List<CustomerCommunicator>  origCommunicatorsList = daoHelper.getListByPOJO(CustomerCommunicator.class, Cnd.where("personid","=",person.getId()));
+				Map<Integer,CustomerCommunicator> map = new HashMap<Integer,CustomerCommunicator>();
+				for(CustomerCommunicator c : origCommunicatorsList){
+					map.put(c.getRelationType(), c);
+				}
+				
+				CustomerCommunicator [] communicators = info.getCommunicator();	
+				for(CustomerCommunicator communicator :  communicators){
+					CustomerCommunicator  origCommunicators = null;
+					origCommunicators = map.remove(communicator.getRelationType());
+					if(origCommunicators == null){
+						communicator.setPersonId(person.getId());
+						communicator.setCreateDate(new Date());
+						communicator.setStatuss(1);
+						daoHelper.save(communicator);
+					}else{
+						communicator.setId(origCommunicators.getId());
+						communicator.setPersonId(person.getId());
+						communicator.setCreateDate(new Date());
+						communicator.setStatuss(1);
+						daoHelper.update(communicator);
+					}
+				}
+				Iterator<CustomerCommunicator> its = map.values().iterator();
+				while(its.hasNext()){
+					CustomerCommunicator c =  its.next();
+					daoHelper.delete(c);
+				}
+				System.out.println("联系方式更新");
+					
+				
+				//7跟进情况
+				String msg = creatorId + "保存经纪人业主信息，房屋："+ getFw(info.getFhid());
+				PeriodInfo period = daoHelper.getObjectByPOJO(PeriodInfo.class, Cnd.where("fhid", "=", info.getFhid()).and("creatorid","=",creatorId));
+				if(period == null){
+					PeriodInfo periodInfo = PeriodInfo.getPeriodInfo();
+					periodInfo.setBmid(bmId);
+					periodInfo.setCreatorId(creatorId);
+					periodInfo.setFhid(info.getFhid());
+					periodInfo.setStage("接触期");
+					periodInfo.setModifyDate(periodInfo.getCreateDate());
+					periodInfo.setMessages(msg);
+					daoHelper.save(periodInfo);
+				}else{
+					period.setStage("接触期");
+					period.setBmid(bmId);
+					period.setCreatorId(creatorId);
+					period.setModifyDate(new java.util.Date());
+					period.setStatuss(0);
+					period.setFlag(1);
+					daoHelper.update(period);
+				}
+				System.out.println("跟进情况更新");
+				
+				
+				saveOperationLog(info.getFhid(), msg);
+			}
+			
+			
+//			Trans.begin();
+//			Relationship relShip = daoHelper.getObjectByPOJO(Relationship.class, Cnd.where("fhid","=",info.getFhid()).and("userid","=",SecurityUserHolder.getUserId()));
+//			if(relShip != null){
+//				//????
+//				PersonInfo per = info.getPersonInfo();
+//				per.setId(relShip.getPersonid());
+//				daoHelper.update(per);
+//				
+//				CustomerInfo origCus = daoHelper.getObjectByPOJO(CustomerInfo.class, Cnd.where("personid","=",per.getId()));
+//				CustomerInfo cus = info.getCustomerInfo();
+//				cus.setId(origCus.getId());
+//				daoHelper.update(cus);
+//				
+//				CustomerRequirement req = info.getCustomerReq();
+//				req.setCustomerID(origCus.getId());
+//				daoHelper.update(req);
+//				
+//				//5租售信息
+//				if(2 == info.getCustomerInfo().getDelegateType()){
+//					CustomerRequirementOfRent rentInfo = info.getRentInfo();
+//					rentInfo.setCustomerId(origCus.getId());
+//					daoHelper.update(rentInfo);
+//				}else if(1 == info.getCustomerInfo().getDelegateType()){
+//					CustomerRequirementOfBuy buyInfo = info.getBuyInfo();
+//					buyInfo.setCustomerId(origCus.getId());
+//					daoHelper.update(buyInfo);
+//				}
+//				
+//			}else{
+//				//1.人员
+//				PersonInfo person = (PersonInfo) daoHelper.saveReturn(info.getPersonInfo());
+//				System.out.println(person);
+//				
+//				//2业主与房号关系
+//				Relationship r = info.getRelationship();
+//				r.setPersonid(person.getId());
+//				r.setUserid(SecurityUserHolder.getUserId());
+//				daoHelper.save(info.getRelationship());
+//				
+//				//3客户
+//				CustomerInfo cus = info.getCustomerInfo();
+//				cus.setPersonid(person.getId());
+//				CustomerInfo cusRtn = (CustomerInfo) daoHelper.saveReturn(cus);
+//				
+//				//4需求
+//				CustomerRequirement req = info.getCustomerReq();
+//				req.setCustomerID(cusRtn.getId());
+//				daoHelper.save(req);
+//				
+//				//5租售信息
+//				if(2 == info.getCustomerInfo().getDelegateType()){
+//					CustomerRequirementOfRent rentInfo = info.getRentInfo();
+//					rentInfo.setCustomerId(cusRtn.getId());
+//					daoHelper.save(rentInfo);
+//				}else if(1 == info.getCustomerInfo().getDelegateType()){
+//					CustomerRequirementOfBuy buyInfo = info.getBuyInfo();
+//					buyInfo.setCustomerId(cusRtn.getId());
+//					daoHelper.save(buyInfo);
+//				}
+//				
+//				PeriodInfo period = daoHelper.getObjectByPOJO(PeriodInfo.class, Cnd.where("fhid", "=", info.getFhid()).and("creatorid","=",SecurityUserHolder.getUserId()));
+//				if(period == null){
+//					PeriodInfo periodInfo = PeriodInfo.getPeriodInfo();
+//					periodInfo.setFhid(info.getFhid());
+//					periodInfo.setStage("接触期");
+//					periodInfo.setModifyDate(periodInfo.getCreateDate());
+//					periodInfo.setMessages("保存经纪人业主信息，房号："+info.getFhid());
+//					daoHelper.save(periodInfo);
+//				}else{
+//					
+//					period.setStage("接触期");
+//					period.setModifyDate(new java.util.Date());
+//					daoHelper.update(period);
+//				}
+//				
+//				//6联系方式
+//				CustomerCommunicator communicator = info.getCommunicator();
+//				
+//			}
+//			
+//			Trans.close();
+			
+		}catch(Exception e){
+			e.printStackTrace();
+			logger.error(e.getMessage());
+			return Response.status(500).build();
+		}
+		return Response.ok().entity(list).build();
+	}
+	
+	
+	/**
+	 * 保存电话跟进
+	 * @param info
+	 * @return
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/saveTelInfo")
+	public Response saveTelInfo(TelFollow info) {
+		List<Record> list = new ArrayList<Record>();
+		try{
+			int bmId,creatorId;
+			if(info.getCreatorId() != 0){
+				creatorId = info.getCreatorId();
+				bmId = info.getBmId();
+			}else{
+				creatorId = SecurityUserHolder.getUserId();
+				bmId  = SecurityUserHolder.getDeptId();
+			}
+			
+			TelFollow origTel =  daoHelper.getObjectByPOJO(TelFollow.class, Cnd.where("fhid", "=", info.getFhid()).and("creatorid","=", creatorId));
+			info.setModifyDate(new java.util.Date());
+
+			if(origTel == null){
+				info.setMdid(commDao.querySjDeptId(bmId));
+				info.setBmId(bmId);
+				info.setCreatorId(creatorId);
+				info.setFlag(1);
+				info.setModifyDate(new Date());
+				daoHelper.save(info);
+			}else{
+				info.setId(origTel.getId());
+				info.setMdid(commDao.querySjDeptId(bmId));
+				info.setBmId(bmId);
+				info.setCreatorId(creatorId);
+				info.setModifyDate(new Date());
+				info.setFlag(1);
+				daoHelper.update(info);
+			}
+			List<Record> userName = userDao.getUserName(creatorId);
+			String string = userName.get(0).getString("fullname");
+			String msg = string + "保存电话跟进信息，房屋："+ getFw(info.getFhid());
+			updatePeriod(info.getFhid(),msg,"接触期",bmId, creatorId);
+			saveOperationLog(info.getFhid(), msg);
+		}catch(Exception e){
+			logger.error(e.getMessage());
+			return Response.status(500).build();
+		}
+		return Response.ok().entity(list).build();
+	}
+	
+	/**
+	 * 保存竞争对手
+	 * @param info
+	 * @return
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/saveCompetition")
+	public Response saveCompetition(Competition info) {
+		List<Record> list = new ArrayList<Record>();
+		try{
+			int bmId,creatorId;
+			if(info.getCreatorId() != 0){
+				creatorId = info.getCreatorId();
+				bmId = info.getBmId();
+			}else{
+				creatorId = SecurityUserHolder.getUserId();
+				bmId  = SecurityUserHolder.getDeptId();
+			}
+			
+			Competition origCom =  daoHelper.getObjectByPOJO(Competition.class, Cnd.where("fhid", "=", info.getFhid()).and("creatorid","=", creatorId));
+			if(origCom == null){
+				info.setMdid(commDao.querySjDeptId(bmId));
+				info.setBmId(bmId);
+				info.setCreatorId(creatorId);
+				info.setCreateDate(new Date());
+				info.setModifyDate(new Date());
+				info.setFlag(1);
+				daoHelper.save(info);
+			}else{
+				info.setId(origCom.getId());
+				info.setMdid(commDao.querySjDeptId(bmId));
+				info.setBmId(bmId);
+				info.setCreatorId(creatorId);
+				info.setModifyDate(new Date());
+				info.setFlag(1);
+				daoHelper.update(info);
+			}
+			List<Record> userName = userDao.getUserName(creatorId);
+			String string = userName.get(0).getString("fullname");
+			String msg = string + "保存竞争对手，房屋："+ getFw(info.getFhid());
+			updatePeriod(info.getFhid(),msg,"接触期", bmId , creatorId);
+			saveOperationLog(info.getFhid(), msg);
+		}catch(Exception e){
+			logger.error(e.getMessage());
+			return Response.status(500).build();
+		}
+		return Response.ok().entity(list).build();
+	}
+	
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Path("/updatePeriod/{fhId}/{msg}/{stage}/{deptId}/{creatorId}")
+	public Response updatePeriod(@PathParam("fhId") long fhId,@PathParam("msg") String msg,@PathParam("stage") String stage,@PathParam("deptId") int deptId, @PathParam("creatorId") int creatorId){
+		
+		PeriodInfo period = daoHelper.getObjectByPOJO(PeriodInfo.class, Cnd.where("fhid", "=", fhId).and("creatorid","=",creatorId));
+		if(period == null){
+			PeriodInfo periodInfo = PeriodInfo.getPeriodInfo();
+			periodInfo.setFhid(fhId);
+			periodInfo.setBmid(deptId);
+			periodInfo.setCreatorId(creatorId);
+			periodInfo.setStage(stage);
+			periodInfo.setModifyDate(periodInfo.getCreateDate());
+			periodInfo.setMessages(msg);
+			periodInfo.setUpdatecount(1);
+			periodInfo.setMdid(commDao.querySjDeptId(deptId));
+			daoHelper.save(periodInfo);
+		}else{
+			period.setStage(stage);
+			period.setModifyDate(new java.util.Date());
+			period.setBmid(deptId);
+			period.setCreatorId(creatorId);
+			period.setStatuss(0);
+			period.setFlag(1);
+			period.setUpdatecount( 1 + period.getUpdatecount());
+			period.setMdid(commDao.querySjDeptId(deptId));
+			daoHelper.update(period);
+		}
+		return Response.ok().entity(new ArrayList<String>()).build();
+	}
+	
+//	/**
+//	 * 更新更进信息
+//	 * @param fhid
+//	 */
+//	public void updatePeriod(long fhid,String msg){
+//		PeriodInfo period = daoHelper.getObjectByPOJO(PeriodInfo.class, Cnd.where("fhid", "=", fhid).and("creatorid","=",SecurityUserHolder.getUserId()));
+//		if(period == null){
+//			PeriodInfo periodInfo = PeriodInfo.getPeriodInfo();
+//			periodInfo.setFhid(fhid);
+//			periodInfo.setStage("接触期");
+//			periodInfo.setModifyDate(periodInfo.getCreateDate());
+//			periodInfo.setMessages(msg);
+//			periodInfo.setUpdatecount(1);
+//			periodInfo.setMdid(commDao.querySjDeptId(SecurityUserHolder.getDeptId()));
+//			daoHelper.save(periodInfo);
+//		}else{
+//			period.setStage("接触期");
+//			period.setModifyDate(new java.util.Date());
+//			period.setStatuss(0);
+//			period.setFlag(1);
+//			period.setUpdatecount( 1 + period.getUpdatecount());
+//			period.setMdid(commDao.querySjDeptId(SecurityUserHolder.getDeptId()));
+//			daoHelper.update(period);
+//		}
+//	}
+	
+	public String getFw(long  fhid){
+		Map<String,Object> map = commDao.getFhxx(fhid);
+		return  (String) map.get("lpname")+" "+  map.get("dong") + " 栋 "+  map.get("danyuan") +" 单元 "+  map.get("fanghao");
+	}
+	
+	/**
+	 * 批量异常房屋查询
+	 * @param house
+	 * @return
+	 */
+	@GET
+	@Produces({ MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Path("/queryUnusualFhList/{deptId}/{userId}")
+	public Response queryUnusualFhList(@PathParam("deptId")  int deptId,@PathParam("userId")  int userId) {
+//		Map<String,Object> dataMap = new HashMap<String,Object>();
+		List<Record> fhList = new ArrayList<Record>();
+		try{
+			fhList = commDao.getUnusualFhList(deptId, userId);
+			super.setRequestAttribute("fhList", fhList);
+			
+		}catch(Exception e){
+			logger.error(e.getMessage());
+			return Response.status(500).build();
+		}
+		return Response.ok().entity(fhList).build();
+	}
+
+	/**
+	 * 业主详情接口
+	 * @param house
+	 * @return
+	 */
+	@GET
+	@Produces({ MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Path("/queryYzDetail/{id}")
+	public Response queryYzDetail(@PathParam("id") Integer id) {
+		Map<String,Object> dataMap = new HashMap<String,Object>();
+		try{
+			if(null !=id){
+				int personId = 0;
+				personId = id;
+				Map per = daoHelper.getItem("SELECT DATE_FORMAT(birthday,'%Y-%m-%d')  birthday,ID ,Name ,Number ,IdentityCode,QQ,WeXin ,CityID,Gender,EMail ,HomePhone,MobilePhone ,OfficePhone ,OfficeAddress ,HomeAddress ,WorkType ,WorkPlace,lpaddress   FROM lpjg_personinfo where id= "+ personId);
+				Map cus = daoHelper.getItem("SELECT id , delegatetype FROM lpjg_customerInfo where personid= "+ personId);
+				
+				int cusId = (Integer) cus.get("id");
+				int delegateType = (Integer) cus.get("delegatetype");
+				Map req = daoHelper.getItem("SELECT customerlevel FROM lpjg_customerrequirement where customerid=" + cusId);
+				List<Map>  communicator = daoHelper.getRecordAsList("SELECT (SELECT NAME  NAME FROM web_syscs_1 WHERE sid= (SELECT id FROM web_syscs WHERE NAME = '业主关系') AND id = c.relationtype)  relationtype, telephone FROM lpjg_communicator c where personid=" + personId);
+				dataMap.put("per", per);
+//				dataMap.put("cus", cus);
+				dataMap.put("req", req);
+				dataMap.put("communicator", communicator);
+				if(delegateType == 1){
+					Map buy = daoHelper.getItem("SELECT saletype,payingtype  FROM lpjg_customerrequirementofbuy where customerid=" + cusId);
+					dataMap.put("buy", buy);
+				}else{
+					Map rent = daoHelper.getItem("SELECT mortgage,fee FROM lpjg_customerrequirementofrent where customerid=" + cusId);
+					dataMap.put("rent", "押"+rent.get("mortgage")+"付"+rent.get("fee"));
+				}
+			}
+		}catch(Exception e){
+			return Response.status(500).build();
+		}
+		return Response.ok().entity(dataMap).build();
+	}
+
+}
+
+

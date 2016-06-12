@@ -1,0 +1,141 @@
+package com.newenv.communityFocus.services;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.newenv.communityFocus.base.BaseService;
+import com.newenv.communityFocus.dao.DaoHelper;
+import com.newenv.communityFocus.domain.RequestParameter;
+import com.newenv.communityFocus.security.services.SecurityUserHolder;
+import com.newenv.communityFocus.stastistic.manager.SqManager;
+
+@Component
+@Path("/houseDetailService")
+public class houseDetailService extends BaseService {
+
+	@Autowired
+	private DaoHelper daoHelper;
+
+	/**
+	 * 跳转到房屋详情
+	 *
+	 * @param houseNo
+	 * @return void
+	 */
+	@GET
+	@Produces("text/html")
+	@Path("/queryHouseDetail/{houseNo}")
+	public void getHouseDetails(@PathParam("houseNo") String houseNo) {
+		if (org.apache.commons.lang.StringUtils.isNotBlank(houseNo)) {
+			List<Map> houseList = new ArrayList<Map>();
+			Map<String, Object> house = new HashMap<String, Object>();
+			StringBuffer sql = new StringBuffer();
+			sql.append(" SELECT t1.*,t3.CreateDate,");
+			sql.append(" (SELECT qy_name FROM xhj_jcstress WHERE id = t2.StressID) AS qyName,");
+			sql.append(" (SELECT sq_name FROM xhj_jcsq WHERE id = t2.sqid) AS sqName,");
+			sql.append(" (SELECT lpd_name FROM xhj_lpdong WHERE id = t1.buildingid) AS buildingName,");
+			sql.append(" (SELECT dy_name FROM xhj_lpdanyuan WHERE id = t1.DYID) AS dyName,");
+			sql.append(" (SELECT fullname FROM tbl_user_profile WHERE id = t3.creatorid) AS fullname,");
+			sql.append(
+					" (SELECT department_name FROM tbl_department d WHERE d.id = t3.createdepartmentid) AS department_name,");
+			sql.append(" (SELECT NAME FROM xhj_syscs_1 WHERE sid = 11 AND id = t3.usages) AS useagename, '出售' AS type");
+			sql.append(
+					" FROM xhj_lpfanghao t1 LEFT JOIN xhj_housesource t2 ON t1.id = t2.HouseNumberID LEFT JOIN xhj_housesourceforsaling t3 ON t2.id = t3.HouseSourceID where 1=1 ");
+			sql.append(" and t1.id = " + houseNo);
+			sql.append(" union all ");
+			sql.append(" SELECT t1.*,t3.CreateDate,");
+			sql.append(" (SELECT qy_name FROM xhj_jcstress WHERE id = t2.StressID) AS qyName,");
+			sql.append(" (SELECT sq_name FROM xhj_jcsq WHERE id = t2.sqid) AS sqName,");
+			sql.append(" (SELECT lpd_name FROM xhj_lpdong WHERE id = t1.buildingid) AS buildingName,");
+			sql.append(" (SELECT dy_name FROM xhj_lpdanyuan WHERE id = t1.DYID) AS dyName,");
+			sql.append(" (SELECT fullname FROM tbl_user_profile WHERE id = t3.creatorid) AS fullname,");
+			sql.append(
+					" (SELECT department_name FROM tbl_department d WHERE d.id = t3.createdepartmentid) AS department_name,");
+			sql.append(" (SELECT NAME FROM xhj_syscs_1 WHERE sid = 11 AND id = t3.usages) AS useagename, '出租' AS type");
+			sql.append(
+					" FROM xhj_lpfanghao t1 LEFT JOIN xhj_housesource t2 ON t1.id = t2.HouseNumberID LEFT JOIN XHJ_HouseInfoForRenting t3 ON t2.id = t3.HouseSourceID where 1 = 1 ");
+
+			sql.append(" and t1.id = " + houseNo);
+			System.out.println(sql.toString());
+			houseList = daoHelper.getList(sql.toString());
+			if (houseList.size() > 0) {
+				house = houseList.get(0);
+			}
+
+			super.setRequestAttribute("result", house);
+			super.forwardTo("/pages/jinggeng/houseDetail.jsp");
+		}
+	}
+
+	/**
+	 * 查询业主信息
+	 *
+	 * @param requestParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryOwnerInfo")
+	public Response queryOwerInfo(RequestParameter requestParameter) {
+		List<Map> ownerList = new ArrayList<Map>();
+		Integer ownerId = requestParameter.getCreatorId();
+		String sql = "select * from xhj_personinfo where id = " + ownerId;
+		System.out.println(sql);
+		ownerList = daoHelper.getList(sql);
+		return Response.ok().entity(ownerList).build();
+	}
+
+	/**
+	 * 查询跟进记录
+	 *
+	 * @param requestParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryPreciseRecordForList")
+	public Response queryPreciseRecordForList(RequestParameter requestParameter) {
+		List<Map> preciseRecordList = new ArrayList<Map>();
+		Integer fhId = requestParameter.getFhId();
+		String sql = "select * from lpjg_precise_update_record where fhid = '" + fhId + "'";
+		System.out.println(sql);
+		preciseRecordList = daoHelper.getList(sql);
+		return Response.ok().entity(preciseRecordList).build();
+	}
+	
+	/**
+	 * 查询操作记录
+	 *
+	 * @param requestParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryOperationRecordForList")
+	public Response queryOperationRecordForList(RequestParameter requestParameter) {
+		List<Map> operationRecordList = new ArrayList<Map>();
+		Integer fhId = requestParameter.getFhId();
+		String sql = "select * from lpjg_assignment_room where fhid = '" + fhId + "'";
+		System.out.println(sql);
+		operationRecordList = daoHelper.getList(sql);
+		return Response.ok().entity(operationRecordList).build();
+	}
+
+}

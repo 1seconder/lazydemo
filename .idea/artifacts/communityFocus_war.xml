@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="communityFocus:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="communityFocus-1.0.war">
+      <element id="artifact" artifact-name="communityFocus:war exploded" />
+    </root>
+  </artifact>
+</component>

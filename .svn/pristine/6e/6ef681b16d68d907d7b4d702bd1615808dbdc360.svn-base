@@ -1,0 +1,83 @@
+package com.newenv.communityFocus.base;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.Request;
+
+import org.apache.cxf.message.ExchangeImpl;
+import org.apache.cxf.phase.PhaseInterceptorChain;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.newenv.communityFocus.dao.DaoHelper;
+//import com.newenv.communityFocus.domain.PageInfo;
+import com.newenv.communityFocus.domain.page.PageInfo;
+
+
+public class BaseService {
+	@Autowired
+	private DaoHelper daoHelper;
+
+	public void setRequestAttribute(String string, Object gp) {
+		 ((HttpServletRequest) PhaseInterceptorChain.getCurrentMessage().get("HTTP.REQUEST")).setAttribute(string, gp);
+	}
+
+	public void forwardTo(String entryPoint) {
+		try {
+			((HttpServletRequest) PhaseInterceptorChain.getCurrentMessage().get("HTTP.REQUEST")).getRequestDispatcher(entryPoint).forward( (ServletRequest)PhaseInterceptorChain.getCurrentMessage().get("HTTP.REQUEST"), (ServletResponse) PhaseInterceptorChain.getCurrentMessage().get("HTTP.RESPONSE"));
+			ExchangeImpl ex=(ExchangeImpl)PhaseInterceptorChain.getCurrentMessage().getExchange();
+			ex.setOneWay(true);
+			PhaseInterceptorChain.getCurrentMessage().setExchange(ex);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public HttpServletRequest getRequest()
+	{
+		return (HttpServletRequest) PhaseInterceptorChain.getCurrentMessage().get("HTTP.REQUEST");
+	}
+	
+	public HttpServletResponse getResponse()
+	{
+		return (HttpServletResponse) PhaseInterceptorChain.getCurrentMessage().get("HTTP.Response");
+	}
+	
+	/**
+	 * 分页
+	 * @param sql
+	 * @param csql
+	 * @param pageInfo
+	 * @return
+	 */
+	public PageInfo getPagerjdo(String sql,String csql, PageInfo pageInfo) {
+		List<Map> list = new ArrayList<Map>();
+		Long records = daoHelper.getCountBySql(sql);
+//		int records = 0;
+//		records = Integer.parseInt(list.get(0).get("num").toString());
+		pageInfo.setRecords(Integer.valueOf(String.valueOf(records)));
+
+		List result = null;
+		if (pageInfo.getRecords() == 0) {
+			pageInfo.setTotal(0); // 总共有多少页
+			result = Collections.EMPTY_LIST;
+		} else {
+			int total = (pageInfo.getRecords() + pageInfo.getRows() - 1) / pageInfo.getRows();
+			pageInfo.setTotal(total);
+		}
+		sql = sql + " LIMIT " + (pageInfo.getPage() - 1) * pageInfo.getRows() + "," + pageInfo.getRows();
+
+		result = daoHelper.getList(sql);
+
+		pageInfo.setGridModel(result);
+		return pageInfo;
+	}
+}

@@ -1,0 +1,118 @@
+package com.newenv.communityFocus.jinggeng.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+
+import org.nutz.dao.entity.Record;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.newenv.communityFocus.base.BaseService;
+import com.newenv.communityFocus.dao.DaoHelper;
+import com.newenv.communityFocus.domain.UserLogin;
+import com.newenv.communityFocus.security.dao.UserDao;
+import com.newenv.communityFocus.security.services.SecurityUserHolder;
+/**
+ * @author chen. helix
+ *@date 2016.03.15
+ *楼盘精耕dao
+ */
+@Component
+public class TraceDao extends BaseService{
+	
+	@Autowired
+	private DaoHelper daoHelper;
+	@Autowired
+	private UserDao userDao;
+
+	public List<Record> isWeiTuoFangyuan(String fanghaoid){
+		StringBuffer sb  =  new StringBuffer();
+		sb.append(" select '租' as zushou,fh.id,fh.fanghao,h.id,exc.id,exc.houseTypeid,exc.houseType from xhj_lpfanghao fh ");
+		sb.append(" INNER JOIN xhj_housesource h on h.housenumberid = fh.id  ");
+		sb.append(" INNER JOIN xhj_houseinfoforrenting exc on h.id  = exc.housesourceid  ");
+		sb.append(" where  h.HouseSourceStatus =1 ");
+//		sb.append(" and fh.id = 34310 ");
+		sb.append(" and fh.id = ").append(fanghaoid);
+		//.append("  and exc.houseType = 1 ");
+		sb.append(" union all ");
+		sb.append(" select '售' as zushou,fh.id,fh.fanghao,h.id,exc.id,exc.houseTypeid,exc.houseType from xhj_lpfanghao fh ");
+		sb.append(" INNER JOIN xhj_housesource h on h.housenumberid = fh.id  ");
+		sb.append(" INNER JOIN xhj_housesourceforsaling exc on h.id  = exc.housesourceid  ");
+		sb.append(" where  h.HouseSourceStatus =1 ");
+//		sb.append(" and fh.id = 34310 ");
+		sb.append(" and fh.id = ").append(fanghaoid);
+		//.append("  and exc.houseType = 2 ");
+		return daoHelper.getRecordList(sb.toString());
+	};
+	
+	public List<Record> isWeiTuoYaoShi(String fanghaoid){
+		StringBuffer sb  =  new StringBuffer();
+		sb.append(" select '租' as zushou,fh.id,fh.fanghao,h.id,exc.id,exc.houseTypeid,exc.houseType from xhj_lpfanghao fh ");
+		sb.append(" INNER JOIN xhj_housesource h on h.housenumberid = fh.id  ");
+		sb.append(" INNER JOIN xhj_houseinfoforrenting exc on h.id  = exc.housesourceid  ");
+		sb.append(" INNER JOIN XHJ_KeyInfo info  on exc.id  = info.saleOrRentid ");
+		sb.append(" where  h.HouseSourceStatus =1 ");
+//		sb.append(" and fh.id = 34310 ");
+		sb.append(" and fh.id = ").append(fanghaoid);
+		//.append("  and exc.houseType = 1 ");
+		sb.append(" union all ");
+		sb.append(" select '售' as zushou,fh.id,fh.fanghao,h.id,exc.id,exc.houseTypeid,exc.houseType from xhj_lpfanghao fh ");
+		sb.append(" INNER JOIN xhj_housesource h on h.housenumberid = fh.id  ");
+		sb.append(" INNER JOIN xhj_housesourceforsaling exc on h.id  = exc.housesourceid  ");
+		sb.append(" INNER JOIN XHJ_KeyInfo info  on exc.id  = info.saleOrRentid ");
+		sb.append(" where  h.HouseSourceStatus =1 ");
+//		sb.append(" and fh.id = 34310 ");
+		sb.append(" and fh.id = ").append(fanghaoid);
+		//.append("  and exc.houseType = 2 ");
+		return daoHelper.getRecordList(sb.toString());
+	};
+	
+	public List<Record> isWeiTuoFangKan(String fanghaoid){
+		StringBuffer sb  =  new StringBuffer();
+		sb.append(" select '租' as zushou,fh.id,fh.fanghao,h.id,exc.id,exc.houseTypeid,exc.houseType from xhj_lpfanghao fh ");
+		sb.append(" INNER JOIN xhj_housesource h on h.housenumberid = fh.id  ");
+		sb.append(" INNER JOIN xhj_houseinfoforrenting exc on h.id  = exc.housesourceid  ");
+		sb.append(" INNER JOIN XHJ_SurveyOfHouse info  on exc.id  = info.saleOrRentid ");
+		sb.append(" where  h.HouseSourceStatus =1 ");
+//		sb.append(" and fh.id = 34310 ");
+		sb.append(" and fh.id = ").append(fanghaoid);
+		//.append("  and exc.houseType = 1 ");
+		sb.append(" union all ");
+		sb.append(" select '售' as zushou,fh.id,fh.fanghao,h.id,exc.id,exc.houseTypeid,exc.houseType from xhj_lpfanghao fh ");
+		sb.append(" INNER JOIN xhj_housesource h on h.housenumberid = fh.id  ");
+		sb.append(" INNER JOIN xhj_housesourceforsaling exc on h.id  = exc.housesourceid  ");
+		sb.append(" INNER JOIN XHJ_SurveyOfHouse info  on exc.id  = info.saleOrRentid ");
+		sb.append(" where  h.HouseSourceStatus =1 ");
+//		sb.append(" and fh.id = 34310 ");
+		sb.append(" and fh.id = ").append(fanghaoid);
+		//.append("  and exc.houseType = 2 ");
+		return daoHelper.getRecordList(sb.toString());
+	};
+	
+	public List<Record> isWeiTuoDuJia(String fanghaoid){
+		StringBuffer sb  =  new StringBuffer();
+		sb.append(" select '租' as zushou,fh.id,fh.fanghao,h.id,exc.id,exc.houseTypeid,exc.houseType from xhj_lpfanghao fh ");
+		sb.append(" INNER JOIN xhj_housesource h on h.housenumberid = fh.id  ");
+		sb.append(" INNER JOIN xhj_houseinfoforrenting exc on h.id  = exc.housesourceid  ");
+		sb.append(" INNER JOIN xhj_exclusivedelegateinfo info  on exc.id  = info.saleOrRentid ");
+		sb.append(" where  h.HouseSourceStatus =1 ");
+//		sb.append(" and fh.id = 34310 ");
+		sb.append(" and fh.id = ").append(fanghaoid);
+		//.append("  and exc.houseType = 1 ");
+		sb.append(" union all ");
+		sb.append(" select '售' as zushou,fh.id,fh.fanghao,h.id,exc.id,exc.houseTypeid,exc.houseType from xhj_lpfanghao fh ");
+		sb.append(" INNER JOIN xhj_housesource h on h.housenumberid = fh.id  ");
+		sb.append(" INNER JOIN xhj_housesourceforsaling exc on h.id  = exc.housesourceid  ");
+		sb.append(" INNER JOIN xhj_exclusivedelegateinfo info  on exc.id  = info.saleOrRentid ");
+		sb.append(" where  h.HouseSourceStatus =1 ");
+//		sb.append(" and fh.id = 34310 ");
+		sb.append(" and fh.id = ").append(fanghaoid);
+		//.append("  and exc.houseType = 2 ");
+		return daoHelper.getRecordList(sb.toString());
+	};
+	
+}

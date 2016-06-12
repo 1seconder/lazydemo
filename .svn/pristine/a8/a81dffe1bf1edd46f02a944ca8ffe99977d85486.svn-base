@@ -1,0 +1,833 @@
+package com.newenv.communityFocus.services;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.newenv.communityFocus.base.BaseService;
+import com.newenv.communityFocus.dao.DaoHelper;
+import com.newenv.communityFocus.domain.PostParameter;
+import com.newenv.communityFocus.domain.RequestParameter;
+import com.newenv.communityFocus.domain.ResultFeedback;
+import com.newenv.communityFocus.domain.page.PageInfo;
+import com.newenv.communityFocus.security.dao.UserDao;
+import com.newenv.communityFocus.security.services.SecurityUserHolder;
+
+@Component
+@Path("/houseService")
+public class HouseService extends BaseService {
+
+	@Autowired
+	private DaoHelper daoHelper;
+
+	private PageInfo pageInfo;
+
+	public PageInfo getPageInfo() {
+		return pageInfo;
+	}
+
+	public void setPageInfo(PageInfo pageInfo) {
+		this.pageInfo = pageInfo;
+	}
+
+	/**
+	 * 跳转到房屋详情页
+	 *
+	 * @param houseNo
+	 * @return void
+	 */
+	@GET
+	@Produces({ "text/html" })
+	@Path("/queryHouseDetail/{houseNo}")
+	public void getHouseDetails(@PathParam("houseNo") String houseNo) {
+		if (StringUtils.isNotBlank(houseNo)) {
+			List houseList = new ArrayList();
+			Map house = new HashMap();
+			StringBuffer sql = new StringBuffer();
+			sql.append(" SELECT t6.imagepath,t1.*,t2.MarketAddress,t3.CreateDate,");
+			sql.append(" (SELECT qy_name FROM xhj_jcstress WHERE id = t4.StressID) AS qyName,");
+			sql.append(" (SELECT sq_name FROM xhj_jcsq WHERE id = t4.sq_id) AS sqName,");
+			sql.append(" (SELECT lpd_name FROM xhj_lpdong WHERE id = t1.buildingid) AS buildingName,");
+			sql.append(
+					" (SELECT dy_name FROM xhj_lpdanyuan WHERE id = t1.DYID) AS dyName,(select name from lp_syscs_1 where id = t1.chaoxiang) chaoxiang,");
+			sql.append(" (SELECT fullname FROM tbl_user_profile WHERE id = t3.creatorid) AS fullname,");
+			sql.append(" (SELECT name FROM xhj_syscs_1 WHERE t1.PropertyInfo = id) AS PropertyInfo,");
+			sql.append(" (SELECT name FROM xhj_syscs_1 WHERE t1.TerritoryInfo = id) AS TerritoryInfo,");
+			sql.append(
+					" (SELECT department_name FROM tbl_department d WHERE d.id = t3.createdepartmentid) AS department_name,");
+
+			sql.append(
+					" (SELECT NAME FROM xhj_syscs_1 WHERE sid = 11 AND id = t1.leixing) AS useagename, '出售' AS type");
+			sql.append(
+					" FROM xhj_lpfanghao t1 LEFT JOIN xhj_housesource t2 ON t1.id = t2.HouseNumberID LEFT JOIN xhj_housesourceforsaling t3 ON t2.id = t3.HouseSourceID LEFT JOIN xhj_lpxx t4 ON t1.lpid = t4.id "
+							+ " LEFT JOIN XHJ_SurveyOfHouse t5 ON t3.id = t5.saleorrentid left join XHJ_ImageOfSurvey t6 ON t5.id = t6.surveyid where 1=1 ");
+
+			sql.append(" and t1.id = " + houseNo);
+			sql.append(" union all ");
+			sql.append(" SELECT t6.imagepath,t1.*,t2.MarketAddress,t3.CreateDate,");
+			sql.append(" (SELECT qy_name FROM xhj_jcstress WHERE id = t4.StressID) AS qyName,");
+			sql.append(" (SELECT sq_name FROM xhj_jcsq WHERE id = t4.sq_id) AS sqName,");
+			sql.append(" (SELECT lpd_name FROM xhj_lpdong WHERE id = t1.buildingid) AS buildingName,");
+			sql.append(
+					" (SELECT dy_name FROM xhj_lpdanyuan WHERE id = t1.DYID) AS dyName,(select name from lp_syscs_1 where id = t1.chaoxiang) chaoxiang,");
+			sql.append(" (SELECT fullname FROM tbl_user_profile WHERE id = t3.creatorid) AS fullname,");
+			sql.append(" (SELECT name FROM xhj_syscs_1 WHERE t1.PropertyInfo = id) AS PropertyInfo,");
+			sql.append(" (SELECT name FROM xhj_syscs_1 WHERE t1.TerritoryInfo = id) AS TerritoryInfo,");
+			sql.append(
+					" (SELECT department_name FROM tbl_department d WHERE d.id = t3.createdepartmentid) AS department_name,");
+
+			sql.append(
+					" (SELECT NAME FROM xhj_syscs_1 WHERE sid = 11 AND id = t1.leixing) AS useagename, '出租' AS type");
+			sql.append(
+					" FROM xhj_lpfanghao t1 LEFT JOIN xhj_housesource t2 ON t1.id = t2.HouseNumberID LEFT JOIN XHJ_HouseInfoForRenting t3 ON t2.id = t3.HouseSourceID LEFT JOIN xhj_lpxx t4 ON t1.lpid = t4.id"
+							+ " LEFT JOIN XHJ_SurveyOfHouse t5 ON t3.id = t5.saleorrentid left join XHJ_ImageOfSurvey t6 on t5.id = t6.surveyid where 1 = 1 ");
+
+			sql.append(" and t1.id = " + houseNo);
+			System.out.println(sql.toString());
+			houseList = this.daoHelper.getList(sql.toString());
+			for (int i = 0; i < houseList.size(); i++) {
+				house = (Map) houseList.get(i);
+				String fullname = house.get("fullname") == null ? "" : house.get("fullname").toString();
+				String imagePath = house.get("imagepath") == null ? "" : house.get("imagepath").toString();
+				String[] imageArr = null;
+				if (StringUtils.isNotBlank(fullname)) {
+					if (StringUtils.isNotBlank(imagePath)) {
+						imageArr = imagePath.split(",");
+						house.put("imagepath", imageArr[0]);
+					} else {
+						house.put("imagepath", "");
+					}
+					break;
+				} else {
+					house.put("type", "");
+				}
+			}
+			super.setRequestAttribute("result", house);
+			super.setRequestAttribute("userTitle", getUserTitle());
+			super.forwardTo("/pages/jinggeng/houseDetail.jsp");
+		}
+	}
+
+	@GET
+	@Produces({ "text/html" })
+	@Path("/houseChecked")
+	public void houseChecked() {
+		super.forwardTo("/pages/jinggeng/houseChecked.jsp");
+	}
+
+	/**
+	 * 查询
+	 *
+	 * @param requestParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/querylpjgInfoForList")
+	public Response querylpjgInfoForList(PostParameter postParameter) {
+		RequestParameter requestParameter = postParameter.getRequestParameter();
+		List ownerList = new ArrayList();
+		// 时间选项卡
+		Integer timeStatus = requestParameter.getTimeStatus();
+		// 经纪人Id
+		String agentId = requestParameter.getJjrId();
+		// 店组Id
+		String outletId = requestParameter.getMdId();
+		// 楼盘Id
+		String buildingId = requestParameter.getBuildingIdStr();
+		// 栋座Id
+		String dzId = requestParameter.getLdId();
+		// 单元Id
+		String unitId = requestParameter.getUnitId();
+		Integer ownerId = requestParameter.getCreatorId();
+		Integer type = requestParameter.getType();
+		// 开始时间
+		String startTime = requestParameter.getStartTime();
+		// 结束时间
+		String endTime = requestParameter.getEndTime();
+		// 状态选项卡
+		String status = requestParameter.getStatus();
+		StringBuffer sql = new StringBuffer();
+
+		String sqlCount = "";
+		pageInfo = postParameter.getPageInfo();
+		if (pageInfo == null) {
+			pageInfo = new PageInfo();
+			pageInfo.setPage(1);
+		}
+
+		// 设置行数.
+		pageInfo.setRows(10);
+		sql.append(
+				"SELECT t1.id,t1.stage,t2.fanghao,t3.dy_name,t4.lpd_name,t5.lp_name,t5.level,(SELECT department_name FROM tbl_department WHERE t1.bmid = id) AS department_name,"
+						+ "(SELECT fullname FROM tbl_user_profile WHERE id = t1.creatorid) AS belongerName,t1.messages,t1.modifydate,t1.flag FROM lpjg_precise_update_record t1 "
+						+ "LEFT JOIN xhj_lpfanghao t2 ON t1.fhid = t2.id LEFT JOIN xhj_lpdanyuan t3 ON t2.dyid = t3.id LEFT JOIN xhj_lpdong t4 ON t3.dzid = t4.id"
+						+ " LEFT JOIN xhj_lpxx t5 ON t4.lpid = t5.id where 1=1 ");
+		if (null != timeStatus) {
+			if (timeStatus == 1) {
+				sql.append(" and TO_DAYS(NOW()) - TO_DAYS(t1.modifydate) = 0 ");
+			} else if (timeStatus == 2) {
+				sql.append(" and TO_DAYS(NOW()) - TO_DAYS(t1.modifydate) = 1 ");
+			} else if (timeStatus == 3) {
+				sql.append(" and DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= date(t1.modifydate) ");
+			} else if (timeStatus == 4) {
+				sql.append(" and DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date(t1.modifydate) ");
+			}
+		}
+
+		if (StringUtils.isNotBlank(buildingId) && !"-1".equals(buildingId)) {
+			sql.append(" and t5.id = " + buildingId);
+		}
+
+		if (StringUtils.isNotBlank(dzId) && !"-1".equals(dzId)) {
+			sql.append(" and t4.id = " + dzId);
+		}
+
+		if (StringUtils.isNotBlank(unitId) && !"hhh".equals(unitId)) {
+			sql.append(" and t3.id = " + unitId);
+		}
+
+		if (StringUtils.isNotBlank(startTime)) {
+			sql.append(" and t1.modifydate > '" + startTime + "'");
+		}
+
+		if (StringUtils.isNotBlank(endTime)) {
+			sql.append(" and t1.modifydate < '" + endTime + "'");
+		}
+
+		if (StringUtils.isNotBlank(agentId) && !"-1".equals(agentId)) {
+			sql.append(" and t1.creatorid = " + agentId);
+		}
+
+		if (StringUtils.isNotBlank(outletId) && !"-1".equals(outletId)) {
+			sql.append(" and t1.bmid = " + outletId);
+		}
+
+		if (StringUtils.isNotBlank(status) && !"hhh".equals(status)) {
+			sql.append(" and t1.stage = " + status);
+		}
+
+		sqlCount = "select count(*) as num from (" + sql.toString() + ") tbl ";
+		System.out.println(sql.toString());
+		pageInfo = super.getPagerjdo(sql.toString(), sqlCount, pageInfo);
+		if (pageInfo.getGridModel().size() != 0) {
+			List<Map> hashMapList = (List<Map>) pageInfo.getGridModel();
+			for (int i = 0; i < hashMapList.size(); i++) {
+				Map hashMap = hashMapList.get(i);
+				if (null != hashMap.get("modifydate")) {
+					hashMap.put("modifydate", hashMap.get("modifydate").toString().substring(0,
+							hashMap.get("modifydate").toString().length() - 2));
+				} else {
+					hashMap.put("modifydate", "未知");
+				}
+			}
+		}
+		// 封装返回.
+		ResultFeedback resultFeedback = new ResultFeedback();
+		resultFeedback.setListJson(pageInfo);
+		return Response.ok().entity(resultFeedback).build();
+	}
+
+	/**
+	 * 查询业主信息
+	 *
+	 * @param requestParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ "application/json", "text/html; charset=UTF-8" })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryOwnerInfo")
+	public Response queryOwerInfo(PostParameter postParameter) {
+		RequestParameter requestParameter = postParameter.getRequestParameter();
+		List ownerList = new ArrayList();
+		Integer ownerId = requestParameter.getCreatorId();
+		Integer type = requestParameter.getType();
+		StringBuffer sql = new StringBuffer();
+		if (type == 0) {
+			if (null != ownerId) {
+				sql.append(
+						"SELECT *,t1.name AS fullname,(SELECT city_name FROM xhj_jccity WHERE id = t1.cityid) AS cityName "
+								+ "FROM xhj_personinfo t1 LEFT JOIN lpjg_customerinfo t2 ON t1.id = t2.personid LEFT JOIN lpjg_customerrequirement t3 ON t2.id = t3.CustomerID LEFT JOIN xhj_customerrequirementofbuy t4"
+								+ " ON t2.id = t4.CustomerID LEFT JOIN xhj_customerrequirementofrent t5 ON t2.id = t5.CustomerID  where 1=1 ");
+				sql.append(" and t1.id = " + ownerId);
+				System.out.println(sql.toString());
+				ownerList = this.daoHelper.getList(sql.toString());
+			}
+			return Response.ok().entity(ownerList).build();
+		} else {
+			String sqlCount = "";
+			pageInfo = postParameter.getPageInfo();
+			if (pageInfo == null) {
+				pageInfo = new PageInfo();
+				pageInfo.setPage(1);
+			}
+
+			// 设置行数.
+			pageInfo.setRows(10);
+			if (null != ownerId) {
+				sql.append(
+						"SELECT t1.id,t1.name,t1.mobilephone,t1.wexin,t1.qq,t1.email,t4.modifydate,(SELECT fullname FROM tbl_user_profile WHERE id = t4.creatorid) AS fullname"
+								+ " FROM xhj_personinfo t1 LEFT JOIN xhj_customerinfo t2 ON t1.id = t2.personid LEFT JOIN xhj_lpfanghao t3 ON t1.id = t3.yzid"
+								+ " LEFT JOIN lpjg_precise_update_record t4 ON t3.id = t4.fhid where 1=1 ");
+				sql.append(" AND t2.BeLongerID = " + ownerId);
+				sqlCount = "select count(*) as num from (" + sql.toString() + ") tbl ";
+				System.out.println(sql.toString());
+				pageInfo = super.getPagerjdo(sql.toString(), sqlCount, pageInfo);
+				if (pageInfo.getGridModel().size() != 0) {
+					List<Map> hashMapList = (List<Map>) pageInfo.getGridModel();
+					for (int i = 0; i < hashMapList.size(); i++) {
+						Map hashMap = hashMapList.get(i);
+						if (null != hashMap.get("modifydate")) {
+							hashMap.put("modifydate", hashMap.get("modifydate").toString().substring(0,
+									hashMap.get("modifydate").toString().length() - 2));
+						} else {
+							hashMap.put("modifydate", "未知");
+						}
+					}
+				}
+			}
+			// 封装返回.
+			ResultFeedback resultFeedback = new ResultFeedback();
+			resultFeedback.setListJson(pageInfo);
+			return Response.ok().entity(resultFeedback)
+					.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON + ";charset=UTF-8").build();
+		}
+	}
+
+	/**
+	 * 查询跟进记录
+	 *
+	 * @param postParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryPreciseRecordForList")
+	public Response queryPreciseRecordForList(PostParameter postParameter) {
+		RequestParameter requestParameter = postParameter.getRequestParameter();
+
+		String sqlCount = "";
+		pageInfo = postParameter.getPageInfo();
+		if (pageInfo == null) {
+			pageInfo = new PageInfo();
+			pageInfo.setPage(1);
+		}
+
+		// 设置行数.
+		pageInfo.setRows(10);
+		Integer fhId = requestParameter.getFhId();
+		StringBuffer sql = new StringBuffer();
+
+		sql.append(" SELECT t1.fhid,t2.fullname,t2.tel,t1.messages,t1.flag,t3.department_name,t1.modifydate "
+				+ " FROM lpjg_precise_update_record t1 LEFT JOIN tbl_user_profile t2 ON t1.creatorid = t2.id LEFT JOIN tbl_department t3 ON t1.mdid = t3.id where 1=1 ");
+		if (null != fhId) {
+			sql.append(" and t1.fhid = '" + fhId + "'");
+		}
+		System.out.println(sql.toString());
+		sqlCount = "select count(*) as num from (" + sql.toString() + ") tbl ";
+		System.out.println(sql.toString());
+		pageInfo = super.getPagerjdo(sql.toString(), sqlCount, pageInfo);
+		if (pageInfo.getGridModel().size() != 0) {
+			List<Map> hashMapList = (List<Map>) pageInfo.getGridModel();
+			for (int i = 0; i < hashMapList.size(); i++) {
+				Map hashMap = hashMapList.get(i);
+				if (null != hashMap.get("modifydate")) {
+					hashMap.put("modifydate", hashMap.get("modifydate").toString().substring(0,
+							hashMap.get("modifydate").toString().length() - 2));
+				} else {
+					hashMap.put("modifydate", "未知");
+				}
+			}
+		}
+		// 封装返回.
+		ResultFeedback resultFeedback = new ResultFeedback();
+		resultFeedback.setListJson(pageInfo);
+		return Response.ok().entity(resultFeedback).build();
+	}
+
+	/**
+	 * 查询 操作记录
+	 *
+	 * @param postParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryOperationRecordForList")
+	public Response queryOperationRecordForList(PostParameter postParameter) {
+		RequestParameter requestParameter = postParameter.getRequestParameter();
+
+		String sqlCount = "";
+		pageInfo = postParameter.getPageInfo();
+		if (pageInfo == null) {
+			pageInfo = new PageInfo();
+			pageInfo.setPage(1);
+		}
+
+		// 设置行数.
+		pageInfo.setRows(10);
+
+		Integer fhId = requestParameter.getFhId();
+		StringBuffer sql = new StringBuffer();
+
+		sql.append(
+				"SELECT t2.fullname,t3.department_name,t2.tel,t1.message,t1.operatedate,t1.fhid FROM lpjg_operation_log  t1 LEFT JOIN "
+						+ "tbl_user_profile t2 ON t1.operatorid = t2.id LEFT JOIN tbl_department t3 ON t2.tbl_department_id = t3.id where 1=1 ");
+		if (null != fhId) {
+			sql.append(" and t1.fhid = '" + fhId + "'");
+		}
+		System.out.println(sql.toString());
+		sqlCount = "select count(*) as num from (" + sql.toString() + ") tbl ";
+		pageInfo = super.getPagerjdo(sql.toString(), sqlCount, pageInfo);
+		if (pageInfo.getGridModel().size() != 0) {
+			List<Map> hashMapList = (List<Map>) pageInfo.getGridModel();
+			for (int i = 0; i < hashMapList.size(); i++) {
+				Map hashMap = hashMapList.get(i);
+				if (null != hashMap.get("operatedate")) {
+					hashMap.put("operatedate", hashMap.get("operatedate").toString().substring(0,
+							hashMap.get("createdate").toString().length() - 2));
+				} else {
+					hashMap.put("operatedate", "未知");
+				}
+			}
+		}
+		// 封装返回.
+		ResultFeedback resultFeedback = new ResultFeedback();
+		resultFeedback.setListJson(pageInfo);
+		return Response.ok().entity(resultFeedback).build();
+	}
+
+	/**
+	 * 查询房屋成交信息
+	 *
+	 * @param postParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryContractForList")
+	public Response queryContractForList(PostParameter postParameter) {
+		RequestParameter requestParameter = postParameter.getRequestParameter();
+
+		Integer saleOrRent = requestParameter.getType();
+		String sqlCount = "";
+		pageInfo = postParameter.getPageInfo();
+		if (pageInfo == null) {
+			pageInfo = new PageInfo();
+			pageInfo.setPage(1);
+		}
+
+		// 设置行数.
+		pageInfo.setRows(10);
+		Integer fhId = requestParameter.getFhId();
+		StringBuffer sql = new StringBuffer();
+		if (saleOrRent == 1) {
+			sql.append(" SELECT t2.id AS housesourceid,t4.contractnumber,t4.contractdate,t4.buyername,t4.sellername,"
+					+ "(SELECT tel FROM tbl_user_profile WHERE id = t4.buyerid) AS tel,t4.buyerpaycommissionamount,t1.source"
+					+ " FROM xhj_lpfanghao t1 INNER JOIN xhj_housesource t2 ON t1.id = t2.housenumberid INNER JOIN xhj_houseinfoforrenting t3 "
+					+ " ON t2.id = t3.housesourceid INNER JOIN xhj_contract t4 ON t3.id = t4.housesourceid WHERE 1=1 AND t4.businesstype>1 ");
+
+			sqlCount = "SELECT COUNT(*) FROM xhj_lpfanghao t1 INNER JOIN xhj_housesource t2 ON t1.id = t2.housenumberid INNER JOIN xhj_houseinfoforrenting t3 "
+					+ " ON t2.id = t3.housesourceid INNER JOIN xhj_contract t4 ON t3.id = t4.housesourceid WHERE 1=1 AND t4.businesstype>1 ";
+		} else {
+			sql.append(" SELECT t2.id AS housesourceid,t4.contractnumber,t4.contractdate,t4.buyername,t4.sellername,"
+					+ "(SELECT tel FROM tbl_user_profile WHERE id = t4.buyerid) AS tel,t4.buyerpaycommissionamount,t1.source "
+					+ " FROM xhj_lpfanghao t1 INNER JOIN xhj_housesource t2 ON t1.id = t2.housenumberid INNER JOIN xhj_housesourceforsaling t3 "
+					+ " ON t2.id = t3.housesourceid INNER JOIN xhj_contract t4 ON t3.id = t4.housesourceid WHERE 1=1 AND t4.businesstype>1 ");
+
+			sqlCount = "SELECT COUNT(*) FROM xhj_lpfanghao t1 INNER JOIN xhj_housesource t2 ON t1.id = t2.housenumberid INNER JOIN xhj_housesourceforsaling t3 "
+					+ " ON t2.id = t3.housesourceid INNER JOIN xhj_contract t4 ON t3.id = t4.housesourceid WHERE 1=1 AND t4.businesstype>1 ";
+		}
+
+		if (null != fhId) {
+			sql.append(" and t1.id = '" + fhId + "'");
+			sqlCount += " and t1.id = '" + fhId + "'";
+		}
+		System.out.println(sql.toString());
+
+		System.out.println(sqlCount);
+		pageInfo = super.getPagerjdo(sql.toString(), sqlCount, pageInfo);
+		// 封装返回.
+		ResultFeedback resultFeedback = new ResultFeedback();
+		resultFeedback.setListJson(pageInfo);
+		return Response.ok().entity(resultFeedback).build();
+	}
+
+	/**
+	 * 查询楼盘列表
+	 *
+	 * @param keyWord
+	 * @param cityId
+	 * @return Response
+	 */
+	@GET
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryLpxxForList")
+	public Response queryLpxxForList(@QueryParam("keyWord") String keyWord, @QueryParam("profileId") String profileId) {
+
+		HashMap<String, Object> hashMap = new HashMap<String, Object>();
+		List<Map> result = new ArrayList<Map>();
+
+		StringBuffer sql = new StringBuffer();
+		sql.append(
+				"  SELECT DISTINCT(t1.lpid) as id,t2.lp_name FROM lpjg_assignment_loupan t1 LEFT JOIN xhj_lpxx t2 ON t1.lpid = t2.id WHERE 1=1  ");
+		if (StringUtils.isNotBlank(keyWord)) {
+			sql.append(" AND t2.lp_name like '%" + keyWord + "%'");
+		}
+
+		if (StringUtils.isNotBlank(profileId)) {
+			sql.append(" AND t1.zjid = " + profileId);
+			System.out.println(sql.toString());
+			result = daoHelper.getList(sql.toString());
+			hashMap.put("status", "ok");
+			hashMap.put("result", result);
+		} else {
+			hashMap.put("status", "error");
+		}
+
+		return Response.ok().entity(hashMap).build();
+
+	}
+
+	/**
+	 * 查询楼盘列表
+	 *
+	 * @param requestParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryLpxxForListPost")
+	public Response queryLpxxForListPost(RequestParameter requestParameter) {
+		Integer creatorId = requestParameter.getCreatorId();
+		List<Map> result = new ArrayList<Map>();
+
+		StringBuffer sql = new StringBuffer();
+		sql.append(
+				"  SELECT DISTINCT(t1.lpid) as id,t2.lp_name as name FROM lpjg_assignment_loupan t1 LEFT JOIN xhj_lpxx t2 ON t1.lpid = t2.id WHERE 1=1  ");
+
+		if (null != creatorId) {
+			sql.append(" AND t1.zjid = " + creatorId);
+		}
+		System.out.println(sql.toString());
+		result = daoHelper.getList(sql.toString());
+		return Response.ok().entity(result).build();
+
+	}
+
+	/**
+	 * 查询栋座列表
+	 *
+	 * @param keyWord
+	 * @param lpId
+	 * @return Response
+	 */
+	@GET
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/querydzForList")
+	public Response querydzForList(@QueryParam("keyWord") String keyWord, @QueryParam("lpId") String lpId) {
+
+		HashMap<String, Object> hashMap = new HashMap<String, Object>();
+		List<Map> result = new ArrayList<Map>();
+
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT id,lpd_name FROM xhj_lpdong where 1=1 ");
+		if (StringUtils.isNotBlank(keyWord)) {
+			sql.append(" AND lpd_name like '%" + keyWord + "%'");
+		}
+		if (StringUtils.isNotBlank(lpId)) {
+			sql.append(" AND lpid = " + lpId);
+			System.out.println(sql.toString());
+			result = daoHelper.getList(sql.toString());
+			hashMap.put("status", "ok");
+			hashMap.put("result", result);
+		} else {
+			hashMap.put("status", "error");
+		}
+		return Response.ok().entity(hashMap).build();
+
+	}
+
+	/**
+	 * 查询栋座列表
+	 *
+	 * @param requestParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/querydzForListPost")
+	public Response querydzForListPost(RequestParameter requestParameter) {
+		String lpId = requestParameter.getBuildingIdStr();
+		List<Map> result = new ArrayList<Map>();
+
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT id,lpd_name FROM xhj_lpdong where 1=1 ");
+		if (StringUtils.isNotBlank(lpId)) {
+			sql.append(" AND lpid = " + lpId);
+		}
+		System.out.println(sql.toString());
+		result = daoHelper.getList(sql.toString());
+		return Response.ok().entity(result).build();
+
+	}
+
+	/**
+	 * 查询单元列表
+	 *
+	 * @param keyWord
+	 * @param dzId
+	 * @return Response
+	 */
+	@GET
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryUnitForList")
+	public Response queryUnitForList(@QueryParam("keyWord") String keyWord, @QueryParam("dzId") String dzId) {
+
+		HashMap<String, Object> hashMap = new HashMap<String, Object>();
+		List<Map> result = new ArrayList<Map>();
+
+		Map map = new HashMap<String, String>();
+		map.put("id", "hhh");
+		map.put("dy_name", "请选择单元");
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT id,dy_name FROM xhj_lpdanyuan where 1=1 ");
+		if (StringUtils.isNotBlank(keyWord)) {
+			sql.append(" AND dy_name like '%" + keyWord + "%'");
+		}
+		if (StringUtils.isNotBlank(dzId)) {
+			sql.append(" AND dzid = " + dzId);
+			System.out.println(sql.toString());
+			result = daoHelper.getList(sql.toString());
+			result.add(0, map);
+			hashMap.put("status", "ok");
+			hashMap.put("result", result);
+		} else {
+			hashMap.put("status", "error");
+		}
+		return Response.ok().entity(hashMap).build();
+
+	}
+
+	/**
+	 * 查询单元列表
+	 *
+	 * @param requestParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryUnitForListPost")
+	public Response queryUnitForListPost(RequestParameter requestParameter) {
+		String dzId = requestParameter.getLdId();
+		List<Map> result = new ArrayList<Map>();
+
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT id,dy_name FROM xhj_lpdanyuan where 1=1 ");
+		if (StringUtils.isNotBlank(dzId)) {
+			sql.append(" AND dzid = " + dzId);
+		}
+		System.out.println(sql.toString());
+		result = daoHelper.getList(sql.toString());
+		return Response.ok().entity(result).build();
+
+	}
+
+	/**
+	 * 查询店组列表
+	 *
+	 * @param keyWord
+	 * @param cityId
+	 * @return Response
+	 */
+	@GET
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryStoreForList")
+	public Response queryStoreForList(@QueryParam("keyWord") String keyWord,
+			@QueryParam("departmentId") String departmentId) {
+
+		HashMap<String, Object> hashMap = new HashMap<String, Object>();
+		List<Map> result = new ArrayList<Map>();
+
+		StringBuffer sql = new StringBuffer();
+		sql.append(" select id,department_name from tbl_department  where tbl_organization_id = 88  and flag=1 ");
+		if (StringUtils.isNotBlank(keyWord)) {
+			sql.append(" AND department_name like '%" + keyWord + "%'");
+		}
+		if (StringUtils.isNotBlank(departmentId)) {
+			sql.append(" AND parent_id = " + departmentId);
+			System.out.println(sql.toString());
+			result = daoHelper.getList(sql.toString());
+			hashMap.put("status", "ok");
+			hashMap.put("result", result);
+		} else {
+			hashMap.put("status", "error");
+		}
+		return Response.ok().entity(hashMap).build();
+
+	}
+
+	/**
+	 * 查询店组列表
+	 *
+	 * @param requestParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryStoreForListPost")
+	public Response queryStoreForListPost(RequestParameter requestParameter) {
+		Integer departmentId = requestParameter.getDepartmentId();
+		List<Map> result = new ArrayList<Map>();
+
+		StringBuffer sql = new StringBuffer();
+		sql.append(" select id,department_name from tbl_department  where tbl_organization_id = 88  and flag=1 ");
+		if (null != departmentId) {
+			sql.append(" AND parent_id = " + departmentId);
+		}
+		System.out.println(sql.toString());
+		result = daoHelper.getList(sql.toString());
+		return Response.ok().entity(result).build();
+
+	}
+
+	/**
+	 * 查询经纪人列表
+	 *
+	 * @param keyWord
+	 * @param cityId
+	 * @return Response
+	 */
+	@GET
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryAgentForList")
+	public Response queryAgentForList(@QueryParam("keyWord") String keyWord, @QueryParam("storeId") String storeId) {
+
+		HashMap<String, Object> hashMap = new HashMap<String, Object>();
+		List<Map> result = new ArrayList<Map>();
+
+		StringBuffer sql = new StringBuffer();
+		sql.append(
+				" select up.id,up.fullname from tbl_user_profile up, tbl_user_login ul ,tbl_position p, tbl_department d "
+						+ " where up.id=ul.tbl_user_profile_id and p.tbl_user_id=ul.id and p.tbl_department_id=d.id ");
+		if (StringUtils.isNotBlank(keyWord)) {
+			sql.append(" AND up.fullname like '%" + keyWord + "%'");
+		}
+		if (StringUtils.isNotBlank(storeId)) {
+			sql.append(" AND d.id = " + storeId);
+			System.out.println(sql.toString());
+			result = daoHelper.getList(sql.toString());
+			hashMap.put("status", "ok");
+			hashMap.put("result", result);
+		} else {
+			hashMap.put("status", "error");
+		}
+		return Response.ok().entity(hashMap).build();
+
+	}
+
+	/**
+	 * 查询楼盘列表
+	 *
+	 * @param requestParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/queryAgentForListPost")
+	public Response queryAgentForListPost(RequestParameter requestParameter) {
+		Integer departmentId = requestParameter.getDepartmentId();
+		List<Map> result = new ArrayList<Map>();
+
+		StringBuffer sql = new StringBuffer();
+		sql.append(
+				" select up.id,up.fullname from tbl_user_profile up, tbl_user_login ul ,tbl_position p, tbl_department d "
+						+ " where up.id=ul.tbl_user_profile_id and p.tbl_user_id=ul.id and p.tbl_department_id=d.id ");
+		if (null != departmentId) {
+			sql.append(" AND d.id = " + departmentId);
+		}
+		System.out.println(sql.toString());
+		result = daoHelper.getList(sql.toString());
+		return Response.ok().entity(result).build();
+	}
+
+	/**
+	 * 查询登录用户是否为商圈经理 或者店组长
+	 *
+	 * @return Integer
+	 */
+
+	public Integer getUserTitle() {
+		String titleName = "";
+		Integer result = 0;
+		List<Map> resultData = new ArrayList<Map>();
+		StringBuffer sql = new StringBuffer();
+		sql.append(
+				"select id,title_name from tbl_title where id   = (select tbl_title from tbl_user_profile where 1=1");
+		sql.append(" and id= ").append(SecurityUserHolder.getUserId() + ")");
+		System.out.println(sql.toString());
+		resultData = daoHelper.getList(sql.toString());
+		if (resultData.size() > 0) {
+			titleName = resultData.get(0).get("title_name") == null ? ""
+					: resultData.get(0).get("title_name").toString();
+		}
+		if (titleName.indexOf("门店经理") > 0 || titleName.indexOf("商圈经理") > 0) {
+			result = 1;
+		}
+		return result;
+	}
+
+	/**
+	 * 设置无效
+	 *
+	 * @param postParameter
+	 * @return Response
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Path("/invalidHouse")
+	public Response invalidHouse(RequestParameter requestParameter) {
+		Integer result = 0;
+		Integer lpjgId = requestParameter.getLpjgId();
+		StringBuffer sql = new StringBuffer();
+		if (null != lpjgId) {
+			sql.append(" update lpjg_precise_update_record set flag = 0 where id = " + lpjgId);
+		}
+		daoHelper.update(sql.toString());
+		result = 1;
+		return Response.ok().entity(result).build();
+	}
+}

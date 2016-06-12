@@ -1,0 +1,63 @@
+package com.newenv.communityFocus.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import org.nutz.dao.entity.Record;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public class CommonDao{
+	
+	@Autowired
+	private DaoHelper daoHelper;
+	public List<Record> getQuyuByCityId(int id)
+	{
+		String sql = "select * from xhj_jcstress where cityId  ="+id+"";
+		return daoHelper.getRecordList(sql.toString());
+	}
+	
+	public List<Record> getSqByQyId(int id)
+	{
+		String sql = "select * from xhj_jcsq where qyid  ="+id+"";
+		return daoHelper.getRecordList(sql.toString());
+	}
+	
+	public List<Record> getLpBySqId(int id)
+	{
+		List<Record> list = daoHelper.getRecordList(" SELECT id, lp_name lpname FROM xhj_lpxx where id in (select lpid from lpjg_assignment_loupan )");
+		return list;
+	}
+	
+	public List<Record> getMdByPq(int id)
+	{
+		List<Record> list = daoHelper.getRecordList(" SELECT id, lp_name lpname FROM xhj_lpxx where id in (select lpid from lpjg_assignment_loupan )");
+		return list;
+	}
+	
+	public List<Record> getConstantsByName(String name)
+	{
+		List<Record> list = daoHelper.getRecordList(" select id , name from web_syscs_1 where sid= (SELECT id FROM web_syscs WHERE NAME = '" + name +"' limit 1 )");
+		return list;
+	}
+	
+	
+	public Map<String,Object> getFhxx(long id ){
+		StringBuffer fjSql = new StringBuffer();
+		fjSql.append("SELECT l.id lpid ,lp_name lpname ,d.id dongid, lpd_name dong,dy.id dyid, dy_name danyuan,f.id fhid , fanghao, shi,ting ,wei,yang, ");
+		fjSql.append("(SELECT city_name FROM xhj_jccity WHERE id = l.cityid  ) cityname, ");
+		fjSql.append("(SELECT qy_name FROM xhj_jcstress WHERE id = l.stressid  ) qyname, ");
+		fjSql.append("(SELECT sq_name FROM xhj_jcsq WHERE id = l.sq_id  ) sqname,cityid ,stressid,sq_id   ");
+	    fjSql.append("FROM  xhj_lpxx l , xhj_lpdong d, xhj_lpdanyuan dy,xhj_lpfanghao f ");
+	    fjSql.append(" WHERE ");
+	    fjSql.append(" l.id = d.lpid ");
+	    fjSql.append(" AND  d.id = dy.dzid  ");
+	    fjSql.append(" AND  dy.id = f.dyid  ");
+	    fjSql.append(" and f.id = "+id);
+	    return daoHelper.getItem(fjSql.toString())   ;
+	}
+	
+	
+	 
+}

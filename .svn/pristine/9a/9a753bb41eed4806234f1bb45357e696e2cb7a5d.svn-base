@@ -1,0 +1,260 @@
+function loadQuery(){
+	$("#jc_jibenxinxi").show();
+	$("#jc_shanquanjinli").hide();
+	$("#jc_yezujinli").hide();
+	$("#jc_dianhuagenjin").hide();
+	$("#jc_duishougenjin").hide();
+	fwdetail();
+}
+
+function showList(id,consName,columnName){
+	$("#"+id).html('');
+	$("#"+id).append( '');
+	$.each(consName,function(n,v) {  
+		if(v.id == columnName){
+			$("#"+id).append( '<option value="'+ v.id + '" selected="selected">'+ v.name +'</option>');
+		}else{
+			$("#"+id).append( '<option value="'+ v.id + '">'+ v.name +'</option>');
+		}
+	})	
+}
+function showCheckbox(id,consName,obj, columnName){
+	if(obj == null){
+		showAll(id,consName, columnName);
+	}else {
+		showchecked(id,consName, columnName);
+	}
+//	$("#"+id).html('<label> <input type="checkbox" style="padding-left: 0px;" name="radio-2" >全选</label> ');
+//	//$("#"+id).append( '<label id="111"> <input type="checkbox" style="padding-left: 0px;" name="radio-2" checked="" >women</label> ');
+//	$.each(consName,function(n,v) {  
+//		if(v.id != columnName){
+//			$("#"+id).append( '<label id="'+ v.id +'"> <input type="checkbox" style="padding-left: 0px;" name="radio-2" checked="">'+ v.name +'</label> ');
+//		}else{
+//			$("#"+id).append( '<label id="'+ v.id +'"> <input type="checkbox" style="padding-left: 0px;" name="radio-2" >'+ v.name +'</label> ');
+//		}
+//	})	
+}
+function showchecked(id,consName,columnName){
+	$("#"+id).html('<label> <input type="checkbox" style="padding-left: 0px;" name="radio-2" onclick="quanxuan(this)">全选</label> ');
+	//$("#"+id).append( '<label id="111"> <input type="checkbox" style="padding-left: 0px;" name="radio-2" checked="" >women</label> ');
+	$.each(consName,function(n,v) {  
+		if(v.id == columnName){
+			$("#"+id).append( '<label id="'+ v.id +'"> <input type="checkbox" style="padding-left: 0px;" name="radio-2" checked="">'+ v.name +'</label> ');
+		}else{
+			$("#"+id).append( '<label id="'+ v.id +'"> <input type="checkbox" style="padding-left: 0px;" name="radio-2" >'+ v.name +'</label> ');
+		}
+	})	
+}	
+
+function quanxuan(o){
+	//$(o).parent().nextAll().attr("checked",true);
+}
+function showAll(id,consName,columnName){
+	$("#"+id).html('<label> <input type="checkbox" style="padding-left: 0px;" name="radio-2"  onclick="quanxuan(this)">全选</label> ');
+	//$("#"+id).append( '<label id="111"> <input type="checkbox" style="padding-left: 0px;" name="radio-2" checked="" >women</label> ');
+	$.each(consName,function(n,v) {  
+			$("#"+id).append( '<label id="'+ v.id +'"> <input type="checkbox" style="padding-left: 0px;" name="radio-2" >'+ v.name +'</label> ');
+	})	
+}	
+
+function getRootPath(){
+    var curWwwPath=window.document.location.href;
+    var pathName=window.document.location.pathname;
+    var pos=curWwwPath.indexOf(pathName);
+    var localhostPath=curWwwPath.substring(0,pos);
+    var projectName= pathName.substring(0,pathName.substr(1).indexOf('/')+1);
+    return(localhostPath+projectName);
+}
+
+function fwdetail(type){
+	var par = new Object();
+	par.type = 0;
+	par.fhs = $("#fanghao").val();;
+	var dataJson = JSON.stringify(par);
+	$.ajax({
+		url: getRootPath()+ "/services/refineService/pageJump/",
+		dataType : "json",
+		type : "POST",
+		data : dataJson ,
+		contentType : "application/json;charset=UTF-8",
+		async : false,
+		success: function(data){
+//			$.each(consName,function(n,v) {  
+//				$("#"+id).append( '<label id="'+ v.id +'"> <input type="checkbox" style="padding-left: 0px;" name="radio-2" >'+ v.name +'</label> ');
+//		})	
+ 		}
+	})
+}
+
+
+function jjryezhu(type){
+	var par = new Object();
+	par.type = 2;
+	par.fhs = $("#fanghao").val();
+	var dataJson = JSON.stringify(par);
+	$.ajax({
+		url: getRootPath()+"/services/refineService/pageJump/",
+		dataType : "json",
+		type : "POST",
+		data : dataJson ,
+		contentType : "application/json;charset=UTF-8",
+		async : false,
+		success: function(data){
+			//用途
+ 			$("#useType").html('');
+ 			$.each(data.yt,function(n,v) {  
+ 				//$("#useType").append( '<option value="'+ v.id + '">'+ v.name +'</option>');
+ 				//yontgtu 
+ 				if(data.req != null && v.id == data.req.usetype){
+ 					$("#useType").append( '<option value="'+ v.id + '" selected="selected">'+ v.name +'</option>');
+ 				}else{
+ 					$("#useType").append( '<option value="'+ v.id + '">'+ v.name +'</option>');
+ 				}
+ 				//$("#decorationCondition").html(''); $("#decorationCondition").append( '<option value="'+ v.id + '">'+ v.name +'</option>');
+ 				 
+ 			})
+ 			
+ 			//装修
+ 			$("#decorationCondition").html('');
+ 			$.each(data.decor,function(n,v) {  
+	 			if(data.req != null && v.id == data.req.decorationcondition){
+ 					$("#decorationCondition").append( '<option value="'+ v.id + '" selected="selected">'+ v.name +'</option>');
+ 				}else{
+ 					$("#decorationCondition").append( '<option value="'+ v.id + '">'+ v.name +'</option>');
+ 				}
+ 			})	 
+ 			
+ 			$("#isFamiliarToCommunity").html('');
+ 			$.each(data.familar,function(n,v) {  
+	 			if(data.req != null && v.id == data.req.isFamiliarToCommunity){
+	 				$("#isFamiliarToCommunity").append( '<label id="'+ v.id +'"> <input type="checkbox" style="padding-left: 0px;" name="radio-2" checked="">'+ v.name +'</label> ');
+ 				}else{
+ 					$("#isFamiliarToCommunity").append( '<label id="'+ v.id +'"> <input type="checkbox" style="padding-left: 0px;" name="radio-2" >'+ v.name +'</label> ');
+ 				}
+ 			})	 
+ 			
+ 			///家电
+ 			showCheckbox("appliances",data.dianqi,data.req == null ? data.req : data.req.appliances);
+ 			//家具
+ 			showCheckbox("furniture",data.furniture,data.req == null ? data.req : data.req.furniture);
+ 			
+ 			//消费观念
+ 			showList("consumptionConcept",data.consum,data.per == null ? data.per : data.per.consumptionconcept);
+ 			//教育程度
+ 			showList("education",data.jy,data.per == null ? data.per : data.per.education);
+ 			
+ 			//国籍
+ 			showList("nationality",data.nationality,data.per == null ? data.per : data.per.nationality);
+ 			//工作性质
+ 			showList("workType",data.workType,data.per == null ? data.per :  data.per.worktype);
+ 			
+ 		}
+	})
+}
+
+function telfollow(type){
+	var par = new Object();
+	par.type = 3;
+	par.fhs = $("#fanghao").val();
+	var dataJson = JSON.stringify(par);
+	$.ajax({
+		url: getRootPath()+"/services/refineService/pageJump/",
+		dataType : "json",
+		type : "POST",
+		data : dataJson ,
+		contentType : "application/json;charset=UTF-8",
+		async : false,
+		success: function(data){
+			$("#relationship").val(data[0].relationship);
+			$("#phone_tel").val(data[0].tel);
+			$("#relationtype").val(data[0].relationtype);
+			$("#follw_remark").val(data[0].remarks);
+ 		}
+	})
+}
+
+function competitionfollw(){
+	var par = new Object();
+	par.type = 4;
+	par.fhs = $("#fanghao").val();
+	var dataJson = JSON.stringify(par);
+	$.ajax({
+		url: getRootPath()+"/services/refineService/pageJump/",
+		dataType : "json",
+		type : "POST",
+		data : dataJson ,
+		contentType : "application/json;charset=UTF-8",
+		async : false,
+		success: function(data){
+			
+			$("#com_req").val(data.requires);
+			$("#com_price").val(data.price);
+			$("#com_startdate").val(data.startdate);
+			$("#com_enddate").val(data.enddate);
+			$("#company").val(data.company);
+			$("#com_remark").val(data.remarks);
+			
+			
+ 		}
+	})
+}
+
+
+
+function sqlist(type){
+	var requestParameter = new Object();
+	requestParameter.buildingIdStr  = $("#lp-pan-list").val();
+	requestParameter.sqId  = $("#sq-pan-list").val();
+	requestParameter.stressId  = $("#qy-pan-list").val();
+	var jsonData=requestParameter;
+	//$("#macPageWidget").asynPage(getRootPath() + "/services/refineService/querySqManager", "#sq_body", querySqList, true, true, jsonData);
+	
+	$.ajax({
+		url: getRootPath()+"/services/refineService/querySqManager/",
+		dataType : "json",
+		type : "POST",
+		data : jsonData ,
+		contentType : "application/json;charset=UTF-8",
+		async : false,
+		success: function(data){
+			var cHtml ='';
+			$.each(data, function(i,n){
+				cHtml += '<tr><td class="col-lg-1">' + (i+1) + '</td>'
+				+ '<td class="middle-align text-center">' +n.name + '</td>'
+				+ '<td class="middle-align text-center">'+ n.mobilephone +'</td>'
+				+ '<td class="middle-align text-center">'+n.wexin +'</td>'
+				+ '<td class="middle-align text-center">'+n.qq +'</td>'
+				+ '<td class="middle-align text-center">'+n.email +'</td>'
+				+ '<td class="middle-align text-center">'+n.jjrname +'</td>'
+				+ '<td class="middle-align text-center">'+n.modifydate +'</td>'
+				+ '<td class="middle-align text-center"><a href="javascript:jumpXq('+ n.fhid + ')">详情</a></td>'
+				+ '</tr>';
+				
+			});
+			$("#sq_body").html(cHtml);
+ 		}
+	})
+}
+
+function jumpXq(fhid){
+	window.location.href = getRootPath()+"/services/refineService/mainPage/1/"+fhid;
+}
+
+function querySqList(data){
+	var cHtml = '';
+	$.each(data, function(i,n){
+		cHtml += '<tr><td class="col-lg-1">' + (i+1) + '</td>'
+		+ '<td class="middle-align text-center">' +n.name + '</td>'
+		+ '<td class="middle-align text-center">'+ n.mobilephone +'</td>'
+		+ '<td class="middle-align text-center">'+n.wexin +'</td>'
+		+ '<td class="middle-align text-center">'+n.qq +'</td>'
+		+ '<td class="middle-align text-center">'+n.email +'</td>'
+		+ '<td class="middle-align text-center">'+n.jjrname +'</td>'
+		+ '<td class="middle-align text-center">'+n.modifydate +'</td>'
+		//+ '<td class="middle-align text-center"><a href="javascript:modify2('+ n.lpid + ',\''+n.qy_name+'\',\''+n.sq_name+'\',\''+ n.lp_name +'\')">分派/修改</a></td>'
+		+ '</tr>';
+		alert(22)
+	});
+	$("#sq_body").html(cHtml);
+}
+

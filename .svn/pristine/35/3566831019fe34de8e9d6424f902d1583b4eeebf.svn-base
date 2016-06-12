@@ -1,0 +1,81 @@
+package com.newenv.communityFocus.security.dao;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.nutz.dao.entity.Record;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
+
+import com.newenv.communityFocus.base.BaseService;
+import com.newenv.communityFocus.dao.DaoHelper;
+import com.newenv.communityFocus.domain.TblDepartment;
+import com.newenv.communityFocus.security.services.SecurityUserHolder;
+
+@Repository
+public class TblDepartmentDao{
+	
+	@Autowired
+	private DaoHelper daoHelper;
+	
+	public TblDepartment getObjectById(Integer id){
+		TblDepartment department=null;
+		String sql=" select id ,department_name ,CityID from tbl_department where id="+id;
+		Map map = daoHelper.getItem(sql);
+		if(null !=map && map.size()>0){
+			department=new TblDepartment();
+			department.setId(Integer.valueOf(map.get("id")+""));
+			department.setDepartmentName(map.get("department_name")+"");
+			department.setCityId(Integer.valueOf(map.get("CityID")+""));
+		}
+		return department;
+	}
+	
+	public List<TblDepartment> findDepartmentByOrgIdAndBlurDeparmentQuery(Integer organizationId, String departmentStr) {
+		String sql = "select id,department_name from tbl_department where flag=1 and cityId=" + SecurityUserHolder.getCurrentUserLogin().getCityId();
+		if(organizationId!=null)
+			sql += " and tbl_organization_id="+organizationId;
+		if(StringUtils.hasText(departmentStr))
+			sql += " and department_name like '%"+departmentStr+"%'";
+	List<Record> recordList = daoHelper.getRecordList(sql);
+	if(null == recordList || recordList.size()<=0)
+	{
+		return null;
+	}
+	List<TblDepartment> list = new ArrayList<TblDepartment>();
+	for(Record record : recordList){
+		list.add(new TblDepartment(record.getInt("id"), record.getString("department_name")));
+	}
+		return list;
+	}
+	
+	public List<TblDepartment> findDepartmentByOrgIdAndDeparmentIDs(int organizationId, List<Integer> departmentIDs) {
+		String sids = "";
+		for(Integer id : departmentIDs){
+			sids += "," + id;
+		}
+		String sql = "select id,department_name from tbl_department where tbl_organization_id="+organizationId + " and id in(" + sids.substring(1) + ") ";
+		List<Record> recordList = daoHelper.getRecordList(sql);
+
+		if(null == recordList || recordList.size()<=0)
+		{
+			return null;
+		}
+		List<TblDepartment> list = new ArrayList<TblDepartment>();
+		for(Record record : recordList){
+			list.add(new TblDepartment(record.getInt("id"), record.getString("department_name")));
+		}
+			return list;
+	}
+
+	public List<Record> queryDepartAddress(Integer deptId) {
+		String sql = "select parent_id from tbl_department where id=" + deptId;
+		String parentid = daoHelper.getRecord(sql).getString("parent_id");
+		sql = "select address,telephone from tbl_department where id=" + parentid;
+		List<Record> recordList = daoHelper.getRecordList(sql);
+		return recordList;
+	}
+}

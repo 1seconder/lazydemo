@@ -1,0 +1,119 @@
+package com.newenv.communityFocus.stastistic.manager;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.newenv.communityFocus.dao.DaoHelper;
+import com.newenv.communityFocus.vo.RangePlateStatistic;
+
+/**
+ * @author hui.peng
+ *
+ */
+public class FzManager {
+	
+	
+	private static FzManager instance ;
+	
+	public static FzManager  getInstance(){
+		
+		if( instance== null){
+			instance = new FzManager();
+		}
+		return instance;
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public RangePlateStatistic statistic(DaoHelper daoHelper,int loginDeptid ){
+		//统计：
+		String tmpSql = "SELECT DISTINCT tbl_department_id    FROM view_loginxinxi  v WHERE  v.parent_id IN (SELECT tbl_department_id FROM view_loginxinxi WHERE parent_id ="+ loginDeptid + ")";
+		List<Map> list0 = daoHelper.getList(tmpSql);
+		int mdNum = list0.size();//多少个mendian
+		
+//		,(select department_name  from view_loginxinxi where tbl_department_id = mdid )deptname 
+		String sql = " SELECT mdid,COUNT(1) num FROM lpjg_assignment_loupan WHERE mdid IN (SELECT  tbl_department_id  FROM view_loginxinxi  v " +
+			  " WHERE  v.parent_id  IN (SELECT tbl_department_id FROM view_loginxinxi WHERE parent_id ="+ loginDeptid+ "))GROUP BY mdid ";
+		List<Map> list = daoHelper.getList(sql);
+		Map mMap = new HashMap();
+	    for(Map map0 :list){
+	    	mMap.put(map0.get("mdid"), map0.get("num"));
+	    }
+	    String m_notAssignMd = "";
+	    int m_notAssignMdSum = 0;
+	    RangePlateStatistic bean = new RangePlateStatistic();
+//	    Map statisticMap = new HashMap();
+	    for(Map innerMap : list0){
+	    	Integer key = (Integer) innerMap.get("tbl_department_id");
+	    	if(mMap.get(key) == null){
+	    		m_notAssignMd += key +",";
+	    		m_notAssignMdSum ++;
+//	    		statisticMap.put(innerMap.get("tbl_department_id"), 0);
+	    	}else{
+//	    		statisticMap.put(innerMap.get("tbl_department_id"), mMap.get(key));
+	    	}
+	    }
+	    bean.m_mdSum = mdNum;
+	    bean.m_notAssignMdSum = m_notAssignMdSum;
+	    bean.m_notAssignMd = m_notAssignMd;
+	    
+//	    statisticByPan(daoHelper,loginDeptid,bean);
+	    StringBuffer lpsql = new StringBuffer();
+	    lpsql.append("SELECT a.id ,a.lp_name ,SUM( CASE WHEN l.id IS NULL THEN 0 ELSE 1 END) assnum,DATE_FORMAT(MAX(l.createdate),'%Y-%m-%d %H:%i:%s') lasttime ");	
+	    lpsql.append("FROM                                                                                      ");
+	    lpsql.append("(                                                                                         ");
+	    lpsql.append("SELECT  DISTINCT l.id , l.lp_name FROM xhj_lcfz_1 b,view_alldepartment v,xhj_lpxx l          ");
+	    lpsql.append("WHERE  b.bmid = v.dept1_id                                                       ");
+	    lpsql.append("AND b.lpid = l.id                                                                         ");
+	    lpsql.append("AND v.dept4_id ="+ loginDeptid+ " ");
+	    lpsql.append(" ) a LEFT JOIN  lpjg_assignment_loupan l ON a.id = l.lpid   GROUP BY a.id ,a.lp_name       ");
+	    lpsql.append("ORDER BY SUM( CASE WHEN l.id IS NULL THEN 0 ELSE 1 END)  ASC                             ");
+	    List<Map> lpList = daoHelper.getList(lpsql.toString());
+	    String m_notAssignLp = "";
+	    int m_notAssignLpSum =0;
+	    for(Map iMap : lpList){
+	    	String k =(String) iMap.get("lp_name");
+	    	BigDecimal v =(BigDecimal) iMap.get("assnum");
+	    	if(v.intValue() == 0){
+	    		m_notAssignLpSum++;
+	    		m_notAssignLp += k +",";
+	    	}
+	    }
+	    bean.m_lpSum = lpList.size();
+	    bean.m_notAssignLpSum = m_notAssignLpSum;
+	    bean.m_notAssignLp = m_notAssignLp;
+	    
+		return bean;
+	}
+	
+	
+//	public List<Map> statisticByPan(DaoHelper daoHelper,int loginDeptid){
+//		String tmpSql = "SELECT DISTINCT tbl_department_id    FROM view_loginxinxi  v WHERE  v.parent_id IN (SELECT tbl_department_id FROM view_loginxinxi WHERE parent_id ="+ loginDeptid + ")";
+//		List<Map> list0 = daoHelper.getList(tmpSql);
+//		int mdNum = list0.size();//多少个mendian
+//		
+//		List<RangePlateStatistic> list = new ArrayList<RangePlateStatistic>();
+//		   
+//	    StringBuffer lpsql = new StringBuffer();
+//	    lpsql.append("SELECT a.id ,s.qy_name,q.sq_name, a.lp_name ,SUM( CASE WHEN l.id IS NULL THEN 0 ELSE 1 END) assnum,DATE_FORMAT(MAX(l.createdate),'%Y-%m-%d %H:%i:%s') lasttime ");	
+//	    lpsql.append("FROM                                                                                      ");
+//	    lpsql.append("(                                                                                         ");
+//	    lpsql.append("SELECT  DISTINCT l.id , l.lp_name,l.stressid ,l.sq_id  FROM xhj_lcfz_1 b,view_loginxinxi v,xhj_lpxx l          ");
+//	    lpsql.append("WHERE  b.bmid = v.tbl_department_id                                                       ");
+//	    lpsql.append("AND b.lpid = l.id                                                                         ");
+//	    lpsql.append("AND v.parent_id IN (SELECT tbl_department_id FROM view_loginxinxi WHERE parent_id ="+ loginDeptid+ ") ");
+//	    lpsql.append(") a LEFT JOIN  lpjg_assignment_loupan l ON a.id = l.lpid" );
+//	    lpsql.append( "   LEFT JOIN  xhj_jcstress s ON s.id = a.stressid ");
+//	    lpsql.append( "   LEFT JOIN  xhj_jcsq  q ON q.id = a.sq_id    ");
+//	    lpsql.append( "   GROUP BY a.id ,a.lp_name       ");
+//	    lpsql.append("ORDER BY SUM( CASE WHEN l.id IS NULL THEN 0 ELSE 1 END)  ASC                             ");
+//	    List<Map> lpList = daoHelper.getList(lpsql.toString());
+//	    for(Map map : lpList){
+//	    	map.put("m_lpSum", mdNum);
+//	    }
+//		return lpList;
+//	}
+	
+	
+}

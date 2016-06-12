@@ -1,0 +1,232 @@
+package com.newenv.communityFocus.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import org.nutz.dao.Cnd;
+import org.nutz.dao.Condition;
+import org.nutz.dao.Dao;
+import org.nutz.dao.QueryResult;
+import org.nutz.dao.Sqls;
+import org.nutz.dao.entity.Record;
+import org.nutz.dao.pager.Pager;
+import org.nutz.dao.sql.Sql;
+import org.nutz.dao.sql.VarSet;
+import org.nutz.dao.util.Daos;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+/**
+ * @author hui.peng
+ * @date 2016-03-03
+ *
+ */
+@Repository
+public class DaoHelper {
+
+	@Autowired
+	private Dao dao;
+	
+	public void save(Object obj) {
+		dao.insert(obj);
+	}
+	
+	public  void update(String sqlStr) {
+		Sql sql = Sqls.create(sqlStr);
+		dao.execute(sql);
+	}
+	
+	public void update(String [] sqlStr) {
+		int len = sqlStr.length;
+		Sql [] sqls  = new Sql[len];
+		int index = 0;
+		for(String sql : sqlStr){
+			sqls[index++] = Sqls.create(sql);
+		}
+		dao.execute(sqls);
+	}
+	
+	public Record getRecord(String sqlString) {
+		Sql sql = Sqls.create(sqlString);
+		sql.setCallback(Sqls.callback.record());
+		dao.execute(sql);
+		return sql.getObject(Record.class);
+	}
+	
+	/**
+	 * @return
+	 */
+	public List<Record> getByCnd(String tables, String fields,
+			Condition cnd, int pageNumber, int pageSize) {
+		return  dao.query(tables, cnd, null);
+	
+	}
+	
+	/**
+	 * 分页
+	 * @param tables
+	 * @param fields
+	 * @param cnd
+	 * @param pageNumber
+	 * @param pageSize
+	 * @return
+	 */
+	public QueryResult getPagerList(String tables, String fields,
+			Condition cnd, int pageNumber, int pageSize) {
+
+		pageNumber = pageNumber <= 0 ? 1 : pageNumber;
+
+		Pager pager = null;
+		List<Record> list = null;
+		int count = dao.count(tables, cnd);
+		if (count > 0) {
+			fields = fields == null || fields.trim().length() <= 0  ? "*" : fields;
+			// pager = dao.createPager(pageNumber, getSearchPageSize());
+			pager = dao.createPager(pageNumber, pageSize);
+			pager.setRecordCount(count);
+			list = dao.query(tables, cnd, pager);
+			return new QueryResult(list, pager);
+		}
+		return null;
+	}
+	
+	/**
+	 * 获取单个数据对象
+	 * 
+	 * @param sqlString
+	 * @return
+	 */
+	public Map getItem(String sqlString) {
+		Sql sql = Sqls.create(sqlString);
+		sql.setCallback(Sqls.callback.record());
+		dao.execute(sql);
+		return sql.getObject(Map.class);
+	}
+	
+	/**
+	 * @param sqlString  SQL 
+	 * @return
+	 */
+	public List<Map> getList(String sqlString) {
+		Sql sql = Sqls.create(sqlString);
+		sql.setCallback(Sqls.callback.records());
+		dao.execute(sql);
+		return sql.getList(Map.class);
+	}
+
+	public List<Record> getRecordList(String sqlString) {
+		Sql sql = Sqls.create(sqlString);
+		sql.setCallback(Sqls.callback.records());
+		dao.execute(sql);
+		return sql.getList(Record.class);
+	}
+	
+	public List<Map> getRecordAsList(String sqlString) {
+		Sql sql = Sqls.create(sqlString);
+		sql.setCallback(Sqls.callback.maps());
+		dao.execute(sql);
+		return sql.getList(Map.class);
+	}
+
+	
+	/**
+	 * 动态传参查询
+	 */
+	public Object getObject(String sqlString, Object...params) {
+		Sql sql = Sqls.create(sqlString);
+		VarSet varSet = sql.params();
+		for(Object obj : params){
+			varSet.putAll(obj);
+		}
+		sql.setCallback(Sqls.callback.record());
+		dao.execute(sql);
+		return sql.getResult();
+	}
+	
+
+	public Record getItem(String table, String fields, Cnd cnd) {
+		return dao.fetch(table, cnd);
+	}
+
+	/**
+	 * 
+	 * 查询的结果数
+	 * @param sqlCount
+	 * @return
+	 */
+	public int getCount(String sqlCount) {
+		return dao.count(sqlCount);
+	}
+	
+	/**
+	 * 
+	 * 查询的结果数
+	 * @param sqlCount
+	 * @return
+	 */
+	public Long getCountBySql(String sqlCount) {
+		return Daos.queryCount(dao,sqlCount);
+	}
+
+	/**
+	 * 根据条件统计
+	 * @param sqlCount
+	 * @param cnd
+	 * @return
+	 */
+	public int getCountByCnd(String sqlCount, Condition cnd){
+		return dao.count(sqlCount, cnd);
+	}
+	
+
+//	/**
+//	 * 通过POJO对象查询分页数据
+//	 * 
+//	 * @param <T>
+//	 * @param c
+//	 * @param cnd
+//	 * @param pageNumber
+//	 * @param pageSize
+//	 * @return
+//	 */
+//	public <T> QueryResult getPagerListByPOJO(Class<T> c, Condition cnd,
+//			int pageNumber, int pageSize) {
+//		Pager pager = null;
+//		List<T> list = null;
+//		int count = dao.count(c, cnd);
+//		if (count > 0) {
+//			pager = dao.createPager(pageNumber, pageSize);
+//			pager.setRecordCount(count);
+//			list = dao.query(c, cnd, pager);
+//			return new QueryResult(list, pager);
+//		}
+//
+//		return null;
+//	}
+
+	/**
+	 * 查询结果集
+	 * 
+	 * @param <T>
+	 * @param c
+	 * @param cnd
+	 * @return
+	 */
+	public <T> List<T> getListByPOJO(Class<T> c, Condition cnd) {
+		return dao.query(c, cnd, null);
+	}
+
+	/**
+	 * 查询结果集
+	 * 
+	 * @param <T>
+	 * @param c
+	 * @param cnd
+	 * @return
+	 */
+	public <T> List<T> getListByPOJO(Class<T> c, Condition cnd, Integer len) {
+		Pager pager = dao.createPager(1, len);
+		return dao.query(c, cnd, pager);
+	}
+
+}

@@ -1,0 +1,71 @@
+package com.newenv.communityFocus.services;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.newenv.communityFocus.base.BaseService;
+import com.newenv.communityFocus.dao.DaoHelper;
+
+@Component
+@Path("/houseDetailService")
+public class houseDetailService extends BaseService {
+
+	@Autowired
+	private DaoHelper daoHelper;
+
+	@GET
+	@Produces("text/html")
+	@Path("/queryHouseDetail/{houseNo}")
+	public void getHouseDetails(@PathParam("houseNo") String houseNo) {
+		if (org.apache.commons.lang.StringUtils.isNotBlank(houseNo)) {
+			List<Map> houseList = new ArrayList<Map>();
+			Map<String, Object> house = new HashMap<String, Object>();
+			StringBuffer sql = new StringBuffer();
+			sql.append(" SELECT * from ( ");
+			sql.append(" SELECT t1.id,t1.fh_name,t1.number,t1.fanghao,t1.isencryption,t3.CreateDate,");
+			sql.append(" (SELECT qy_name FROM xhj_jcstress WHERE id = t2.StressID) AS qyName,");
+			sql.append(" (SELECT sq_name FROM xhj_jcsq WHERE id = t2.sqid) AS sqName,");
+			sql.append(" (SELECT lpd_name FROM xhj_lpdong WHERE id = t1.buildingid) AS buildingName,");
+			sql.append(" (SELECT dy_name FROM xhj_lpdanyuan WHERE id = t1.DYID) AS dyName,");
+			sql.append(" (SELECT fullname FROM tbl_user_profile WHERE id = t3.creatorid) AS fullname,");
+			sql.append(
+					" (SELECT department_name FROM tbl_department d WHERE d.id = t3.createdepartmentid) AS department_name,");
+			sql.append(" (SELECT NAME FROM xhj_syscs_1 WHERE sid = 11 AND id = t3.usages) AS useagename, '出售' AS type");
+			sql.append(
+					" FROM xhj_lpfanghao t1 LEFT JOIN xhj_housesource t2 ON t1.id = t2.HouseNumberID LEFT JOIN xhj_housesourceforsaling t3 ON t2.id = t3.HouseSourceID");
+			sql.append(" union all ");
+			sql.append(" SELECT t1.id,t1.fh_name,t1.number,t1.fanghao,t1.isencryption,t3.CreateDate,");
+			sql.append(" (SELECT qy_name FROM xhj_jcstress WHERE id = t2.StressID) AS qyName,");
+			sql.append(" (SELECT sq_name FROM xhj_jcsq WHERE id = t2.sqid) AS sqName,");
+			sql.append(" (SELECT lpd_name FROM xhj_lpdong WHERE id = t1.buildingid) AS buildingName,");
+			sql.append(" (SELECT dy_name FROM xhj_lpdanyuan WHERE id = t1.DYID) AS dyName,");
+			sql.append(" (SELECT fullname FROM tbl_user_profile WHERE id = t3.creatorid) AS fullname,");
+			sql.append(
+					" (SELECT department_name FROM tbl_department d WHERE d.id = t3.createdepartmentid) AS department_name,");
+			sql.append(" (SELECT NAME FROM xhj_syscs_1 WHERE sid = 11 AND id = t3.usages) AS useagename, '出租' AS type");
+			sql.append(
+					" FROM xhj_lpfanghao t1 LEFT JOIN xhj_housesource t2 ON t1.id = t2.HouseNumberID LEFT JOIN XHJ_HouseInfoForRenting t3 ON t2.id = t3.HouseSourceID ) t where 1 = 1 ");
+
+			sql.append(" and t.id = '" + houseNo + "'");
+			System.out.println(sql.toString());
+			houseList = daoHelper.getList(sql.toString());
+			if (houseList.size() > 0) {
+				house = houseList.get(0);
+			}
+
+			super.setRequestAttribute("result", house);
+			super.forwardTo("/pages/jinggeng/houseDetail.jsp");
+		}
+	}
+
+}

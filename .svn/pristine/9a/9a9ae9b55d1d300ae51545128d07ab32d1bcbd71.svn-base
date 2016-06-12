@@ -1,0 +1,92 @@
+package com.newenv.communityFocus.security.services;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+
+import org.nutz.dao.entity.Record;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.newenv.communityFocus.base.BaseService;
+import com.newenv.communityFocus.domain.TblDepartment;
+import com.newenv.communityFocus.domain.TblUserLogin;
+import com.newenv.communityFocus.domain.TblUserProfile;
+import com.newenv.communityFocus.domain.UserLogin;
+
+@Component
+//@EnableAutoConfiguration
+@Path("/securityUserHolder")
+public class SecurityUserHolder extends BaseService{
+
+	//声明  
+    private static ThreadLocal<UserLogin> local = new ThreadLocal<UserLogin>();  
+    
+    @Autowired
+    private UserLoginService userLoingService;
+    
+	/**
+	 * 赋值
+	 */
+	@GET
+	@Produces("application/json")
+	@Consumes("application/json")
+	@Path("/login/{name}")
+    public  void setCurrentUserLogin(@PathParam("name") String userName) {  
+		UserLogin login =  new UserLogin();
+//		List<Record> list = userLoingService.findAllTitleNamesByUsername(userName);
+//		userLoingService.findTblDepartmentById(userName)
+		TblUserProfile userProfile;
+		try {
+			TblUserLogin userLogin = userLoingService.login(userName);
+			userProfile = userLoingService.findTblUserProfileById(userLogin.getTbl_User_profile_id());
+			TblDepartment department = userLoingService.findTblDepartmentById(userProfile.getTbl_department_id());
+			String ip = userLogin.getIp();
+			Date loginTime = userLogin.getLoginTime();
+			String address = userLogin.getAddress();
+			String password = userLogin.getPassword();
+			String username2 = userLogin.getUsername();
+			
+	//		userProfile.get
+	//		userLoingService.getHRPermissions(u, userLogin)
+			login.setDepartment(department);
+			login.setUserLogin(userLogin);
+	//		login.setPermissions(permissions);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		local.set(login);
+//		try {
+////			super.getResponse().sendRedirect(super.getRequest().getContextPath()+"/console/index.jsp");
+////			super.getResponse().sendRedirect("http://192.168.3.102:8084/communityFocus/console/index.jsp");
+//			
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		super.forwardTo("console/index.jsp");
+    }  
+    /**
+     * 取值
+     * @return
+     */
+    public static UserLogin getCurrentUserLogin() {  
+        return local.get();  
+    } 
+    
+    /**
+     * 移除
+     */
+    public static void remove(){
+    	local.remove();
+    }
+    
+    
+}

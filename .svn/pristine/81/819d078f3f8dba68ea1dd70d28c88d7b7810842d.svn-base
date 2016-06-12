@@ -1,0 +1,4 @@
+driverclass=com.mysql.jdbc.Driver
+jdbcurl=jdbc:mysql://192.168.1.207:13306/bms?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
+user=root
+password=3.1415926

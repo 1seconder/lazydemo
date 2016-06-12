@@ -1,0 +1,113 @@
+package com.newenv.communityFocus.stastistic.manager;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+
+
+import com.newenv.communityFocus.dao.DaoHelper;
+import com.newenv.communityFocus.domain.SqAssignStatistic;
+
+/**
+ * @author hui.peng
+ *
+ */
+public class SqManager {
+	StringBuffer buff = new StringBuffer();
+	{
+		buff.append("SELECT DISTINCT prfl.id,dpt.id sqJlDeptId, prfl.fullname, prfl.tel,  prfl.join_time, prfl.identityCode ");
+		buff.append("	  ,ulogin.username,dpt.department_name, ttl.title_name, prfl.group_phone                  ");
+		buff.append("	  FROM tbl_user_profile prfl, tbl_user_login ulogin, tbl_department dpt, tbl_title ttl    ");
+		buff.append("	  WHERE ulogin.tbl_User_profile_id=prfl.id                                                ");
+		buff.append("	  AND prfl.tbl_department_id=dpt.id AND prfl.tbl_Title=ttl.id      ");
+		buff.append("	  AND ulogin.status=1 AND prfl.checked!=0       ");
+		buff.append("	  AND prfl.checked!=2 AND dpt.flag=1 AND dpt.CityID=1     ");
+		buff.append("	  AND title_name LIKE '%经纪人%'     ");
+	}
+	private String jjrSql = buff.toString();
+	
+	private static SqManager instance ;
+	
+	public static SqManager  getInstance(){
+		
+		if( instance== null){
+			instance = new SqManager();
+		}
+		return instance;
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public SqAssignStatistic statistic(DaoHelper daoHelper,int sqJlDeptId ){
+		//统计：
+		String jrSql = "select * from view_loginxinxi where parent_id  = "+ sqJlDeptId;
+		List<Map> list0 = daoHelper.getList(jrSql);
+		int jjrNum = list0.size();//多少个mendian
+	    SqAssignStatistic bean = new SqAssignStatistic();
+	    bean.m_JjrSum = jjrNum;
+	    
+	    StringBuffer sql = new StringBuffer();
+	    sql.append(" SELECT dept1_id,department_name,fullname , SUM(CASE WHEN b.id IS NULL THEN 0 ELSE 1 END) assnum,DATE_FORMAT(MAX(b.createdate),'%Y-%m-%d %H:%i:%s') lasttime   ");
+		sql.append("  FROM                                                                                     ");
+		sql.append("  (                                                                                        ");
+		sql.append("  SELECT dept1_id ,dept1_name department_name,v.fullname,tbl_user_profile_id               ");
+		sql.append("  FROM view_loginxinxi v  , view_alldepartment v2                                          ");
+		sql.append("  WHERE v.tbl_department_id = v2.dept1_id                                                  ");
+		sql.append("  AND  dept2_id=  "+ sqJlDeptId);
+		sql.append("                                                                                           ");
+		sql.append("  ) a LEFT JOIN lpjg_assignment_room b ON a.tbl_user_profile_id = b.userid                 ");
+//		sql.append("  where                ");
+		sql.append(" GROUP BY dept1_id,department_name,fullname  ORDER BY  SUM(CASE WHEN b.id IS NULL THEN 0 ELSE 1 END)  ASC    ");
+		List<Map>  mainList = daoHelper.getList(sql.toString());
+		int m_notAssignJjrSum = 0;
+		for(Map map : mainList){
+			int assnumPerJjr = ((BigDecimal) map.get("assnum")).intValue();
+			if(map.get("assnum") != null && assnumPerJjr > 0){
+				m_notAssignJjrSum ++;
+			}
+		}
+		bean.m_JjrSum =  mainList.size();
+		bean.m_notAssignJjrSum =  bean.m_JjrSum - m_notAssignJjrSum;
+	    
+		
+		///3.查分派了多少个楼盘，多少栋，多少个单元，多少个房健
+	    String assSql = 
+		    	" SELECT "+
+			    "(SELECT COUNT(DISTINCT lpid) FROM lpjg_assignment_room  WHERE flag= 1 and bmid in (select dept1_id from view_alldepartment v where v.dept2_id ="+sqJlDeptId+")) lpcount,"+
+			    "(SELECT COUNT(DISTINCT dzid) FROM lpjg_assignment_room  WHERE flag= 1 and bmid in (select dept1_id from view_alldepartment v where v.dept2_id ="+sqJlDeptId+")) dzcount, "+
+			    "(SELECT COUNT(DISTINCT dyid) FROM lpjg_assignment_room  WHERE flag= 1 and bmid in (select dept1_id from view_alldepartment v where v.dept2_id ="+sqJlDeptId+")) dycount,"+
+			    "(SELECT COUNT(DISTINCT fhid) FROM lpjg_assignment_room  WHERE flag= 1 and bmid in (select dept1_id from view_alldepartment v where v.dept2_id ="+sqJlDeptId+")) fhcount "+
+			    "FROM DUAL ";
+	    Map  assMap = daoHelper.getItem(assSql);
+	   
+	    
+	    //4.查一共可分派的楼盘数，楼栋数，单元数，房间数
+	    StringBuffer fjSql = new StringBuffer();
+	    fjSql.append("SELECT COUNT(distinct f.id ) fhsum,COUNT(DISTINCT dy.id ) dysum,COUNT(DISTINCT d.id ) ldsum ,COUNT(DISTINCT p.id ) lpsum ");
+	    fjSql.append("FROM  lpjg_assignment_loupan p, xhj_lpxx l , xhj_lpdong d, xhj_lpdanyuan dy,xhj_lpfanghao f ");
+	    fjSql.append(" WHERE p.lpid = l.id  ");
+	    fjSql.append(" AND l.id = d.lpid ");
+	    fjSql.append(" AND  d.id = dy.dzid  ");
+	    fjSql.append(" AND  dy.id = f.dyid  ");
+	    fjSql.append(" AND  p.mdid  =" + sqJlDeptId  );//商圈经理id、
+	    Map  fjMap =  daoHelper.getItem(fjSql.toString());
+	    
+	    //可分派的楼盘数-已分派的楼盘数= 未被分派的楼盘数.，可分派的房间数-已分派的房间数= 未被分派的房间数...
+	    bean.m_FjSum = (Long) fjMap.get("fhsum");
+	    bean.m_notAssignLpSum = (Long) fjMap.get("lpsum") -(Long) assMap.get("lpcount");
+	    bean.m_notAssignLdSum = (Long) fjMap.get("ldsum") -(Long) assMap.get("dzcount");
+	    bean.m_notAssignDySum = (Long) fjMap.get("dysum") - (Long) assMap.get("dycount");
+	    bean.m_notAssignFjSum = bean.m_FjSum  - (Long) assMap.get("fhcount");
+	    
+	    
+	    Map map  = daoHelper.getItem(" SELECT (SELECT  COUNT(1)    FROM  view_alldepartment v2 WHERE v2.dept2_id = "+ sqJlDeptId +" ) "
+	    		+ "	-  (  SELECT  COUNT(1) notdzsum   FROM  view_alldepartment v2 , lpjg_assignment_room r  "
+	    		+ " WHERE dept1_id = r.bmid AND  v2.dept2_id ="+ sqJlDeptId+") notdzsum    FROM  DUAL  " );
+	    if(map== null){
+	    	 bean.setM_notAssignDzSum(0);
+	    }
+	    bean.setM_notAssignDzSum((Long) map.get("notdzsum")) ;
+	    
+		return bean;
+	}
+	
+}

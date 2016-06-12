@@ -1,0 +1,71 @@
+/*==内容框架样式==*/
+.keyModalCon,.keyModalCCon,.keyCModalCon,.keyNoneModalCon,.datingModalCon,.viewModalCon,.checkModalCon,.mineModalCon,.changeModalCon,.logModalCon,.noneModalCon,newModalCon,.juJModalCon,.quJJModalCon,.tuiJModalCon,.mineViewModalCon,.bBackModalCon,.followModalCon,fNewModalCon{width:100%;border-top:1px solid #0c75cc;}
+/*==标题样式==*/
+#myModalMine .modal-dialog{}
+.keyModalTitle,.keyModalCTitle,.keyCModalTitle,.keyNoneModalTitle,.datingModalTitle,.viewModalTitle,.checkModalTitle,.mineModalTitle,.changeModalTitle,.logModalTitle,.noneModalTitle,.newModalTitle,.juJModalTitle,.quJJModalTitle,.tuiJModalTitle,.mineViewModalTitle,.bBackModalTitle,.followModalTitle,.fNewModalTitle{display:block;width:98%;margin:0 auto 5px;border-bottom:1px solid #ccc;}
+/*==条目DIV布局===*/
+.modalTwoWrap{width:97%;margin:0 auto;}
+.modalTwoWrap .modalTwo01,.modalTwoWrap .modalTwo02{width:48%;min-width:200px;margin-top:5px;float:left;}
+.modalTwoWrap .modalTwoAddInfo{width:100%;margin-top:5px;float:left;}
+.modalThWrap{width:100%;margin:0 auto;}
+.modalThWrap .modalTh001,.modalThWrap .modalTh002,.modalThWrap .modalTh003{width:33%;min-width:155px;margin-top:5px;float:left;}
+/*==图片上传窗口==*/
+.checkModalGroupWrap .checkMGWTitle{margin-bottom:5px;padding-left:15px;width:100%;color:#FFF;background:#3280fc;border-bottom:1px solid #0c75cc;}
+.checkModalPicInfo{width:97%;height:100px;margin:0 auto;}
+.checkModalPicInfo .checkMPInfoPic{width:60%;float:left;}
+.checkModalPicInfo .checkMPInfoUp{width:39.5%;float:left;}
+.checkModalPicInfo .checkMPIUpBtn{width:100%;margin-top:5px;text-align:center;}
+/*==上传输入框==*/
+.txtFile{width:68px;height:32px;border:none;border-left:1px solid #cdcdcd;}
+.file{position:absolute;top:0;height:32px;filter:alpha(opacity:0);opacity:0;}
+.upBtn{background:#e5e5e5;}
+/*==输入框关键字宽度==*/
+#keyFontWidth{width:85px;}
+#keyOtherWidth{width:1px;}
+/*==表格数据==*/
+.tableWrap{width:98%;margin:0 auto;overflow:auto;border:1px solid #ccc;}
+.tableWrap table{width:100%;margin:auto;text-align:center;border-spacing:0;border-left:1px solid #e5e5e5;border-top:1px solid #ccc;}
+.tableWrap table td{font-size:12px;min-width:120px;border-right:1px solid #e5e5e5;border-bottom:1px solid #ccc;}
+.tableWrap table td#td01{font-size:14px;min-width:70px;font-weight:bold;}
+/*==楼座、单元可选可填==*/
+#louGroup option{text-align:left;}
+/*============钥匙============*/
+/*===*/
+#myMKeyCheck .tableWrap{height:auto;}
+/*============约看=============*/
+
+/*===约看选择弹框==*/
+#datingNChoose .datingNCSearch{padding:5px 0;font-weight:bold;}
+#datingNChoose .datingNCCon{width:100%;padding:10px;border-top:1px solid #0c75cc;}
+#datingNChoose .datingNCCon .input-group span#kehuSearch{width:76px;}
+/*#datingNChoose .datingNCCon .input-group span#kehuSearch2{width:2%;}*/
+#datingNChoose .datingNCCon ul{margin:5px auto;}
+#datingNChoose .datingNCCon .tableWrap{width:100%;}
+
+/*============空看=============*/
+
+/*============房勘=============*/
+/*#myModalCheck .checkModalCon{max-height:350px;overflow-y:auto;overflow-x:hidden;}*/
+#myModalCheck .checkModalCon .checkModalWrap{width:98%;margin:0 auto;padding:0 10px;border:1px solid #ccc;}
+/*============独家=============*/
+#myModalMine .mineModalCon .mineMInfoWrap{width:98%;/*max-height:350px;overflow-y:auto;overflow-x:hidden;*/margin:0 auto;padding:0 10px;border:1px solid #ccc;}
+#myModalMine .mineModalCon .mineMInfo{width:33.3%;float:left;}
+#myModalMine .mineMInfo .input-group-addon{width:85px;}
+#myModalMine .mineMInfo select{width:}
+/*==========修改日志=============*/
+
+/*==========操作日志==============*/
+
+/*==========无效申请============*/
+#myModalNone .noneModalCon .noneMInfoWrap{width:98%;margin:0 auto;border:1px solid #ccc;}
+/*==========地址申请============*/
+#myModalNew #keyFontWidthm2{width:1px;}
+
+/*===========聚焦==============*/
+
+/*==========区聚焦==============*/
+
+/*==========房源推荐==============*/
+
+/*========独家信息查看==============*/
+#myModalMineView .mineViewModalCon .mineMInfoWrap{width:98%;/*max-height:350px;overflow-y:auto;overflow-x:hidden;*/margin:0 auto;padding:0 10px;border:1px solid #ccc;}

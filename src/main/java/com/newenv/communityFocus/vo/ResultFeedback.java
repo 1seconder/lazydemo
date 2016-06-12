@@ -1,0 +1,41 @@
+package com.newenv.communityFocus.vo;
+
+public class ResultFeedback {
+
+	private Object totalJson;
+	private Object reportJson;
+	private Object listJson;
+	private Object columnNames;
+
+	public Object getTotalJson() {
+		return totalJson;
+	}
+
+	public void setTotalJson(Object totalJson) {
+		this.totalJson = totalJson;
+	}
+
+	public Object getReportJson() {
+		return reportJson;
+	}
+
+	public void setReportJson(Object reportJson) {
+		this.reportJson = reportJson;
+	}
+
+	public Object getListJson() {
+		return listJson;
+	}
+
+	public void setListJson(Object listJson) {
+		this.listJson = listJson;
+	}
+
+	public Object getColumnNames() {
+		return columnNames;
+	}
+
+	public void setColumnNames(Object columnNames) {
+		this.columnNames = columnNames;
+	}
+}

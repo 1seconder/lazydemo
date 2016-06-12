@@ -1,0 +1,646 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
+<%@ include file="../fenpai/common.jsp" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>精耕审核</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta name="description" content="Xenon Boostrap Admin Panel" />
+	<meta name="author" content="" />
+	<title>销控管理</title>
+	<link rel="stylesheet" href="<%=basePath%>/assets/css/fonts/linecons/css/linecons.css">
+	<link rel="stylesheet" href="<%=basePath%>/assets/css/fonts/fontawesome/css/font-awesome.min.css">
+	<link rel="stylesheet" href="<%=basePath%>/assets/css/fonts/elusive/css/elusive.css">
+	<link rel="stylesheet" href="<%=basePath%>/assets/css/bootstrap.css">
+	<link rel="stylesheet" href="<%=basePath%>/assets/css/xenon-core.css">
+	<link rel="stylesheet" href="<%=basePath%>/assets/css/xenon-forms.css">
+	<link rel="stylesheet" href="<%=basePath%>/assets/css/xenon-components.css">
+	<link rel="stylesheet" href="<%=basePath%>/assets/css/xenon-skins.css">
+	<link rel="stylesheet" href="<%=basePath%>/assets/css/custom.css">
+	<link rel="stylesheet" href="<%=basePath%>/assets/css/jingen.css">
+	<script src="<%=basePath%>/assets/js/jquery-1.11.1.min.js"></script>
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+		<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+	<style>
+	@media screen and (max-width: 1950px)
+		{
+			.table-responsive {
+			    width: 100%;
+			    margin-bottom: 13.5px;
+			    overflow-y: hidden;
+			    overflow-x: auto;
+			    -ms-overflow-style: -ms-autohiding-scrollbar;
+			    border: 1px solid #eeeeee;
+			    -webkit-overflow-scrolling: touch;
+			}
+			.table-responsive > .table > thead > tr > th, .table-responsive > .table > tbody > tr > th, .table-responsive > .table > tfoot > tr > th, .table-responsive > .table > thead > tr > td, .table-responsive > .table > tbody > tr > td, .table-responsive > .table > tfoot > tr > td {
+			    white-space: nowrap;
+			}
+		}
+		.tabs-vertical-env .nav.tabs-vertical {
+		    min-width: 70px;
+		    width: 50px;
+		}
+		.nav > li a{
+		    height: auto !important;
+		   
+		}
+		.tabs-vertical-env .nav.tabs-vertical li > a{ word-wrap: break-word !important;white-space:inherit;}
+		.nav > li > a {
+		    padding-left: 5px !important;
+		    padding-right: 5px !important;
+		}
+		.tabs-vertical-env .tab-content{ padding: 15px 30px;}
+		.height800{max-height: 800px;  overflow-y: auto;}
+		.select2-arrow{ margin-right: 0px !important;}
+	</style>
+</head>
+<body class="page-body">
+		<div class="page-container">
+			<!-- add class "sidebar-collapsed" to close sidebar by default, "chat-visible" to make chat appear always -->
+
+			<!-- Add "fixed" class to make the sidebar fixed always to the browser viewport. -->
+			<!-- Adding class "toggle-others" will keep only one menu item open at a time. -->
+			<!-- Adding class "collapsed" collapse sidebar root elements and show only icons. -->
+			<div class="main-content">
+				<!-- User Info, Notifications and Menu Bar -->
+				<nav class="navbar user-info-navbar" role="navigation">
+					<!-- Left links for user info navbar -->
+					<ul class="user-info-menu left-links list-inline list-unstyled">
+						<li class="hidden-sm hidden-xs">
+							<a href="#" data-toggle="sidebar">
+								<i class="fa-bars"></i>
+							</a>
+						</li>
+						<li class="dropdown hover-line">
+							<a href="#" data-toggle="dropdown">
+								<i class="fa-envelope-o"></i>
+								<span class="badge badge-green">15</span>
+							</a>
+							<ul class="dropdown-menu messages">
+								<li>
+									<ul class="dropdown-menu-list list-unstyled ps-scrollbar">
+										<li class="active">
+											<!-- "active" class means message is unread -->
+											<a href="#">
+												<span class="line">
+									<strong>邮件名称</strong>
+									<span class="light small">- 发送人名字</span>
+												</span>
+												<span class="line desc small">
+									邮件内容
+							</span>
+											</a>
+										</li>
+
+										<li class="active">
+											<!-- "active" class means message is unread -->
+											<a href="#">
+												<span class="line">
+								<strong>邮件名称</strong>
+								<span class="light small">- 发送人名字</span>
+												</span>
+												<span class="line desc small">
+									邮件内容
+							</span>
+											</a>
+										</li>
+
+										<li class="active">
+											<!-- "active" class means message is unread -->
+											<a href="#">
+												<span class="line">
+								<strong>邮件名称</strong>
+								<span class="light small">- 发送人名字</span>
+												</span>
+												<span class="line desc small">
+									邮件内容
+							</span>
+											</a>
+										</li>
+
+										<li class="active">
+											<!-- "active" class means message is unread -->
+											<a href="#">
+												<span class="line">
+								<strong>邮件名称</strong>
+								<span class="light small">- 发送人名字</span>
+												</span>
+												<span class="line desc small">
+									邮件内容
+							</span>
+											</a>
+										</li>
+
+									</ul>
+
+								</li>
+
+								<li class="external">
+									<a href="blank-sidebar.html">
+										<span>查看更多邮件</span>
+										<i class="fa-link-ext"></i>
+									</a>
+								</li>
+							</ul>
+						</li>
+
+						<li class="dropdown hover-line">
+							<a href="#" data-toggle="dropdown">
+								<i class="fa-bell-o"></i>
+								<span class="badge badge-purple">7</span>
+							</a>
+
+							<ul class="dropdown-menu notifications">
+								<li class="top">
+									<p class="small">
+										<a href="#" class="pull-right">标记为已读</a> 你有 <strong>3个</strong> 新的通知.
+									</p>
+								</li>
+
+								<li>
+									<ul class="dropdown-menu-list list-unstyled ps-scrollbar">
+										<li class="active notification-success">
+											<a href="#">
+												<i class="fa-user"></i>
+												<span class="line">
+										<strong>新用户注册</strong>
+									</span>
+												<span class="line small time">
+										30秒前
+									</span>
+											</a>
+										</li>
+									</ul>
+								</li>
+
+								<li class="external">
+									<a href="#">
+										<span>查看所有通知</span>
+										<i class="fa-link-ext"></i>
+									</a>
+								</li>
+							</ul>
+						</li>
+
+					</ul>
+
+					<!-- Right links for user info navbar -->
+					<ul class="user-info-menu right-links list-inline list-unstyled">
+
+						<li class="dropdown user-profile">
+							<a href="#" data-toggle="dropdown">
+								<i class="fa-reorder"></i>
+								<span>
+										职位切换&nbsp;&nbsp;<i class="fa-angle-down"></i>
+								</span>
+							</a>
+							<ul class="dropdown-menu user-profile-menu list-unstyled">
+								<li>
+									<a href="#edit-profile">
+										<i class="fa-edit"></i> 职位切换
+									</a>
+								</li>
+								<li>
+									<a href="#settings">
+										<i class="fa-wrench"></i> 职位切换
+									</a>
+								</li>
+								<li>
+									<a href="#profile">
+										<i class="fa-user"></i> 职位切换
+									</a>
+								</li>
+								<li>
+									<a href="#help">
+										<i class="fa-info"></i> 职位切换
+									</a>
+								</li>
+								<li class="last">
+									<a href="extra-lockscreen.html">
+										<i class="fa-lock"></i> 职位切换
+									</a>
+								</li>
+							</ul>
+						</li>
+
+						<li class="dropdown user-profile">
+							<a href="#" data-toggle="dropdown">
+								<img src="<%=basePath%>/assets/images/user-4.png" alt="user-image" class="img-circle img-inline userpic-32" width="28" />
+								<span>
+								名字&nbsp;&nbsp;部门&nbsp;&nbsp;<i class="fa-angle-down"></i>
+							</span>
+							</a>
+							<ul class="dropdown-menu user-profile-menu list-unstyled">
+								<li>
+									<a href="#edit-profile">
+										<i class="fa-edit"></i> New Post
+									</a>
+								</li>
+								<li>
+									<a href="#settings">
+										<i class="fa-wrench"></i> 设置
+									</a>
+								</li>
+								<li>
+									<a href="#profile">
+										<i class="fa-user"></i> Profile
+									</a>
+								</li>
+								<li>
+									<a href="#help">
+										<i class="fa-info"></i> 帮助
+									</a>
+								</li>
+								<li class="last">
+									<a href="extra-lockscreen.html">
+										<i class="fa-lock"></i> 注销
+									</a>
+								</li>
+							</ul>
+						</li>
+
+						<li>
+							<a href="#" data-toggle="chat">
+								<i class="fa-comments-o"></i>
+							</a>
+						</li>
+
+					</ul>
+
+				</nav>
+
+				<div class="page-title">
+
+					<div class="breadcrumb-env pull-left">
+						<ol class="breadcrumb bc-1">
+							<li>
+								<a href="#"><i class="fa-home"></i>首页</a>
+							</li>
+							<li>
+								<a href="小区列表.html">业主资料</a>
+							</li>
+							<li class="active">
+								<strong>人对户分派</strong>
+							</li>
+						</ol>
+
+					</div>
+
+				</div>
+				<div class="panel panel-default">
+					<div class="table-responsive-1150">
+						<div class="panel-body" style="padding-top:0px;">
+							<table class="table xuanze" style=" min-width: 1050px;">
+								<tbody>
+									<tr>
+										<td>
+											<span id="time"><i class="fa-caret-right"></i> 时间</span>
+											<input type="hidden" id="timeCondition"/>
+											<a href="#" onclick="chooseCondition('time',1,this);" class="active">今天</a>
+											<a href="#" onclick="chooseCondition('time',2,this);">昨天</a>
+											<a href="#" onclick="chooseCondition('time',3,this);">最近7天</a>
+											<a href="#" onclick="chooseCondition('time',4,this);">最近30天</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span id="status"><i class="fa-caret-right"></i> 状态</span>
+											<input type="hidden" id="statusCondition"/>
+											<a href="#" onclick="chooseCondition('status',1,this);" class="active">全部</a>
+											<a href="#" onclick="chooseCondition('status',2,this);">接触</a>
+											<a href="#" onclick="chooseCondition('status',3,this);">委托</a>
+											<a href="#" onclick="chooseCondition('status',4,this);">了解需求</a>
+											<a href="#" onclick="chooseCondition('status',5,this);">客户需求</a>
+											<a href="#" onclick="chooseCondition('status',6,this);">合同洽谈</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="pull-left" style="line-height: 32px;"><i class="fa-caret-right"></i> 筛选</span>
+											<div class="col-sm-4 col-md-4 col-lg-2">
+												<div class="input-group input-group-sm input-group-minimal">
+													<span class="input-group-addon">
+														店组长：
+													</span>
+													<select class="form-control s2example">
+														<option>楼盘名称</option>
+														<option>楼盘名称</option>
+														<option>楼盘名称</option>
+														<option>楼盘名称</option>
+														<option>楼盘名称</option>
+													</select>
+												</div>
+											</div>
+											<div class="col-sm-4 col-md-4 col-lg-2" >
+												<div class="input-group input-group-sm input-group-minimal">
+													<span class="input-group-addon">
+														经纪人：
+													</span>
+													<select class="form-control s2example">
+														<option>楼盘名称</option>
+														<option>楼盘名称</option>
+														<option>楼盘名称</option>
+														<option>楼盘名称</option>
+														<option>楼盘名称</option>
+													</select>
+												</div>
+											</div>
+											<div class="col-sm-4 col-md-4 col-lg-2" >
+												<div class="input-group input-group-sm input-group-minimal">
+													<span class="input-group-addon">
+														楼盘名称：
+													</span>
+													<select class="form-control s2example">
+														<option>楼盘名称</option>
+														<option>楼盘名称</option>
+														<option>楼盘名称</option>
+														<option>楼盘名称</option>
+														<option>楼盘名称</option>
+													</select>
+												</div>
+											</div>
+											<div class="col-sm-4 col-md-4 col-lg-2">
+												<div class="input-group input-group-sm input-group-minimal">
+													<span class="input-group-addon">
+														栋座：
+													</span>
+													<select class="form-control s2example">
+														<option>楼盘名称</option>
+														<option>楼盘名称</option>
+														<option>楼盘名称</option>
+														<option>楼盘名称</option>
+														<option>楼盘名称</option>
+													</select>
+												</div>
+											</div>
+											<div class="col-sm-4 col-md-4 col-lg-2">
+												<div class="input-group input-group-sm input-group-minimal">
+													<span class="input-group-addon">
+														单元：
+													</span>
+													<select class="form-control s2example">
+														<option>楼盘名称</option>
+														<option>楼盘名称</option>
+														<option>楼盘名称</option>
+														<option>楼盘名称</option>
+														<option>楼盘名称</option>
+													</select>
+												</div>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<div class="col-sm-6 col-md-6 col-lg-4">
+												<div class="form-group">
+													<div class="input-group input-group-minimal">
+														<span class="input-group-addon red">时间：</span>
+														<input type="text" class="form-control form_date">
+														<span class="input-group-addon">-</span>
+														<input type="text" class="form-control form_date">
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-6 col-md-6 col-lg-4">
+												<div class="form-group">
+													<button class="btn btn-success">查询</button>
+												</div>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="panel">
+					<div class="panel-heading">
+						<h3 class="panel-title">销控列表</h3>
+					</div>
+					<div class="panel-body">
+						<div class="table-responsive-1950">
+							<table class="table table-bordered table-striped">
+								<thead>
+									<tr>
+										<th class="col-cb middle-align text-center" width="50">
+											<input type="checkbox" class="cbr" />
+										</th>
+										<th class="text-center">店组</th>
+										<th class="text-center" >经纪人</th>
+										<th class="text-center" >楼盘名称/栋/单元/房号</th>
+										<th class="text-center" >楼盘等级</th>
+										<th class="text-center" >跟进信息</th>
+										<th class="text-center" >状态</th>
+										<th class="text-center" >语音</th>
+										<th class="text-center" >操作</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td class="col-cb middle-align text-center">
+											<input type="checkbox" class="cbr" />
+										</td>
+										<td class="col-lg-1">
+											店组001
+										</td>
+										<td>
+											王小二
+										</td>
+										<td class="middle-align text-center">
+											望城区疾控中心
+										</td>
+										<td class="middle-align text-center">
+											A-1
+										</td>
+										<td class="middle-align text-center">
+											委托跟进1次
+										</td>
+										<td class="middle-align text-center">
+											有效
+										</td>
+										<td class="middle-align text-center">
+											委托跟进1次
+										</td>
+										<td class="middle-align text-center">
+											<a class="btn btn-danger btn-xs">跟进</a>
+											<a class="btn btn-danger btn-xs">无效</a>
+										</td>
+									</tr>
+	
+									<tr>
+										<td class="col-cb middle-align text-center">
+											<input type="checkbox" class="cbr" />
+										</td>
+										<td class="col-lg-1">
+											店组001
+										</td>
+										<td>
+											王小二
+										</td>
+										<td class="middle-align text-center">
+											望城区疾控中心
+										</td>
+										<td class="middle-align text-center">
+											A-1
+										</td>
+										<td class="middle-align text-center">
+											委托跟进1次
+										</td>
+										<td class="middle-align text-center">
+											有效
+										</td>
+										<td class="middle-align text-center">
+											委托跟进1次
+										</td>
+										<td class="middle-align text-center">
+											<a class="btn btn-danger btn-xs">跟进</a>
+											<a class="btn btn-danger btn-xs">无效</a>
+										</td>
+									</tr>
+									<tr>
+										<td class="col-cb middle-align text-center">
+											<input type="checkbox" class="cbr" />
+										</td>
+										<td class="col-lg-1">
+											店组001
+										</td>
+										<td>
+											王小二
+										</td>
+										<td class="middle-align text-center">
+											望城区疾控中心
+										</td>
+										<td class="middle-align text-center">
+											A-1
+										</td>
+										<td class="middle-align text-center">
+											委托跟进1次
+										</td>
+										<td class="middle-align text-center">
+											有效
+										</td>
+										<td class="middle-align text-center">
+											委托跟进1次
+										</td>
+										<td class="middle-align text-center">
+											<a class="btn btn-danger btn-xs">跟进</a>
+											<a class="btn btn-danger btn-xs">无效</a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<!-- Main Footer -->
+			</div>
+
+		</div>
+
+		<div class="go-up" style="position: fixed;right: 15px; bottom: 10px; z-index: 9999; background: #f7aa47;padding: 10px;filter:alpha(opacity=50);moz-opacity:0.5;opacity:0.5;">
+			<a href="#" rel="go-top">
+				<i class="fa-arrow-up" style="font-size: 3em;"></i>
+			</a>
+		</div>
+	</body>
+</html>
+<!-- Bottom Scripts -->
+<script src="<%=basePath%>/assets/js/bootstrap.min.js"></script>
+<script src="<%=basePath%>/assets/js/TweenMax.min.js"></script>
+<script src="<%=basePath%>/assets/js/resizeable.js"></script>
+<script src="<%=basePath%>/assets/js/joinable.js"></script>
+<script src="<%=basePath%>/assets/js/xenon-api.js"></script>
+<script src="<%=basePath%>/assets/js/xenon-toggles.js"></script>
+<script src="<%=basePath%>/assets/js/moment.min.js"></script>
+
+<!-- Imported scripts on this page -->
+<link rel="stylesheet" href="<%=basePath%>/assets/js/daterangepicker/daterangepicker-bs3.css">
+<link rel="stylesheet" href="<%=basePath%>/assets/js/select2/select2.css">
+<link rel="stylesheet" href="<%=basePath%>/assets/js/select2/select2-bootstrap.css">
+<link rel="stylesheet" href="<%=basePath%>/assets/js/multiselect/css/multi-select.css">
+<script src="<%=basePath%>/assets/js/rwd-table/js/rwd-table.js"></script>
+<script src="<%=basePath%>/assets/js/daterangepicker/daterangepicker.js"></script>
+<script src="<%=basePath%>/assets/js/datepicker/bootstrap-datepicker.js"></script>
+<script src="<%=basePath%>/assets/js/timepicker/bootstrap-timepicker.min.js"></script>
+<script src="<%=basePath%>/assets/js/colorpicker/bootstrap-colorpicker.min.js"></script>
+<script src="<%=basePath%>/assets/js/select2/select2.min.js"></script>
+<script src="<%=basePath%>/assets/js/xenon-custom.js"></script>
+
+<link rel="stylesheet" href="<%=basePath%>/assets/js/datepicker/bootstrap-datetimepicker.min.css">
+<!-- Imported scripts on this page  xiala-->
+<script type="text/javascript" src="<%=basePath%>/assets/js/datepicker/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+<script type="text/javascript" src="<%=basePath%>/assets/js/datepicker/bootstrap-datetimepicker.zh-CN.js"></script>
+<!-- Imported scripts on this page  xiala-->
+<script src="<%=basePath%>/assets/js/xenon-custom.js"></script>
+
+<script type="text/javascript">
+	$('.form_date').datetimepicker({
+		language: 'zh-CN',
+		weekStart: 1,
+		todayBtn: 1,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 2,
+		minView: 2,
+		forceParse: 0
+	});
+	$(".form_datetime").datetimepicker({
+		format: 'yyyy-mm-dd:hh:ii',
+		language: 'zh-CN',
+	});
+</script>
+<script type="text/javascript">
+	jQuery(document).ready(function($) {
+		$(".s2example").select2({
+			placeholder: '请输入搜索条件...',
+			allowClear: true
+		}).on('select2-open', function() {
+			// Adding Custom Scrollbar
+			$(this).data('select2').results.addClass('overflow-hidden').perfectScrollbar();
+		});
+	});
+</script>
+<script type="text/javascript">
+	// Sample Javascript code for this page
+	jQuery(document).ready(function($) {
+		// Edit Modal
+		$('.gallery-env a[data-action="edit"]').on('click', function(ev) {
+			ev.preventDefault();
+			$("#gallery-image-modal").modal('show');
+		});
+		// Delete Modal
+		$('.gallery-env a[data-action="trash"]').on('click', function(ev) {
+			ev.preventDefault();
+			$("#gallery-image-delete-modal").modal('show');
+		});
+		// Sortable
+		$('.gallery-env a[data-action="sort"]').on('click', function(ev) {
+			ev.preventDefault();
+			var is_sortable = $(".album-images").sortable('instance');
+			if (!is_sortable) {
+				$(".gallery-env .album-images").sortable({
+					items: '> div'
+				});
+				$(".album-sorting-info").stop().slideDown(300);
+			} else {
+				$(".album-images").sortable('destroy');
+				$(".album-sorting-info").stop().slideUp(300);
+			}
+		});
+	});
+	
+	function chooseCondition(id,value,obj){
+		$("#"+id).parent().find("a").removeClass("active");
+		$(obj).addClass("active");
+		$("#"+id+"Condition").val(value);
+	}
+</script>
