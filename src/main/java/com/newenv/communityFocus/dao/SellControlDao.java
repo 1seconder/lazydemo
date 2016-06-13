@@ -399,6 +399,14 @@ public class SellControlDao extends BaseService{
 				sqlCondition.append(" and lf.delegateid  = ").append(userid);
 			}
 		}
+<<<<<<< HEAD
+=======
+		//盘
+		if(null !=panleixing && panleixing !="" && panleixing != "0" && !panleixing.equals("0"))
+		{
+			sqlCondition.append(" and lf.isencryption  = '").append(panleixing).append("'");
+		}
+>>>>>>> aa6433be91419cf20278114adc5d4e74917df3a7
 		
 		if(null !=statuss && statuss !="")
 		{
@@ -435,6 +443,7 @@ public class SellControlDao extends BaseService{
 			sqlCondition.append(" and lar.cityid = ").append(cityid);
 		}
 		
+<<<<<<< HEAD
 		sqlscdanyuan
 				.append(" select  lp.id lpid,lpd.id dzid ,dy.id dyid ,lf.id fhid,lpd.lpd_name,dy.dy_name,lf.fwzt, ");
 		sqlscdanyuan.append(
@@ -470,6 +479,27 @@ public class SellControlDao extends BaseService{
 			sql += " and (ss.saleisencryption = '"+panleixing+"' "+" or ss.rentisencryption = '"+panleixing+"')";
 		}
 		sql += " ORDER BY ss.lpd_name,ss.dy_name";
+=======
+		sqlscdanyuan.append(" select  lp.id lpid,lpd.id dzid ,dy.id dyid ,lf.id fhid,lpd.lpd_name,dy.dy_name,lf.fwzt, " );
+		sqlscdanyuan.append("	CONCAT(lp.lp_name,'#',lpd.lpd_name,'(',dy.dy_name,')') as title,IFNULL((select name from xhj_syscs_1 where id = lf.leixing  LIMIT 1) ,'')usages , " );
+		sqlscdanyuan.append("	CONCAT(IFNULL((select name from xhj_syscs_1 where id= lf.chaoxiang LIMIT 1),'无朝向'), " );
+		sqlscdanyuan.append("	'/',IFNULL(CAST(lf.shi AS char),'0'),'室/',IFNULL(CAST(lf.ting AS char),'0'),'厅/', " );
+		sqlscdanyuan.append("	IFNULL(CAST(lf.CQMJ AS char),'0'),'平米') as fangwu ,lp.bieming,lf.fanghao,lf.number, " );
+		sqlscdanyuan.append("(  SELECT img.imgpath FROM `xhj_lpfanghaoimg`  AS img WHERE img.statuss=1 AND img.fanghaoid=lf.id ORDER BY img.id LIMIT 1) as imagepath,"); 
+		sqlscdanyuan.append("	lf.keyid,lf.surveyid,IFNULL(lf.PropertyAddress,'') PropertyAddress,IFNULL(CAST(tup.fullname AS char),'无姓名记录') fullname " );
+		sqlscdanyuan.append("	,IFNULL(tup.tel,'无联系方式') tel,(select department_name FROM tbl_department where id = tup.tbl_department_id LIMIT 1) as departmentname, " );
+		sqlscdanyuan.append("	IFNULL( IF( " );
+		sqlscdanyuan.append("	(SELECT h.id FROM  xhj_housesource h,xhj_housesourceforsaling hs WHERE h.id=hs.HouseSourceID AND lf.id=h.HouseNumberID  and hs.housesourcestatus>0 LIMIT 1) is NULL, " );
+		sqlscdanyuan.append("	(SELECT hs.totalprice FROM  xhj_housesource h,xhj_houseinfoforrenting hs  WHERE h.id=hs.HouseSourceID AND lf.id=h.HouseNumberID  and hs.housesourcestatus>0 LIMIT 1), " );
+		sqlscdanyuan.append("	(SELECT hs.price FROM  xhj_housesource h,xhj_housesourceforsaling hs  WHERE h.id=hs.HouseSourceID AND lf.id=h.HouseNumberID  and hs.housesourcestatus>0 LIMIT 1) ),0) Price, " );
+		sqlscdanyuan.append("	IFNULL(CAST(lf.updatedate AS char),'无最新时间') refreshDate   " );
+		sqlscdanyuan.append("	from xhj_lpxx lp INNER JOIN  xhj_lpdong lpd ON lp.id = lpd.lpid   INNER JOIN xhj_lpdanyuan  dy ON lpd.id = dy.dzid    " );
+		sqlscdanyuan.append("	INNER JOIN xhj_lpfanghao lf ON dy.id=lf.DYID   INNER JOIN lpjg_assignment_room lar ON lf.id=lar.fhid  " );
+		sqlscdanyuan.append("	INNER JOIN tbl_user_profile tup ON tup.id= lar.userid    " );
+		sqlscdanyuan.append(sqlCondition.toString());
+//		sqlCondition.append("	GROUP BY ss.lpid,ss.dzid,ss.dyid,ss.fhid  " );
+		String sql = "select DISTINCT * from ("+sqlscdanyuan.toString()+" )ss  ORDER BY ss.lpd_name,ss.dy_name";
+>>>>>>> aa6433be91419cf20278114adc5d4e74917df3a7
 //		GROUP BY ss.lpid,ss.dzid,ss.dyid,ss.fhid 
 //		List<Record> objsdanyuan = daoHelper.getRecordList(sql);
 		pageInfo = super.getPagerjdo( sql, pageInfo);

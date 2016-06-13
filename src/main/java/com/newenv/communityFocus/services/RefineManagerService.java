@@ -1109,19 +1109,32 @@ public class RefineManagerService extends BaseService {
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	@Path("/saveLoanToPhp")
 	public Response saveLoanToPhp(@QueryParam ("radio") String radio,@QueryParam ("data") String json) {
+<<<<<<< HEAD
 		HashMap<String,String> hashMap = new HashMap<String,String>();
 		String str = "";
 		try{
 			json = json.replaceAll("/", "&");
 			String url = radio.equals("")?(SecurityUserHolder.getConfig().getJmbjrUrl()+"borrow-java_saveloan?"+json.substring(1,json.length())) :(SecurityUserHolder.getConfig().getJmbjrUrl()+"borrow-java_saveloan?radio="+radio+json);
+=======
+		String str = "";
+		try{
+			json = json.replaceAll("/", "&");
+//			String url = radio.equals("")?(SecurityUserHolder.getConfig().getJmbjrUrl()+"borrow-java_saveloan?"+json.substring(1,json.length())) :(SecurityUserHolder.getConfig().getJmbjrUrl()+"borrow-java_saveloan?radio="+radio+json);
+			String url = radio.equals("")?("http://192.168.1.159/borrow-java_saveloan?"+json.substring(1,json.length())) :("http://192.168.1.159/borrow-java_saveloan?radio="+radio+json);
+
+>>>>>>> aa6433be91419cf20278114adc5d4e74917df3a7
 			str = HttpClientUtil.getInstance().get(url, "UTF-8");
 			str = str.substring(1,str.length()-1);
 		}catch(Exception e){
 			logger.error(e.getMessage());
 			return Response.status(500).build();
 		}
+<<<<<<< HEAD
 		hashMap.put("result", str);
 		return Response.ok().entity(hashMap).build();
+=======
+		return Response.ok().entity(str).build();
+>>>>>>> aa6433be91419cf20278114adc5d4e74917df3a7
 	}
 	
 	

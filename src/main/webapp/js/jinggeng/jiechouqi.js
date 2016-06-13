@@ -162,13 +162,20 @@ function jjryezhu(type){
 		async : false,
 			success: function(data){	
 			//showList("consumptionconcept",data.per,data.per == null ? data.per : data.per.consumptionconcept);
+<<<<<<< HEAD
 			$("#consumptionconcept").empty();
+=======
+>>>>>>> aa6433be91419cf20278114adc5d4e74917df3a7
  			$("#consumptionconcept").append('<option value="867">生存型消费</option><option value="868">发展型消费</option><option value="869">享受型消费</option>');
  			if(data.per != null && typeof(data.per) !='undefined'){
  				$("#consumptionconcept option[value='"+ data.per.consumptionconcept +"']").attr("selected","selected");
  			}
  		
+<<<<<<< HEAD
  			$("#namevalue").empty();
+=======
+ 			
+>>>>>>> aa6433be91419cf20278114adc5d4e74917df3a7
 			$("#namevalue").append('<option value="1">男士</option><option value="2">女士</option>');
 			if(data.per!= null){
 				$("#namevalue").val(data.per.gender);
@@ -234,7 +241,11 @@ function jjryezhu(type){
 // 					$("#isFamiliarToCommunity").append( '<label id="'+ v.id +'"> <input type="checkbox" style="padding-left: 0px;" name="radio-2" >'+ v.name +'</label> ');
 // 				}
 // 			})	 
+<<<<<<< HEAD
  			$("#furniture").empty();
+=======
+ 			
+>>>>>>> aa6433be91419cf20278114adc5d4e74917df3a7
  			//家具
  			showCheckbox("furniture",data.furniture,data.req == null ? data.req : data.req.furniture);
  			

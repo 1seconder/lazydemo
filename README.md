@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Spring Boot CXF 集成
 ===========================
 
@@ -46,3 +47,7 @@ java -javaagent:./springloaded-1.2.5.RELEASE.jar -noverify -cp "./*:./microservi
 
 
 
+=======
+# lazydemo
+this is a demo
+>>>>>>> aa6433be91419cf20278114adc5d4e74917df3a7

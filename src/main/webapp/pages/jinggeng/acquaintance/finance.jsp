@@ -829,7 +829,11 @@ function saveLoanRecords(){
 		    data : data,
 		    async:false,
 		    success : function(data){
+<<<<<<< HEAD
 		    	if(data.result == 1){
+=======
+		    	if(data == 1){
+>>>>>>> aa6433be91419cf20278114adc5d4e74917df3a7
 		    			var params = new Object();
 		    			params.fhid = $("#fanghao").val();
 		    			var dataJson = JSON.stringify(params);

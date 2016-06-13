@@ -893,12 +893,16 @@ String imagePath = SecurityUserHolder.getConfig().getImagePath();
 				<i class="fa-angle-up"></i>
 			</a>
 		</div>
+<<<<<<< HEAD
 		<input type="hidden" value="${coreResult.ax }" id="cflag"/>
 		<input type="hidden" value="${coreResult.fullname }" id="cfullname"/>
 		<input type="hidden" value="${coreResult.tel }" id="ctel"/>
 		<input type="hidden" value="${coreResult.sex }" id="csex"/>
 		
 		
+=======
+		<input type="hidden" value="${flag }" id="flag"/>
+>>>>>>> aa6433be91419cf20278114adc5d4e74917df3a7
 		<input type="hidden" value="${result.id }" id="fhId"/>
 		<input type="hidden" value="${result.id }" id="fanghao"/>
 		<input type="hidden" value="${result.personid }" id="yzId"/>
@@ -1426,6 +1430,7 @@ String imagePath = SecurityUserHolder.getConfig().getImagePath();
 			</div>
 		</div>
 	</div>
+<<<<<<< HEAD
 	
 	<div class="modal fade in" id="modal_3">
 		<div class="modal-dialog" style="width:80%">
@@ -1442,6 +1447,8 @@ String imagePath = SecurityUserHolder.getConfig().getImagePath();
 			</div>
 		</div>
 	</div>
+=======
+>>>>>>> aa6433be91419cf20278114adc5d4e74917df3a7
 </html>
 
 <!-- Bottom Scripts -->
@@ -1708,6 +1715,7 @@ String imagePath = SecurityUserHolder.getConfig().getImagePath();
 	}
 	
 	function queryCoreMessageList(pageIndex,flag){
+<<<<<<< HEAD
 		if($("#cflag").val() == 'A'){
 			alert("该楼盘不属于你自己的A盘,不可以查看核心信息");
 			return;
@@ -1716,6 +1724,12 @@ String imagePath = SecurityUserHolder.getConfig().getImagePath();
 			openModal_3();
 			return;
 		}
+=======
+		if($("#flag").val() == "false"){
+			alert("该楼盘不属于你自己的A盘,不可以查看核心信息");
+			return;
+		}
+>>>>>>> aa6433be91419cf20278114adc5d4e74917df3a7
 		$("#coreMessageList").empty();
 		var postParameter = new Object();
 		var requestParameter = new Object();
@@ -1778,6 +1792,7 @@ String imagePath = SecurityUserHolder.getConfig().getImagePath();
 		jQuery('#modal_2').modal('show', {backdrop: 'fade'});
 	}
 	
+<<<<<<< HEAD
 	function openModal_3(){
 		var html = "独家限时代卖人信息<br>";
 		html += "姓名："+$("#cfullname").val()+"<br>性别："+$("#csex").val()+"<br>联系电话："+$("#ctel").val();
@@ -1785,6 +1800,8 @@ String imagePath = SecurityUserHolder.getConfig().getImagePath();
 		jQuery('#modal_3').modal('show', {backdrop: 'fade'});
 	}
 	
+=======
+>>>>>>> aa6433be91419cf20278114adc5d4e74917df3a7
 	function disCheckBox(id,type){
 		$("#"+id+" input[type="+type+"]").attr("disabled","disabled");
 	}

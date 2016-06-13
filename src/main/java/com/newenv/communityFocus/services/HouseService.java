@@ -2,7 +2,10 @@ package com.newenv.communityFocus.services;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+<<<<<<< HEAD
 import java.util.Collections;
+=======
+>>>>>>> aa6433be91419cf20278114adc5d4e74917df3a7
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -137,7 +140,11 @@ public class HouseService extends BaseService {
 			house.put("createdate", createdate);
 			super.setRequestAttribute("result", house);
 			super.setRequestAttribute("userTitle", getUserTitle(SecurityUserHolder.getUserId()));
+<<<<<<< HEAD
 			super.setRequestAttribute("coreResult", judgeIsNotQueryCoreMessage(Integer.valueOf(house.get("id").toString()),SecurityUserHolder.getUserId()));
+=======
+			super.setRequestAttribute("flag", judgeIsNotQueryCoreMessage(Integer.valueOf(house.get("id").toString()),SecurityUserHolder.getUserId()));
+>>>>>>> aa6433be91419cf20278114adc5d4e74917df3a7
 			super.forwardTo("/pages/jinggeng/houseDetail.jsp");
 		}
 	}
@@ -1151,12 +1158,17 @@ public class HouseService extends BaseService {
 		RequestParameter requestParameter = postParameter.getRequestParameter();
 		ResultFeedback resultFeedback = new ResultFeedback();
 		Integer fhId = requestParameter.getFhId();
+<<<<<<< HEAD
 		Map lMap = judgeIsNotQueryCoreMessage(fhId,SecurityUserHolder.getUserId());
 		String flag = "ok";
 		if(null != lMap.get("flag")){
 			flag = lMap.get("flag").toString();
 		}
 		if(flag.equals("ok")){
+=======
+		boolean flag = judgeIsNotQueryCoreMessage(fhId,SecurityUserHolder.getUserId());
+		if(flag){
+>>>>>>> aa6433be91419cf20278114adc5d4e74917df3a7
 			pageInfo = postParameter.getPageInfo();
 			if (pageInfo == null) {
 				pageInfo = new PageInfo();
@@ -1238,18 +1250,27 @@ public class HouseService extends BaseService {
 		return Response.ok().entity(result).build();
 	}
 	
+<<<<<<< HEAD
 	public Map judgeIsNotQueryCoreMessage(Integer fhId,Integer creatorId) {
 		String flag = "ok";
 		Map result = new HashMap();
 		List<Map> list = new ArrayList<Map>();
 		if (null != fhId && null != creatorId) {
 			String sql = "SELECT hfs.IsEncryption,hfs.belongerid,t.fullname, CASE WHEN t.sex = 0 THEN '女' WHEN t.sex = 1 THEN '男' END AS sex,t.tel,'ok' AS flag from xhj_housesource h INNER JOIN xhj_housesourceforsaling hfs on h.id=hfs.housesourceid  INNER JOIN tbl_user_profile t ON t.id = hfs.belongerid where hfs.housesourcestatus=1 and hfs.IsEncryption = 1 and h.housenumberid= "
+=======
+	public boolean judgeIsNotQueryCoreMessage(Integer fhId,Integer creatorId) {
+		boolean flag = false;
+		List<Map> list = new ArrayList<Map>();
+		if (null != fhId && null != creatorId) {
+			String sql = "SELECT hfs.IsEncryption,hfs.belongerid from xhj_housesource h INNER JOIN xhj_housesourceforsaling hfs on h.id=hfs.housesourceid  where hfs.housesourcestatus=1 and hfs.IsEncryption = 1 and h.housenumberid= "
+>>>>>>> aa6433be91419cf20278114adc5d4e74917df3a7
 					+ fhId;
 			list = this.daoHelper.getList(sql.toString());
 			if (list.size() > 0) {
 				Map map = new HashMap();
 				map = list.get(0);
 				if(map.get("isencryption").toString().equals("1")){
+<<<<<<< HEAD
 					if(!map.get("belongerid").toString().equals(creatorId.toString())){
 						flag = "A";
 					}
@@ -1264,5 +1285,20 @@ public class HouseService extends BaseService {
 			
 		}
 		return result;
+=======
+					if(map.get("belongerid").toString().equals(creatorId.toString())){
+						flag = true;
+					}else{
+						flag = false;
+					}
+				}else{
+					flag = true;
+				}
+			}else{
+				flag = true;
+			}
+		}
+		return flag;
+>>>>>>> aa6433be91419cf20278114adc5d4e74917df3a7
 	}
 }

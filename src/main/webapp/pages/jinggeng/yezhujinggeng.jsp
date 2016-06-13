@@ -1,5 +1,8 @@
 <%@ page language="java" pageEncoding="UTF-8"%>
+<<<<<<< HEAD
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %> 
+=======
+>>>>>>> aa6433be91419cf20278114adc5d4e74917df3a7
 <%@ page language="java" import="java.util.*,com.newenv.communityFocus.vo.UserLogin,com.newenv.communityFocus.security.SecurityUserHolder"%>
 <%
 	String path = request.getContextPath();
@@ -169,12 +172,18 @@
 											<div class="pull-left pright10">
 												<select name="status" class="form-control" id="panleixing" onchange="queryData()">
 													<option selected="" value="0">盘类型不限</option>
+<<<<<<< HEAD
 													<c:choose>
 														<c:when test="${cityid == 1 }"><option value="4">X</option></c:when>
 														<c:otherwise><option value="1">A</option></c:otherwise>
 													</c:choose>
 													<option value="2">B</option>
 													<option value="3">C</option>
+=======
+													<option value="A">A</option>
+													<option value="B">B</option>
+													<option value="C">C</option>
+>>>>>>> aa6433be91419cf20278114adc5d4e74917df3a7
 												</select>
 											</div>
 											<div class="col-sm-4 col-md-3 col-lg-3" >

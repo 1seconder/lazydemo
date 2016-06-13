@@ -783,8 +783,11 @@
 	
 
 	function modify1(mdid,zjq,md){
+<<<<<<< HEAD
 		$("#mod4-lp").empty();
 		$("#assign-mod4-lp").empty();
+=======
+>>>>>>> aa6433be91419cf20278114adc5d4e74917df3a7
 		$("#mod4-zjq").html('<span class="input-group-addon">总监区：</span>');
 		$("#mod4-md").html('<span class="input-group-addon">门店：</span>');
 		$("#mod4-zjq").append('<span class="input-group-addon" id="mod4-z">'+ zjq + '</span>')
@@ -805,7 +808,11 @@
 		var r1 = result.responseJSON;
 		var c ='';
 		$.each(r1, function(i,r){
+<<<<<<< HEAD
 				c += '<li class="ms-elem-selectable" id="' + r.id +'"onClick="assginLp(6,\'' + r.lpname +'\',' + r.id + ')"><span>'+ r.lpname +'</span></li>';
+=======
+			c += '<li class="ms-elem-selectable" id="' + r.id +'"onClick="assginLp(6,\'' + r.lpname +'\',' + r.id + ')"><span>'+ r.lpname +'</span></li>';
+>>>>>>> aa6433be91419cf20278114adc5d4e74917df3a7
 		});
 		$("#assign-mod4-lp").html(c);
 		jQuery('#modal-4').modal('show', {backdrop: 'fade'});
@@ -934,6 +941,7 @@
 				var cHtml = '';
 				$.each(data, function(i,n){
 					if( 1== type || type ==5){
+<<<<<<< HEAD
 						var flag = 1;
 						var arr = new Array();
 						$("#assign-lp li").each(function(){
@@ -972,6 +980,13 @@
 						if(flag == 1){
 							cHtml += '<li class="ms-elem-selectable" id='+n.id +'  onClick="assginLp(5,\'' + n.lpname + '\',' + n.id + ')" ><span>' + n.lpname+'</span></li>';
 						}
+=======
+						cHtml += '<li class="ms-elem-selectable" id='+n.id +'  onClick="assginLp(1,\'' + n.lpname + '\',' + n.id + ')" ><span>' + n.lpname+'</span></li>';
+					}else if( 2== type){
+						cHtml += '<option value="'+ n.id + '">'+  n.lpname +'</option>' ;
+					}else if(type == 'mod4-lp'){
+						cHtml += '<li class="ms-elem-selectable" id='+n.id +'  onClick="assginLp(5,\'' + n.lpname + '\',' + n.id + ')" ><span>' + n.lpname+'</span></li>';
+>>>>>>> aa6433be91419cf20278114adc5d4e74917df3a7
 					}
 					else{
 						cHtml += '<option value="'+ n.id + '">'+  n.lpname +'</option>' ;

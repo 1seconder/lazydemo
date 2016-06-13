@@ -42,12 +42,16 @@ function queryList(){
 					{
 						var html = '';
 						$.each(result, function(i,data){
+<<<<<<< HEAD
 							var isencryption = "";
 							if(data.saleisencryption != ""){
 								isencryption = data.saleisencryption;
 							}else if(data.rentisencryption != ""){
 								isencryption = data.rentisencryption;
 							}
+=======
+
+>>>>>>> aa6433be91419cf20278114adc5d4e74917df3a7
 							var detailUrl = basepath+"/services/houseService/queryHouseDetail/"+data.fhid;
 							detailUrl = 'javascript:parent.refreshTab(\'精耕详情\',\''+detailUrl+'\')';
 							var errorimg = "javascript:this.src='"+basepath+"/assets/images/user-4.png';"
@@ -61,6 +65,7 @@ function queryList(){
 							html +='<br>'+number+'</div>'
 							html +=' </td>';
 							html +=' <td >';
+<<<<<<< HEAD
 							if(isencryption==1){
 								html += '<b class="xingji xingji-a pull-left ">A盘</b>';
 					        } else if(isencryption==2){
@@ -69,6 +74,14 @@ function queryList(){
 					        	html += '<b class="xingji xingji-c pull-left ">C盘</b>';
 					        } else if(isencryption==4){
 					        	html += '<b class="xingji xingji-x pull-left ">X盘</b>';
+=======
+							if(data.isEncryption==1){
+								html += '<b class="xingji xingji-a pull-left ">盘</b>';
+					        } else if(data.isEncryption==2){
+					        	html += '<b class="xingji xingji-b pull-left ">盘</b>';
+					        } else if(data.isEncryption==3){
+					        	html += '<b class="xingji xingji-c pull-left ">盘</b>';
+>>>>>>> aa6433be91419cf20278114adc5d4e74917df3a7
 					        }
 							html +=' 	<div class="line24"><a href="'+detailUrl+'" class="f18" target="_blank">'+data.title+'</a>'+data.usages+'</div>';
 							html +=' 	<div class="line24">'+data.fanghao+'，'+data.fangwu+'</div>';
